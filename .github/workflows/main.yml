@@ -45,7 +45,6 @@ jobs:
       env:
         PGPASSWORD: 12345
       run: |
-        sudo systemctl stop postgresql
         until pg_isready -h localhost -p 5432 -U postgres; do
           echo "Waiting for postgres container..."
           sleep 5
@@ -71,6 +70,8 @@ jobs:
 
     - name: Start Docker containers
       run: |
+        docker-compose down
+        docker system prune -af
         docker-compose up -d
 
     - name: Run tests
