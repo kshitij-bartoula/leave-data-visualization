@@ -45,6 +45,7 @@ jobs:
       env:
         PGPASSWORD: 12345
       run: |
+        sudo systemctl stop postgresql
         until pg_isready -h localhost -p 5432 -U postgres; do
           echo "Waiting for postgres container..."
           sleep 5
