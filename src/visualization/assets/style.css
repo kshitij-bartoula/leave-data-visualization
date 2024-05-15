@@ -1,0 +1,26 @@
+/* assets/style.css */
+body {
+    background-color: rgb(219, 225, 223); /* Change this to your desired background color */
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+.header {
+    background-color: #4CAF50; /* Header background color */
+    color: hwb(0 100% 0%);
+    padding: 10px;
+    text-align: center;
+}
+
+.content {
+    padding: 20px;
+}
+
+.graph-container {
+    background-color: rgb(24, 58, 207); /* Background color for graph containers */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    padding: 20px;
+}

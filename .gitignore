@@ -1,0 +1,9 @@
+# Logs
+logs/
+*.log
+
+# Environment variables
+.env
+
+# GitHub Actions
+.github/workflows/

@@ -1,0 +1,8 @@
+python-dotenv
+requests
+SQLAlchemy
+pandas
+psycopg2-binary
+fastapi
+pydantic
+uvicorn
