@@ -72,7 +72,7 @@ jobs:
       run: |
         docker-compose down
         docker system prune -af
-        sudo systemctl stop postgresql
+        service stop postgresql
         docker-compose up -d
 
     - name: Run tests
