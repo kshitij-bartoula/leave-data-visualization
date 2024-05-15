@@ -23,7 +23,7 @@ services:
     depends_on:
       - postgres
     environment:
-      DATABASE_URL: postgresql://postgres:12345@postgres:5432/postgres
+      DATABASE_URL: postgresql://postgres:12345@postgres:5433/postgres
 
   plotly-dash:
     build:

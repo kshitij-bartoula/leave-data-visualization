@@ -12,7 +12,7 @@ def connection():
     DB_NAME = db_config['DB_NAME']
 
     if all([DB_USERNAME, DB_PASSWORD, DB_HOST, DB_NAME]):
-        DB_CONNECTION_STR = f'postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:5432/{DB_NAME}'
+        DB_CONNECTION_STR = f'postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:5433/{DB_NAME}'
         db_engine = create_engine(DB_CONNECTION_STR)
         return db_engine
     else:
