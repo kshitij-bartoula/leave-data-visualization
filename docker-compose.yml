@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: "12345"
       POSTGRES_DB: "postgres"
     ports:
-      - "5433:5432"
+      - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
 
@@ -23,7 +23,7 @@ services:
     depends_on:
       - postgres
     environment:
-      DATABASE_URL: postgresql://postgres:12345@postgres:5433/postgres
+      DATABASE_URL: postgresql://postgres:12345@postgres:5432/postgres
 
   plotly-dash:
     build:
