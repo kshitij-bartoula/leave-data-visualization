@@ -4,3 +4,7 @@ logs/
 
 # Environment variables
 .env
+
+__pycache__
+
+src/visualization .
