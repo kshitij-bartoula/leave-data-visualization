@@ -4,6 +4,3 @@ logs/
 
 # Environment variables
 .env
-
-# GitHub Actions
-.github/workflows/
