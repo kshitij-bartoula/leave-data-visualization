@@ -72,7 +72,6 @@ jobs:
       run: |
         docker-compose down
         docker system prune -af
-        service stop postgres*
         docker-compose up -d
 
     - name: Run tests
