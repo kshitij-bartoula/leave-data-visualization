@@ -45,7 +45,7 @@ jobs:
       env:
         PGPASSWORD: 12345
       run: |
-        until pg_isready -h localhost -p 5433 -U postgres; do
+        until pg_isready -h localhost -p 5432 -U postgres; do
           echo "Waiting for postgres container..."
           sleep 5
         done
