@@ -11,7 +11,6 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    uses: AutoModality/action-clean@v1
 
     services:
       postgres:
@@ -81,7 +80,7 @@ jobs:
         echo "Running tests..."
         # Example: pytest tests/
 
-    - name: Clean up
-      run: |
-        docker-compose down
-        docker system prune -af
+    # - name: Clean up
+    #   run: |
+    #     docker-compose down
+    #     docker system prune -af
