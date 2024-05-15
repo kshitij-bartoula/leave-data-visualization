@@ -1,7 +1,5 @@
-# Define FastAPI endpoint URL
-
-HOST  = "localhost"
-#HOST  = "fastapi"
+#HOST  = "localhost"
+HOST  = "fastapi"
 
 ENDPOINT_EMPLOYEE_LEAVE = f'http://{HOST}:8000/employee_leave'
 ENDPOINT_LEAVE_BALANCE = f'http://{HOST}:8000/leave_balance'
