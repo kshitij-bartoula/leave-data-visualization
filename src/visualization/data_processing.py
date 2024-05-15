@@ -57,9 +57,3 @@ def leave_reason(endpoint_url):
         return response.json()
     else:
         return []
-
-
-
-
-
-
