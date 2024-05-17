@@ -70,15 +70,21 @@ headers = {
 db_engine = connection()
 
 with db_engine.connect() as conn:
-    schema_existence_query = text("SELECT EXISTS(SELECT 1 FROM information_schema.schemata WHERE schema_name = 'raw')")
+    schema_existence_query = text(
+        "SELECT EXISTS(SELECT 1 FROM information_schema.schemata WHERE schema_name = 'raw')"
+    )
     schema_exists = conn.execute(schema_existence_query).scalar()
+    print(schema_exists)
 
     if not schema_exists:
-        print('Schema not exists. creating schema...')
-        create_schema_query = text("CREATE SCHEMA raw")
-        conn.execute(create_schema_query)
+        print('Schema does not exist. Creating schema...')
+        create_schema_query = text(
+        "BEGIN; CREATE SCHEMA raw; COMMIT;"
+        )
+        create_schema = conn.execute(create_schema_query)
+        print('raw schema created')
     else:
-        print('raw_schema exists')
+        print('Schema already exists')
 
 # Ingest data from API
 api_data = ingest_api_data(API_ENDPOINT, headers)
