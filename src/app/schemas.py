@@ -30,13 +30,6 @@ class LeaveDistribution(BaseModel):
     leave_count: int
 
 
-class FiscalYearTrend(BaseModel):
-    fiscal_id: int
-    fiscal_start_date: datetime
-    fiscal_end_date: datetime
-    leave_count: int
-
-
 class FiscalYearLeaveTypeTrend(BaseModel):
     fiscal_id: int
     fiscal_start_date: datetime
@@ -62,7 +55,3 @@ class DepartmentLeaveStatusCount(BaseModel):
 class MostFrequentLeaveReason(BaseModel):
     reason: str
     request_count: int
-
-
-class LeaveConversionCount(BaseModel):
-    conversion_count: int

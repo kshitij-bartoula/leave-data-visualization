@@ -11,25 +11,14 @@ from .schemas import (
     LeaveBalance,
     LeaveTrend,
     LeaveDistribution,
-    FiscalYearTrend,
     FiscalYearLeaveTypeTrend,
     DepartmentLeaveDistribution,
     DepartmentLeaveStatusCount,
     MostFrequentLeaveReason,
-    LeaveConversionCount,
 )
 from utils.db_utils import get_result_from_query
 
-
 router = APIRouter()
-
-# Dependency to get database session
-# def get_db():
-#     db = SessionLocal()
-#     try:
-#         yield db
-#     finally:
-#         db.close()
 
 # Define FastAPI endpoints
 @router.get("/employee_leave", response_model=List[EmployeeLeave])
@@ -40,12 +29,12 @@ def get_employee_leave(db: Session = Depends(get_db)):
 
         # Transform the raw database result into EmployeeLeave objects
         employee_leave = []
-        for row in result:
+        for empId, firstName, lastName, total_leave_days in result:
             employee_leave.append(EmployeeLeave(
-                empId=row.empId,
-                firstName=row.firstName,
-                lastName=row.lastName,
-                total_leave_days=row.total_leave_days,
+                empId=empId,
+                firstName=firstName,
+                lastName=lastName,
+                total_leave_days=total_leave_days,
             ))
 
         return employee_leave
@@ -109,27 +98,6 @@ def get_leave_distribution(db: Session = Depends(get_db)):
         return leave_distributions
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database error occurred{e}")
-
-
-@router.get("/fiscal_year_trend", response_model=List[FiscalYearTrend])
-def get_fiscal_year_trend(db: Session = Depends(get_db)):
-    try:
-        query = "SELECT * FROM dw.leave_trend_by_fiscal_year_per_leave_type_mv"
-        result = get_result_from_query(query)
-
-        fiscal_year_trends = []
-        for fiscal_id, fiscal_start_date, fiscal_end_date, leave_count in result:
-            fiscal_year_trend = FiscalYearTrend(
-                fiscal_id=fiscal_id,
-                fiscal_start_date=fiscal_start_date,
-                fiscal_end_date=fiscal_end_date,
-                leave_count=leave_count
-            )
-            fiscal_year_trends.append(fiscal_year_trend)
-        return fiscal_year_trends
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Database error occurred{e}")
-
 
 @router.get("/fiscal_year_leave_type_trend", response_model=List[FiscalYearLeaveTypeTrend])
 def get_fiscal_year_leave_type_trend(db: Session = Depends(get_db)):
