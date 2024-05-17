@@ -1,5 +1,8 @@
 BEGIN;
-CREATE TABLE IF NOT EXISTS employee_details (
+
+CREATE SCHEMA IF NOT EXISTS dw;
+
+CREATE TABLE IF NOT EXISTS dw.employee_details (
     empId INT PRIMARY KEY,
     designationId INT,
     designationName VARCHAR(255),
@@ -10,26 +13,26 @@ CREATE TABLE IF NOT EXISTS employee_details (
     departmentDescription VARCHAR(255)
 );
 
-CREATE TABLE IF NOT EXISTS leave_type (
+CREATE TABLE IF NOT EXISTS dw.leave_type (
     leave_type_id INT PRIMARY KEY,
     leavetypename varchar(255)
 );
 
-CREATE TABLE IF NOT EXISTS fiscal_detail (
+CREATE TABLE IF NOT EXISTS dw.fiscal_detail (
     fiscal_id INT PRIMARY KEY,
     fiscal_start_date TIMESTAMP WITH TIME ZONE,
     fiscal_end_date TIMESTAMP WITH TIME ZONE
 );
 
-CREATE TABLE IF NOT EXISTS allocations (
+CREATE TABLE IF NOT EXISTS dw.allocations (
     empId INT,
     id INT PRIMARY KEY,
     name VARCHAR(255),
     type VARCHAR(255),
-    CONSTRAINT fk_employee_details_empid FOREIGN KEY (empId) REFERENCES employee_details(empId)
+    CONSTRAINT fk_employee_details_empid FOREIGN KEY (empId) REFERENCES dw.employee_details(empId)
 );
 
-CREATE TABLE IF NOT EXISTS fact_table (
+CREATE TABLE IF NOT EXISTS dw.fact_table (
     id INT,
     userId INT,
     empId INT,
@@ -51,9 +54,9 @@ CREATE TABLE IF NOT EXISTS fact_table (
     isConverted INT,
     createdAt TIMESTAMP WITH TIME ZONE,
     updatedAt TIMESTAMP WITH TIME ZONE,
-    CONSTRAINT fk_empId_employee_details FOREIGN KEY (empId) REFERENCES employee_details(empId),
-    CONSTRAINT fk_leave_type FOREIGN KEY (leaveTypeId) REFERENCES leave_type(leave_type_id),
-    CONSTRAINT fk_fiscall_detail FOREIGN KEY (fiscalId) REFERENCES fiscal_detail (fiscal_id)
+    CONSTRAINT fk_empId_employee_details FOREIGN KEY (empId) REFERENCES dw.employee_details(empId),
+    CONSTRAINT fk_leave_type FOREIGN KEY (leaveTypeId) REFERENCES dw.leave_type(leave_type_id),
+    CONSTRAINT fk_fiscall_detail FOREIGN KEY (fiscalId) REFERENCES dw.fiscal_detail (fiscal_id)
 );
 
 COMMIT;

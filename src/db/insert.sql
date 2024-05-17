@@ -1,6 +1,6 @@
 BEGIN;
 
-INSERT INTO employee_details AS ed
+INSERT INTO dw.employee_details AS ed
 SELECT
     a."empId"::int,
     a."designationId",
@@ -24,11 +24,11 @@ FROM (
 ) a
 WHERE NOT EXISTS (
     SELECT 1
-    FROM employee_details ed
+    FROM dw.employee_details ed
     WHERE ed.empId = a."empId"::int
 );
 
-UPDATE employee_details AS ed
+UPDATE dw.employee_details AS ed
 SET
     designationId = a."designationId",
     designationName = a."designationName",
@@ -57,7 +57,7 @@ AND (
     OR ed.departmentDescription <> a."departmentDescription"
 );
 
-INSERT INTO allocations
+INSERT INTO dw.allocations
 SELECT
     a."empId"::int,
     a."id",
@@ -73,12 +73,12 @@ FROM (
 ) a
 WHERE NOT EXISTS (
     SELECT 1
-    FROM allocations alloc
+    FROM dw.allocations alloc
     WHERE alloc.empId::int = a."empId"::int
     AND alloc.id = a."id"
 );
 
-INSERT INTO leave_type
+INSERT INTO dw.leave_type
 SELECT
     a."leaveTypeId"::int,
     a."leaveTypeName"
@@ -90,13 +90,13 @@ FROM (
 ) a
 WHERE NOT EXISTS (
     SELECT 1
-    FROM leave_type lt
+    FROM dw.leave_type lt
     WHERE lt.leave_type_id::int = a."leaveTypeId"::int
     AND lt.leavetypename = a."leaveTypeName"
 );
 
 --for fiscal_detail
-INSERT INTO fiscal_detail
+INSERT INTO dw.fiscal_detail
 SELECT
     a."fiscalId"::int,
     a."fiscalStartDate"::timestamp with time zone,
@@ -110,12 +110,12 @@ FROM (
 ) a
 WHERE NOT EXISTS (
     SELECT 1
-    FROM fiscal_detail fd
+    FROM dw.fiscal_detail fd
     WHERE fd.fiscal_id::int = a."fiscalId"::int
 );
 
 
-INSERT INTO fact_table
+INSERT INTO dw.fact_table
 SELECT
     a."id",
     a."userId",
@@ -165,7 +165,7 @@ FROM (
 ) a
 WHERE NOT EXISTS (
     SELECT 1
-    FROM fact_table fact
+    FROM dw.fact_table fact
     WHERE fact.id = a."id"
     AND fact.empId::int = a."empId"::int
     AND fact.status = a."status"

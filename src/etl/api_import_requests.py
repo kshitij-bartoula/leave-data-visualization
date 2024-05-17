@@ -16,7 +16,6 @@ def ingest_api_data(API_ENDPOINT, headers):
         response = requests.get(API_ENDPOINT, headers=headers, params=params)
         if response.status_code == 200:
             data = response.json()
-            print(data)
             all_data.extend(data['data'])  # Assuming the response contains a 'data' key with the actual data
             if not data.get('next_page'):
                 break  # Exit the loop if there's no next page
@@ -86,7 +85,6 @@ api_data = ingest_api_data(API_ENDPOINT, headers)
 
 # Parse JSON data and insert into PostgreSQL tables
 if api_data:
-    print(api_data)
     parse_json_and_insert(api_data, db_engine)
 else:
     print("No data fetched from API.")

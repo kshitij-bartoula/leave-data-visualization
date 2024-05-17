@@ -16,14 +16,13 @@ RUN apk add --no-cache \
     openssl-dev \
     gcc \
     libc-dev \
-    cron
+    busybox-initscripts \
+    openrc \
+    logrotate \
+    dcron
 
 # Set the working directory in the container
 WORKDIR /app
-
-COPY cronjob /etc/cron.d/cronjob
-
-RUN chmod 0644 /etc/cron.d/cronjob
 
 # Copy the requirements.txt file into the container at /app
 COPY src/requirement_fastAPI.txt .
@@ -31,16 +30,38 @@ COPY src/requirement_fastAPI.txt .
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirement_fastAPI.txt
 
-
 # Copy the rest of the application code into the container at /app
 COPY src .
 
-COPY startup.sh /usr/bin/startup.sh
+# Copy the cron configuration file into the container
+COPY cronfile /etc/cron.d/my-cron-job
 
+# Give execution rights on the cron job
+RUN chmod 0644 /etc/cron.d/my-cron-job
+
+# Copy the start_up_file.sh script into the container
+COPY start_up_file.sh /start_up_file.sh
+
+# Give execution rights to the start_up_file.sh script
+RUN chmod +x /start_up_file.sh
+
+# Apply cron job
+RUN echo -e "*/2 * * * * /start_up_file.sh >> /var/log/cron.log 2>&1" > /etc/cron.d/my-cron-job
+
+# Create the log file to be able to run tail
+RUN touch /var/log/cron.log
+
+# Set PYTHONPATH environment variable
 ENV PYTHONPATH=/app/
+
 # Expose the port that FastAPI will run on
 EXPOSE 8000
 
-RUN chmod +x /usr/bin/startup.sh
+# Create a shell script to start both cron daemon and FastAPI server
+RUN echo -e '#!/bin/sh\ntail -f /var/log/cron.log &\ncrond -f -d 8 &\npython uvicorn_run.py' > /start_services.sh
 
-ENTRYPOINT ["/usr/bin/startup.sh"]
+# Make the shell script executable
+RUN chmod +x /start_services.sh
+
+# Set the entry point to start_services.sh
+ENTRYPOINT ["/start_services.sh"]
