@@ -1,26 +1,85 @@
-/* assets/style.css */
+/* Global Styles */
+
 body {
-    background-color: rgb(219, 225, 223); /* Change this to your desired background color */
-    margin: 0;
-    padding: 0;
     font-family: Arial, sans-serif;
+    background-color: #ed6323; /* Light grey background */
 }
+
+.container {
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header Styles */
 
 .header {
-    background-color: #4CAF50; /* Header background color */
-    color: hwb(0 100% 0%);
-    padding: 10px;
     text-align: center;
+    margin-bottom: 20px;
 }
 
-.content {
-    padding: 20px;
+.header h1 {
+    color: #c15226; /* Blue color */
 }
+
+/* Graph Styles */
 
 .graph-container {
-    background-color: rgb(24, 58, 207); /* Background color for graph containers */
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #1188f0; /* White background */
+}
+
+.graph-container .plotly-graph-div {
+    width: 100%;
+    height: 400px; /* Adjust height as needed */
+}
+
+/* Footer Styles */
+
+.footer {
+    text-align: center;
+    margin-top: 50px;
+    padding-top: 20px;
+    border-top: 1px solid #ccc;
+}
+
+/* Link Styles */
+
+a {
+    color: #007bff; /* Blue color */
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+/* Card Styles */
+
+.card-employee-leave {
+    background-color: #d412ce; /* Light grey background */
+}
+
+.card-leave-balance {
+    background-color: #5fb9d7; /* Light yellow background */
+}
+
+.card-leave-trend {
+    background-color: #d412ce; /* Light green background */
+}
+
+.card-leave-distribution {
+    background-color: #d412ce; /* Light blue background */
+}
+
+.card-leave-trend-fiscal-year {
+    background-color: #d412ce; /* Light red background */
+}
+
+.card-department-leave-distribution {
+    background-color: #d412ce; /* Light pink background */
+}
+
+.card-leave-reason {
+    background-color: #d412ce; /* Light purple background */
 }
