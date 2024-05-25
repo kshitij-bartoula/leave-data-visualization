@@ -33,8 +33,8 @@ app.layout = dbc.Container([
     #     dbc.Col(generate_graph_card('employee-leave-graph', 'Employee Leave Days'), width=12),
     # ]),
     dbc.Row([
-        dbc.Col(generate_graph_card('leave-trend-graph', 'Leave Trend'), width=6),
-        dbc.Col(generate_graph_card('leave-trend-fiscal-year-graph', 'Leave Trend (Fiscal Year)'), width=6),
+        dbc.Col(generate_graph_card('leave-trend-graph', 'Leave Trend'), width=12),
+        dbc.Col(generate_graph_card('leave-trend-fiscal-year-graph', 'Leave Trend (Fiscal Year)'), width=12),
     ]),
     dbc.Row([
         dbc.Col(
