@@ -216,13 +216,13 @@ jobs:
         run: |
           docker pull localhost:5000/dockerplotly:latest
 
-      - name: Run DockerFastAPI container
-        run: |
-          docker run -d --name fastapi_container -p 8000:8000 localhost:5000/dockerfastapi:latest
+      # - name: Run DockerFastAPI container
+      #   run: |
+      #     docker run -d --name fastapi_container -p 8000:8000 localhost:5000/dockerfastapi:latest
 
-      - name: Run DockerPlotly container
-        run: |
-          docker run -d --name plotly_container -p 8050:8050 localhost:5000/dockerplotly:latest
+      # - name: Run DockerPlotly container
+      #   run: |
+      #     docker run -d --name plotly_container -p 8050:8050 localhost:5000/dockerplotly:latest
 
       # - name: Restart containers on local server
       #   run: |
