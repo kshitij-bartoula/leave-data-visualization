@@ -139,6 +139,8 @@ jobs:
     - name: Deploy to local server
       run: |
         ssh kshitij@LF-00002212 'cd /mnt/c/Users/Leapfrog/Desktop/leave-data-visualization && docker-compose down && docker-compose pull && docker-compose up -d'
+      env:
+        POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
 
     - name: Run tests
       run: |
