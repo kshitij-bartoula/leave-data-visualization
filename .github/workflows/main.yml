@@ -175,15 +175,17 @@ jobs:
 
       local-registry:
         image: registry:2
+        ports:
+          - "5003:5003"
 
     steps:
       - name: Start Docker registry
         run: |
-          docker run -d --restart=always --name registry registry:2
+          docker run -d -p 5003:5003 --restart=always --name registry registry:2
 
       - name: Wait for Docker registry to start
         run: |
-          until curl -s http://localhost:5000/v2/_catalog; do
+          until curl -s http://local-registry:5003/v2/_catalog; do
             echo "Waiting for Docker registry to start..."
             sleep 5
           done
@@ -203,7 +205,7 @@ jobs:
 
       - name: Authenticate with Docker registry
         run:
-          docker login -u kshitij1226 -p Le@pfrog1226 localhost:5002
+          docker login -u kshitij1226 -p Le@pfrog1226 local-registry:5003
 
       - name: Build and push Docker images
         run: |
