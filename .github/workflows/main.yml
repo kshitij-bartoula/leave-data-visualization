@@ -151,7 +151,6 @@
 #       #   run: |
 #       #     docker-compose down
 #       #     docker system prune -af
-
 name: CI/CD Pipeline
 
 on:
