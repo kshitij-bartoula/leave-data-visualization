@@ -175,13 +175,11 @@ jobs:
 
       local-registry:
         image: registry:2
-        ports:
-          - "5000:5000"
 
     steps:
       - name: Start Docker registry
         run: |
-          docker run -d -p 5000:5000 --restart=always --name registry registry:2
+          docker run -d --restart=always --name registry registry:2
 
       - name: Wait for Docker registry to start
         run: |
