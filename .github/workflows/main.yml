@@ -181,11 +181,11 @@ jobs:
     steps:
       - name: Start Docker registry
         run: |
-          docker run -d -p 5001:5000 --restart=always --name registry registry:2
+          docker run -d -p 5002:5000 --restart=always --name registry registry:2
 
       - name: Wait for Docker registry to start
         run: |
-          until curl -s http://localhost:5001/v2/_catalog; do
+          until curl -s http://localhost:5002/v2/_catalog; do
             echo "Waiting for Docker registry to start..."
             sleep 5
           done
