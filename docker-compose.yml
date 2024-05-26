@@ -1,3 +1,43 @@
+# version: '3'
+
+# services:
+#   postgres:
+#     image: postgres:latest
+#     restart: always
+#     environment:
+#       POSTGRES_USER: "postgres"
+#       POSTGRES_PASSWORD: "12345"
+#       POSTGRES_DB: "postgres"
+#     ports:
+#       - "5433:5432"
+#     volumes:
+#       - pgdata:/var/lib/postgresql/data
+
+#   fastapi:
+#     build:
+#       context: ./
+#       dockerfile: DockerFastAPI
+#     restart: always
+#     ports:
+#       - "8000:8000"
+#     depends_on:
+#       - postgres
+#     environment:
+#       DATABASE_URL: postgresql://postgres:12345@postgres:5432/postgres
+
+#   plotly-dash:
+#     build:
+#       context: ./
+#       dockerfile: DockerPlotly
+#     restart: always
+#     ports:
+#       - "8050:8050"
+#     depends_on:
+#       - fastapi
+
+# volumes:
+#   pgdata:
+
 version: '3'
 
 services:
@@ -14,9 +54,7 @@ services:
       - pgdata:/var/lib/postgresql/data
 
   fastapi:
-    build:
-      context: ./
-      dockerfile: DockerFastAPI
+    image: localhost:5000/dockerfastapi:latest
     restart: always
     ports:
       - "8000:8000"
@@ -26,9 +64,7 @@ services:
       DATABASE_URL: postgresql://postgres:12345@postgres:5432/postgres
 
   plotly-dash:
-    build:
-      context: ./
-      dockerfile: DockerPlotly
+    image: localhost:5000/dockerplotly:latest
     restart: always
     ports:
       - "8050:8050"

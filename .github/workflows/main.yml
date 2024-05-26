@@ -177,9 +177,6 @@ jobs:
         image: registry:2
         ports:
           - "5000:5000"
-        # options: --health-cmd="curl -f http://localhost:5000/v2/_catalog || exit 1" --health-interval=10s --health-timeout=5s --health-retries=3
-        # env:
-        #     REGISTRY_HTTP_SECRET: ${{ secrets.REGISTRY_HTTP_SECRET }}
 
     steps:
       - name: Checkout code
@@ -192,40 +189,19 @@ jobs:
             sleep 5
           done
 
-      - name: Run SQL scripts
-        run: |
-          PGPASSWORD=12345 psql -h localhost -p 5433 -U postgres -d postgres -f src/db/create_tables.sql
-          PGPASSWORD=12345 psql -h localhost -p 5433 -U postgres -d postgres -f src/db/insert.sql
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
       - name: Authenticate with Docker registry
         run: |
-          echo "${{ secrets.DOCKER_REGISTRY_CONFIG }}" | base64 -d > /tmp/config.json
-          cat /tmp/config.json
-          docker login -u kshitij1226 -p Le@pfrog1226 localhost:5000
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }} localhost:5000
 
-      - name: Build and push DockerFastAPI image
+      - name: Build and push Docker images
         run: |
-          docker build -t dockerfastapi:latest -f DockerFastAPI .
-          docker tag dockerfastapi:latest localhost:5000/dockerfastapi:latest
-          docker push localhost:5000/dockerfastapi:latest
+          docker-compose build
+          docker-compose push
 
-      - name: Build and push DockerPlotly image
+      - name: Deploy with Docker Compose
         run: |
-          docker build -t dockerplotly:latest -f DockerPlotly .
-          docker tag dockerplotly:latest localhost:5000/dockerplotly:latest
-          docker push localhost:5000/dockerplotly:latest
-
-      - name: Run DockerFastAPI container
-        run: |
-          docker run -d --name fastapi_container -p 8000:8000 localhost:5000/dockerfastapi:latest
-
-      - name: Run DockerPlotly container
-        run: |
-          docker run -d --name plotly_container -p 8050:8050 localhost:5000/dockerplotly:latest
-
-      # - name: Restart containers on local server
-      #   run: |
-      #     ssh kshitij@LF-00002212 'cd /mnt/c/Users/Leapfrog/Desktop/leave-data-visualization && docker-compose down && docker-compose pull && docker-compose up -d'
+          docker-compose down
+          docker-compose up -d
