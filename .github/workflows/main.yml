@@ -99,7 +99,7 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
-        services:
+    services:
       postgres:
         image: postgres:latest
         ports:
