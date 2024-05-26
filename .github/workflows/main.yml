@@ -158,9 +158,6 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
   build-and-deploy:
@@ -187,20 +184,27 @@ jobs:
             sleep 5
           done
 
+      - name: Run SQL scripts
+        run: |
+          PGPASSWORD=12345 psql -h localhost -p 5433 -U postgres -d postgres -f src/db/create_tables.sql
+          PGPASSWORD=12345 psql -h localhost -p 5433 -U postgres -d postgres -f src/db/insert.sql
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: Build and tag DockerFastAPI image
+      - name: Build and push DockerFastAPI image
         run: |
-          docker build -t localhost:5000/dockerfastapi:latest -f DockerFastAPI .
+          docker build -t dockerfastapi:latest -f DockerFastAPI .
+          docker tag dockerfastapi:latest localhost:5000/dockerfastapi:latest
           docker push localhost:5000/dockerfastapi:latest
 
-      - name: Build and tag DockerPlotly image
+      - name: Build and push DockerPlotly image
         run: |
-          docker build -t localhost:5000/dockerplotly:latest -f DockerPlotly .
+          docker build -t dockerplotly:latest -f DockerPlotly .
+          docker tag dockerplotly:latest localhost:5000/dockerplotly:latest
           docker push localhost:5000/dockerplotly:latest
 
-      - name: Deploy to local Docker Desktop
+      - name: Restart containers on local server
         run: |
-          docker-compose -f /mnt/c/Users/Leapfrog/Desktop/leave-data-visualization/docker-compose.yml pull
-          docker-compose -f /mnt/c/Users/Leapfrog/Desktop/leave-data-visualization/docker-compose.yml up -d
+          ssh kshitij@LF-00002212 'cd /mnt/c/Users/Leapfrog/Desktop/leave-data-visualization && docker-compose down && docker-compose pull && docker-compose up -d'
+
