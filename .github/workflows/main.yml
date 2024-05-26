@@ -232,10 +232,15 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Login to Docker Hub
+    - name: docker login
+      env:
+        DOCKER_USER: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        DOCKER_REPOSITORY: kshitij1226/testing_docker
       run: |
-        echo "Logging in to Docker Hub as ${{ secrets.DOCKERHUB_USERNAME }}"
-        echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login --username "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+        echo "Logging in to Docker Hub as $DOCKER_USER"
+        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+
 
     - name: Build and Push Docker Images
       run: |
