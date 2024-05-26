@@ -200,8 +200,11 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: Log into Docker registry
-        run: echo "${{ secrets.DOCKER_CONFIG }}" | base64 -d > /tmp/config.json && docker login --config /tmp/config.json localhost:5000
+      - name: Authenticate with Docker registry
+        run: |
+          echo "${{ secrets.DOCKER_REGISTRY_CONFIG }}" | base64 -d > /tmp/config.json
+          cat /tmp/config.json
+          docker login -u kshitij1226 -p Le@pfrog1226 localhost:5000
 
       - name: Build and push DockerFastAPI image
         run: |
