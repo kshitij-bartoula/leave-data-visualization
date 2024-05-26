@@ -173,11 +173,13 @@ jobs:
           POSTGRES_PASSWORD: 12345
           POSTGRES_DB: postgres
 
-    steps:
-      - name: Start Docker Registry
-        run: |
-          docker run -d -p 5000:5000 --restart=always --name registry registry:2
+      local-registry:
+        image: registry:2
+        ports:
+          - "5000:5000"
+        options: --health-cmd="curl -f http://localhost:5000/v2/_catalog || exit 1" --health-interval=10s --health-timeout=5s --health-retries=3
 
+    steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
@@ -196,15 +198,14 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
+      - name: Log into Docker registry
+        run: echo "${{ secrets.DOCKER_CONFIG }}" | base64 -d > /tmp/config.json && docker login --config /tmp/config.json localhost:5000
+
       - name: Build and push DockerFastAPI image
         run: |
           docker build -t dockerfastapi:latest -f DockerFastAPI .
           docker tag dockerfastapi:latest localhost:5000/dockerfastapi:latest
           docker push localhost:5000/dockerfastapi:latest
-
-      - name: Pull DockerFastAPI image
-        run: |
-          docker pull localhost:5000/dockerfastapi:latest
 
       - name: Build and push DockerPlotly image
         run: |
@@ -212,17 +213,13 @@ jobs:
           docker tag dockerplotly:latest localhost:5000/dockerplotly:latest
           docker push localhost:5000/dockerplotly:latest
 
-      - name: Pull DockerPlotly image
+      - name: Run DockerFastAPI container
         run: |
-          docker pull localhost:5000/dockerplotly:latest
+          docker run -d --name fastapi_container -p 8000:8000 localhost:5000/dockerfastapi:latest
 
-      # - name: Run DockerFastAPI container
-      #   run: |
-      #     docker run -d --name fastapi_container -p 8000:8000 localhost:5000/dockerfastapi:latest
-
-      # - name: Run DockerPlotly container
-      #   run: |
-      #     docker run -d --name plotly_container -p 8050:8050 localhost:5000/dockerplotly:latest
+      - name: Run DockerPlotly container
+        run: |
+          docker run -d --name plotly_container -p 8050:8050 localhost:5000/dockerplotly:latest
 
       # - name: Restart containers on local server
       #   run: |
