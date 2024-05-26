@@ -80,10 +80,10 @@
 #         echo "Running tests..."
 #         # Example: pytest tests/
 
-    # - name: Clean up
-    #   run: |
-    #     docker-compose down
-    #     docker system prune -af
+#     - name: Clean up
+#       run: |
+#         docker-compose down
+#         docker system prune -af
 
 name: CI/CD Pipeline
 
@@ -98,6 +98,21 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:13
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: postgres
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
     - name: Checkout code
@@ -115,19 +130,19 @@ jobs:
 
     - name: Wait for PostgreSQL to be ready
       env:
-        POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        PGPASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       run: |
-        until pg_isready -h postgres -p 5432 -U postgres; do
+        until pg_isready -h localhost -p 5432 -U postgres; do
           echo "Waiting for postgres container..."
           sleep 5
         done
 
     - name: Run SQL scripts
       env:
-        POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        PGPASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       run: |
-        docker exec -i $(docker-compose ps -q postgres) psql -U postgres -d postgres < src/db/create_tables.sql
-        docker exec -i $(docker-compose ps -q postgres) psql -U postgres -d postgres < src/db/insert.sql
+        psql -h localhost -U postgres -d postgres -f src/db/create_tables.sql
+        psql -h localhost -U postgres -d postgres -f src/db/insert.sql
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
@@ -143,8 +158,6 @@ jobs:
     - name: Deploy to local server
       run: |
         ssh kshitij@LF-00002212 'cd /mnt/c/Users/Leapfrog/Desktop/leave-data-visualization && docker-compose down && docker-compose pull && docker-compose up -d'
-      env:
-        POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
 
     - name: Run tests
       run: |
@@ -152,3 +165,7 @@ jobs:
         echo "Running tests..."
         # Example: pytest tests/
 
+    - name: Clean up
+      run: |
+        docker-compose down
+        docker system prune -af
