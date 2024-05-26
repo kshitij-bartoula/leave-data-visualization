@@ -224,6 +224,6 @@ jobs:
         run: |
           docker run -d --name plotly_container -p 8050:8050 localhost:5000/dockerplotly:latest
 
-      - name: Restart containers on local server
-        run: |
-          ssh kshitij@LF-00002212 'cd /mnt/c/Users/Leapfrog/Desktop/leave-data-visualization && docker-compose down && docker-compose pull && docker-compose up -d'
+      # - name: Restart containers on local server
+      #   run: |
+      #     ssh kshitij@LF-00002212 'cd /mnt/c/Users/Leapfrog/Desktop/leave-data-visualization && docker-compose down && docker-compose pull && docker-compose up -d'
