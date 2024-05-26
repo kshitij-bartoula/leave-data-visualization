@@ -1,3 +1,90 @@
+# # name: CI/CD Pipeline
+
+# # on:
+# #   push:
+# #     branches:
+# #       - main
+# #   pull_request:
+# #     branches:
+# #       - main
+
+# # jobs:
+# #   build-and-deploy:
+# #     runs-on: ubuntu-latest
+
+# #     services:
+# #       postgres:
+# #         image: postgres:13  # Specify a specific version
+# #         ports:
+# #           - 5432:5432
+# #         env:
+# #           POSTGRES_USER: postgres
+# #           POSTGRES_PASSWORD: 12345
+# #           POSTGRES_DB: postgres
+# #         options: >-
+# #           --health-cmd "pg_isready -U postgres"
+# #           --health-interval 10s
+# #           --health-timeout 5s
+# #           --health-retries 5
+
+# #     steps:
+# #     - name: Checkout code
+# #       uses: actions/checkout@v2
+
+# #     - name: Set up Python
+# #       uses: actions/setup-python@v2
+# #       with:
+# #         python-version: '3.8'
+
+# #     - name: Install Python dependencies
+# #       run: |
+# #         python -m pip install --upgrade pip
+# #         pip install -r src/requirement_fastAPI.txt
+
+# #     - name: Wait for PostgreSQL to be ready
+# #       env:
+# #         PGPASSWORD: 12345
+# #       run: |
+# #         until pg_isready -h localhost -p 5432 -U postgres; do
+# #           echo "Waiting for postgres container..."
+# #           sleep 5
+# #         done
+
+# #     - name: Run SQL scripts
+# #       env:
+# #         PGPASSWORD: 12345
+# #       run: |
+# #         psql -h localhost -U postgres -d postgres -f src/db/create_tables.sql
+# #         psql -h localhost -U postgres -d postgres -f src/db/insert.sql
+
+# #     - name: Set up Docker Buildx
+# #       uses: docker/setup-buildx-action@v1
+
+# #     - name: Build and push DockerFastAPI image
+# #       run: |
+# #         docker build -t dockerfastapi:latest -f DockerFastAPI .
+
+# #     - name: Build and push DockerPlotly image
+# #       run: |
+# #         docker build -t dockerplotly:latest -f DockerPlotly .
+
+# #     - name: Start Docker containers
+# #       run: |
+# #         docker-compose down
+# #         docker system prune -af
+# #         docker-compose up -d
+
+# #     - name: Run tests
+# #       run: |
+# #         # Add your test commands here
+# #         echo "Running tests..."
+# #         # Example: pytest tests/
+
+# #     - name: Clean up
+# #       run: |
+# #         docker-compose down
+# #         docker system prune -af
+
 # name: CI/CD Pipeline
 
 # on:
@@ -14,76 +101,56 @@
 
 #     services:
 #       postgres:
-#         image: postgres:13  # Specify a specific version
+#         image: postgres:latest
 #         ports:
-#           - 5432:5432
+#           - "5433:5432"
 #         env:
 #           POSTGRES_USER: postgres
 #           POSTGRES_PASSWORD: 12345
 #           POSTGRES_DB: postgres
-#         options: >-
-#           --health-cmd "pg_isready -U postgres"
-#           --health-interval 10s
-#           --health-timeout 5s
-#           --health-retries 5
 
 #     steps:
-#     - name: Checkout code
-#       uses: actions/checkout@v2
+#       - name: Checkout code
+#         uses: actions/checkout@v2
 
-#     - name: Set up Python
-#       uses: actions/setup-python@v2
-#       with:
-#         python-version: '3.8'
+#       - name: Wait for PostgreSQL to be ready
+#         run: |
+#           until pg_isready -h localhost -p 5433 -U postgres; do
+#             echo "Waiting for PostgreSQL container..."
+#             sleep 5
+#           done
 
-#     - name: Install Python dependencies
-#       run: |
-#         python -m pip install --upgrade pip
-#         pip install -r src/requirement_fastAPI.txt
+#       # - name: Run SQL scripts
+#       #   run: |
+#       #     PGPASSWORD=12345 psql -h localhost -p 5433 -U postgres -d postgres -f src/db/create_tables.sql
+#       #     PGPASSWORD=12345 psql -h localhost -p 5433 -U postgres -d postgres -f src/db/insert.sql
 
-#     - name: Wait for PostgreSQL to be ready
-#       env:
-#         PGPASSWORD: 12345
-#       run: |
-#         until pg_isready -h localhost -p 5432 -U postgres; do
-#           echo "Waiting for postgres container..."
-#           sleep 5
-#         done
 
-#     - name: Run SQL scripts
-#       env:
-#         PGPASSWORD: 12345
-#       run: |
-#         psql -h localhost -U postgres -d postgres -f src/db/create_tables.sql
-#         psql -h localhost -U postgres -d postgres -f src/db/insert.sql
+#       - name: Set up Docker Buildx
+#         uses: docker/setup-buildx-action@v1
 
-#     - name: Set up Docker Buildx
-#       uses: docker/setup-buildx-action@v1
+#       - name: Build and push DockerFastAPI image
+#         run: |
+#           docker build -t dockerfastapi:latest -f DockerFastAPI .
 
-#     - name: Build and push DockerFastAPI image
-#       run: |
-#         docker build -t dockerfastapi:latest -f DockerFastAPI .
+#       - name: Build and push DockerPlotly image
+#         run: |
+#           docker build -t dockerplotly:latest -f DockerPlotly .
 
-#     - name: Build and push DockerPlotly image
-#       run: |
-#         docker build -t dockerplotly:latest -f DockerPlotly .
+#       - name: Deploy to local server
+#         run: |
+#           ssh kshitij@LF-00002212 'cd /mnt/c/Users/Leapfrog/Desktop/leave-data-visualization && docker-compose down && docker-compose pull && docker-compose up -d'
 
-#     - name: Start Docker containers
-#       run: |
-#         docker-compose down
-#         docker system prune -af
-#         docker-compose up -d
+#       - name: Run tests
+#         run: |
+#           # Add your test commands here
+#           echo "Running tests..."
+#           # Example: pytest tests/
 
-#     - name: Run tests
-#       run: |
-#         # Add your test commands here
-#         echo "Running tests..."
-#         # Example: pytest tests/
-
-#     - name: Clean up
-#       run: |
-#         docker-compose down
-#         docker system prune -af
+#       # - name: Clean up
+#       #   run: |
+#       #     docker-compose down
+#       #     docker system prune -af
 
 name: CI/CD Pipeline
 
@@ -120,35 +187,20 @@ jobs:
             sleep 5
           done
 
-      # - name: Run SQL scripts
-      #   run: |
-      #     PGPASSWORD=12345 psql -h localhost -p 5433 -U postgres -d postgres -f src/db/create_tables.sql
-      #     PGPASSWORD=12345 psql -h localhost -p 5433 -U postgres -d postgres -f src/db/insert.sql
-
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: Build and push DockerFastAPI image
+      - name: Build and tag DockerFastAPI image
         run: |
-          docker build -t dockerfastapi:latest -f DockerFastAPI .
+          docker build -t localhost:5000/dockerfastapi:latest -f DockerFastAPI .
+          docker push localhost:5000/dockerfastapi:latest
 
-      - name: Build and push DockerPlotly image
+      - name: Build and tag DockerPlotly image
         run: |
-          docker build -t dockerplotly:latest -f DockerPlotly .
+          docker build -t localhost:5000/dockerplotly:latest -f DockerPlotly .
+          docker push localhost:5000/dockerplotly:latest
 
-      - name: Deploy to local server
+      - name: Deploy to local Docker Desktop
         run: |
-          ssh kshitij@LF-00002212 'cd /mnt/c/Users/Leapfrog/Desktop/leave-data-visualization && docker-compose down && docker-compose pull && docker-compose up -d'
-
-      - name: Run tests
-        run: |
-          # Add your test commands here
-          echo "Running tests..."
-          # Example: pytest tests/
-
-      # - name: Clean up
-      #   run: |
-      #     docker-compose down
-      #     docker system prune -af
-
+          docker-compose -f /mnt/c/Users/Leapfrog/Desktop/leave-data-visualization/docker-compose.yml pull
+          docker-compose -f /mnt/c/Users/Leapfrog/Desktop/leave-data-visualization/docker-compose.yml up -d
