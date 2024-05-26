@@ -114,13 +114,17 @@ jobs:
         pip install -r src/requirement_fastAPI.txt
 
     - name: Wait for PostgreSQL to be ready
+      env:
+        POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       run: |
-        until pg_isready -h localhost -p 5432 -U postgres; do
+        until pg_isready -h postgres -p 5432 -U postgres; do
           echo "Waiting for postgres container..."
           sleep 5
         done
 
     - name: Run SQL scripts
+      env:
+        POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       run: |
         docker exec -i $(docker-compose ps -q postgres) psql -U postgres -d postgres < src/db/create_tables.sql
         docker exec -i $(docker-compose ps -q postgres) psql -U postgres -d postgres < src/db/insert.sql
