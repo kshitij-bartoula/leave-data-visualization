@@ -202,11 +202,27 @@ jobs:
           docker tag dockerfastapi:latest localhost:5000/dockerfastapi:latest
           docker push localhost:5000/dockerfastapi:latest
 
+      - name: Pull DockerFastAPI image
+        run: |
+          docker pull localhost:5000/dockerfastapi:latest
+
       - name: Build and push DockerPlotly image
         run: |
           docker build -t dockerplotly:latest -f DockerPlotly .
           docker tag dockerplotly:latest localhost:5000/dockerplotly:latest
           docker push localhost:5000/dockerplotly:latest
+
+      - name: Pull DockerPlotly image
+        run: |
+          docker pull localhost:5000/dockerplotly:latest
+
+      - name: Run DockerFastAPI container
+        run: |
+          docker run -d --name fastapi_container -p 8000:8000 localhost:5000/dockerfastapi:latest
+
+      - name: Run DockerPlotly container
+        run: |
+          docker run -d --name plotly_container -p 8050:8050 localhost:5000/dockerplotly:latest
 
       - name: Restart containers on local server
         run: |
