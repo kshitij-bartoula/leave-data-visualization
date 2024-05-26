@@ -125,28 +125,29 @@ jobs:
           psql -h localhost -p 5433 -U postgres -d postgres -f src/db/create_tables.sql
           psql -h localhost -p 5433 -U postgres -d postgres -f src/db/insert.sql
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
 
-    - name: Build and push DockerFastAPI image
-      run: |
-        docker build -t dockerfastapi:latest -f DockerFastAPI .
+      - name: Build and push DockerFastAPI image
+        run: |
+          docker build -t dockerfastapi:latest -f DockerFastAPI .
 
-    - name: Build and push DockerPlotly image
-      run: |
-        docker build -t dockerplotly:latest -f DockerPlotly .
+      - name: Build and push DockerPlotly image
+        run: |
+          docker build -t dockerplotly:latest -f DockerPlotly .
 
-    - name: Deploy to local server
-      run: |
-        ssh kshitij@LF-00002212 'cd /mnt/c/Users/Leapfrog/Desktop/leave-data-visualization && docker-compose down && docker-compose pull && docker-compose up -d'
+      - name: Deploy to local server
+        run: |
+          ssh kshitij@LF-00002212 'cd /mnt/c/Users/Leapfrog/Desktop/leave-data-visualization && docker-compose down && docker-compose pull && docker-compose up -d'
 
-    - name: Run tests
-      run: |
-        # Add your test commands here
-        echo "Running tests..."
-        # Example: pytest tests/
+      - name: Run tests
+        run: |
+          # Add your test commands here
+          echo "Running tests..."
+          # Example: pytest tests/
 
-    - name: Clean up
-      run: |
-        docker-compose down
-        docker system prune -af
+      - name: Clean up
+        run: |
+          docker-compose down
+          docker system prune -af
+
