@@ -54,7 +54,9 @@ services:
       - pgdata:/var/lib/postgresql/data
 
   fastapi:
-    image: localhost:5000/dockerfastapi:latest
+    build:
+      context: ./
+      dockerfile: DockerFastAPI
     restart: always
     ports:
       - "8000:8000"
@@ -62,14 +64,18 @@ services:
       - postgres
     environment:
       DATABASE_URL: postgresql://postgres:12345@postgres:5432/postgres
+    image: localhost:5000/dockerfastapi:latest  # Modified to use local registry
 
   plotly-dash:
-    image: localhost:5000/dockerplotly:latest
+    build:
+      context: ./
+      dockerfile: DockerPlotly
     restart: always
     ports:
       - "8050:8050"
     depends_on:
       - fastapi
+    image: localhost:5000/dockerplotly:latest  # Modified to use local registry
 
 volumes:
   pgdata:

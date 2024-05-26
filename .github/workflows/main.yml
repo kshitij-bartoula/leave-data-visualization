@@ -197,7 +197,6 @@ jobs:
         #echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin localhost:5000
          docker login -u kshitij1226 -p Le@pfrog1226 localhost:5000
 
-
       - name: Build and push Docker images
         run: |
           docker-compose build
