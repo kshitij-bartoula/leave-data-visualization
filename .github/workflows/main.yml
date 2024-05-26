@@ -120,10 +120,10 @@ jobs:
             sleep 5
           done
 
-      - name: Run SQL scripts
-        run: |
-          PGPASSWORD=12345 psql -h localhost -p 5433 -U postgres -d postgres -f src/db/create_tables.sql
-          PGPASSWORD=12345 psql -h localhost -p 5433 -U postgres -d postgres -f src/db/insert.sql
+      # - name: Run SQL scripts
+      #   run: |
+      #     PGPASSWORD=12345 psql -h localhost -p 5433 -U postgres -d postgres -f src/db/create_tables.sql
+      #     PGPASSWORD=12345 psql -h localhost -p 5433 -U postgres -d postgres -f src/db/insert.sql
 
 
       - name: Set up Docker Buildx
@@ -147,8 +147,8 @@ jobs:
           echo "Running tests..."
           # Example: pytest tests/
 
-      - name: Clean up
-        run: |
-          docker-compose down
-          docker system prune -af
+      # - name: Clean up
+      #   run: |
+      #     docker-compose down
+      #     docker system prune -af
 
