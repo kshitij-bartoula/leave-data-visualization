@@ -99,50 +99,31 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
-    services:
+        services:
       postgres:
-        image: postgres:13
+        image: postgres:latest
         ports:
-          - 5432:5432
+          - "5433:5432"
         env:
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_PASSWORD: 12345
           POSTGRES_DB: postgres
-        options: >-
-          --health-cmd "pg_isready -U postgres"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.8'
+      - name: Wait for PostgreSQL to be ready
+        run: |
+          until pg_isready -h localhost -p 5433 -U postgres; do
+            echo "Waiting for PostgreSQL container..."
+            sleep 5
+          done
 
-    - name: Install Python dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r src/requirement_fastAPI.txt
-
-    - name: Wait for PostgreSQL to be ready
-      env:
-        PGPASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-      run: |
-        until pg_isready -h localhost -p 5432 -U postgres; do
-          echo "Waiting for postgres container..."
-          sleep 5
-        done
-
-    - name: Run SQL scripts
-      env:
-        PGPASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-      run: |
-        psql -h localhost -U postgres -d postgres -f src/db/create_tables.sql
-        psql -h localhost -U postgres -d postgres -f src/db/insert.sql
+      - name: Run SQL scripts
+        run: |
+          psql -h localhost -p 5433 -U postgres -d postgres -f src/db/create_tables.sql
+          psql -h localhost -p 5433 -U postgres -d postgres -f src/db/insert.sql
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
