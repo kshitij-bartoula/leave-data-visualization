@@ -177,9 +177,9 @@ jobs:
         image: registry:2
         ports:
           - "5000:5000"
-        options: --health-cmd="curl -f http://localhost:5000/v2/_catalog || exit 1" --health-interval=10s --health-timeout=5s --health-retries=3
-        env:
-            REGISTRY_HTTP_SECRET: ${{ secrets.REGISTRY_HTTP_SECRET }}
+        # options: --health-cmd="curl -f http://localhost:5000/v2/_catalog || exit 1" --health-interval=10s --health-timeout=5s --health-retries=3
+        # env:
+        #     REGISTRY_HTTP_SECRET: ${{ secrets.REGISTRY_HTTP_SECRET }}
 
     steps:
       - name: Checkout code
