@@ -39,12 +39,12 @@ jobs:
           docker-compose build
           docker-compose up -d
         env:
-          DB_USERNAME : ${{secrets.DB_USERNAME}}
-          DB_PASSWORD : ${{secrets.DB_PASSWORD}}
-          DB_HOST : ${{secrets.DB_HOST}}
-          DB_NAME : ${{secrets.DB_NAME}}
-          BEARER_TOKEN : ${{secrets.BEARER_TOKEN}}
-          API_ENDPOINT : ${{secrets.API_ENDPOINT}}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          BEARER_TOKEN: ${{ secrets.BEARER_TOKEN }}
+          API_ENDPOINT: ${{ secrets.API_ENDPOINT }}
 
       - name: Wait for services to start
         run: |
