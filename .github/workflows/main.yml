@@ -17,14 +17,14 @@ jobs:
         with:
           python-version: 3.x
 
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
+      # - name: Install dependencies
+      #   run: |
+      #     pip install -r requirements.txt
 
-      - name: Run tests
-        run: |
-          # Add your test commands here
-          pytest
+      # - name: Run tests
+      #   run: |
+      #     # Add your test commands here
+      #     pytest
 
   deploy:
     runs-on: self-hosted
