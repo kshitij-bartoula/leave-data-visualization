@@ -5,7 +5,7 @@ from sqlalchemy import create_engine
 from utils.db_utils import connection
 from sqlalchemy.sql import text
 import os
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
 
 # Function to ingest data from API
 def ingest_api_data(API_ENDPOINT, headers):
@@ -57,7 +57,7 @@ def parse_json_and_insert(api_data, db_engine):
     insert_data_to_db(df_nested, db_engine, 'allocation_data', schema='raw')
 
 
-load_dotenv()
+#load_dotenv()
 
 BEARER_TOKEN = os.getenv('BEARER_TOKEN')
 API_ENDPOINT = os.getenv('API_ENDPOINT')
