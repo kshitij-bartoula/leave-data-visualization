@@ -19,7 +19,7 @@
 # if __name__ == "__main__":
 #     main()
 
-from etl.logging.config
+import logging.config
 import json
 import os
 
@@ -32,7 +32,7 @@ if not os.path.exists('logs'):
     os.makedirs('logs')
 
 # Load logging configuration from JSON file
-with open('logging_config.json', 'r') as f:
+with open('/etl/logging_config.json', 'r') as f:
     config = json.load(f)
     logging.config.dictConfig(config)
 
