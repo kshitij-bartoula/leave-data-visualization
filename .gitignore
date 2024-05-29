@@ -1,12 +1,9 @@
-# Logs
-logs/
-*.log
-
 # Environment variables
 *.env
 
 __pycache__
 __pycache__/*
 
-*.github/*
-*.github
+# Logs
+logs/
+*.log

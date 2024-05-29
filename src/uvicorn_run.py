@@ -1,4 +1,3 @@
-import os
 import uvicorn
 
 #port=int(os.getenv("PORT", 8000))

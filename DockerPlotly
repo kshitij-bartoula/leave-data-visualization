@@ -1,4 +1,4 @@
-# Use the official Python base image with Alpine Linux
+#Python base image with Alpine Linux
 FROM python:3.10.4-alpine
 
 # Update package lists and upgrade existing packages
