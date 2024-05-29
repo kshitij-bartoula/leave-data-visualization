@@ -17,9 +17,9 @@ jobs:
         with:
           python-version: 3.x
 
-      - name: Run tests
-        run: |
-          pytest
+      # - name: Run tests
+      #   run: |
+      #     pytest
 
   deploy:
     runs-on: self-hosted

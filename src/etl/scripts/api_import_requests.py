@@ -1,7 +1,6 @@
 import requests
 import json
 import pandas as pd
-from sqlalchemy import create_engine
 from utils.db_utils import connection
 from sqlalchemy.sql import text
 import os
@@ -57,40 +56,45 @@ def parse_json_and_insert(api_data, db_engine):
     insert_data_to_db(df_nested, db_engine, 'allocation_data', schema='raw')
 
 
-#load_dotenv()
+def main():
+    # Load environment variables
+    #load_dotenv()
 
-BEARER_TOKEN = os.getenv('BEARER_TOKEN')
-API_ENDPOINT = os.getenv('API_ENDPOINT')
+    BEARER_TOKEN = os.getenv('BEARER_TOKEN')
+    API_ENDPOINT = os.getenv('API_ENDPOINT')
 
-headers = {
-    'Authorization': f'Bearer {BEARER_TOKEN}'
-}
+    headers = {
+        'Authorization': f'Bearer {BEARER_TOKEN}'
+    }
 
-# Access configuration settings
-db_engine = connection()
+    # Access configuration settings
+    db_engine = connection()
 
-with db_engine.connect() as conn:
-    schema_existence_query = text(
-        "SELECT EXISTS(SELECT 1 FROM information_schema.schemata WHERE schema_name = 'raw')"
-    )
-    schema_exists = conn.execute(schema_existence_query).scalar()
-    print(schema_exists)
-
-    if not schema_exists:
-        print('Schema does not exist. Creating schema...')
-        create_schema_query = text(
-        "BEGIN; CREATE SCHEMA raw; COMMIT;"
+    with db_engine.connect() as conn:
+        schema_existence_query = text(
+            "SELECT EXISTS(SELECT 1 FROM information_schema.schemata WHERE schema_name = 'raw')"
         )
-        create_schema = conn.execute(create_schema_query)
-        print('raw schema created')
+        schema_exists = conn.execute(schema_existence_query).scalar()
+        print(schema_exists)
+
+        if not schema_exists:
+            print('Schema does not exist. Creating schema...')
+            create_schema_query = text(
+            "BEGIN; CREATE SCHEMA raw; COMMIT;"
+            )
+            create_schema = conn.execute(create_schema_query)
+            print('raw schema created')
+        else:
+            print('Schema already exists')
+
+    # Ingest data from API
+    api_data = ingest_api_data(API_ENDPOINT, headers)
+
+    # Parse JSON data and insert into PostgreSQL tables
+    if api_data:
+        parse_json_and_insert(api_data, db_engine)
     else:
-        print('Schema already exists')
+        print("No data fetched from API.")
 
-# Ingest data from API
-api_data = ingest_api_data(API_ENDPOINT, headers)
-
-# Parse JSON data and insert into PostgreSQL tables
-if api_data:
-    parse_json_and_insert(api_data, db_engine)
-else:
-    print("No data fetched from API.")
+if __name__ == "__main__":
+    main()

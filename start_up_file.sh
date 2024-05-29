@@ -2,8 +2,8 @@
 
 echo "my cronjob is working!"
 
-# Run api_import_requests.py
-python /app/etl/api_import_requests.py
+# Run etl
+python /app/etl/etl_main.py
 
 #Run dw_tables.py
 #python /app/etl/dw_tables.py
