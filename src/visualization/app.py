@@ -7,15 +7,6 @@ from callbacks import register_callbacks
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP, '/assets/style.css'])
 
-# Read environment variables
-db_username = os.getenv('DB_USERNAME')
-db_password = os.getenv('DB_PASSWORD')
-db_host = os.getenv('DB_HOST')
-db_name = os.getenv('DB_NAME')
-database_url = f"postgresql://{db_username}:{db_password}@{db_host}/{db_name}"
-api_endpoint = os.getenv('API_ENDPOINT')
-bearer_token = os.getenv('BEARER_TOKEN')
-
 # Function to generate a card with a graph
 def generate_graph_card(graph_id, graph_title):
     return dbc.Card(

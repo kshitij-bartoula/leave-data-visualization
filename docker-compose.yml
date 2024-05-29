@@ -63,9 +63,12 @@ services:
     depends_on:
       - postgres
     environment:
-      DATABASE_URL: postgres://${DB_USERNAME}:${DB_PASSWORD}@postgres:5432/${DB_NAME}
-      API_ENDPOINT: ${API_ENDPOINT}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOST: ${DB_HOST}
+      DB_NAME: ${DB_NAME}
       BEARER_TOKEN: ${BEARER_TOKEN}
+      API_ENDPOINT: ${API_ENDPOINT}
 
   plotly-dash:
     build:
@@ -77,9 +80,12 @@ services:
     depends_on:
       - fastapi
     environment:
-      DATABASE_URL: postgres://${DB_USERNAME}:${DB_PASSWORD}@postgres:5432/${DB_NAME}
-      API_ENDPOINT: ${API_ENDPOINT}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOST: ${DB_HOST}
+      DB_NAME: ${DB_NAME}
       BEARER_TOKEN: ${BEARER_TOKEN}
+      API_ENDPOINT: ${API_ENDPOINT}
 
 volumes:
   pgdata:

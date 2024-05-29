@@ -17,13 +17,13 @@ jobs:
         with:
           python-version: 3.x
 
+      # Uncomment and adjust these steps if you want to install dependencies and run tests
       # - name: Install dependencies
       #   run: |
       #     pip install -r requirements.txt
 
       # - name: Run tests
       #   run: |
-      #     # Add your test commands here
       #     pytest
 
   deploy:
@@ -55,17 +55,14 @@ jobs:
           BEARER_TOKEN: ${{ secrets.BEARER_TOKEN }}
           API_ENDPOINT: ${{ secrets.API_ENDPOINT }}
 
+      - name: Wait for services to start
+        run: sleep 10 # Adjust this as needed to allow time for services to start
+
       - name: Check environment variables in FastAPI container
-        run: |
-          docker exec -it $(docker ps -q -f name=fastapi) env
+        run: docker exec $(docker ps -q -f name=fastapi) env
 
       - name: Check environment variables in Plotly container
-        run: |
-          docker exec -it $(docker ps -q -f name=plotly-dash) env
-
-      - name: Wait for services to start
-        run: |
-          sleep 10 # Adjust this as needed to allow time for services to start
+        run: docker exec $(docker ps -q -f name=plotly-dash) env
 
       - name: Run deployment commands
         run: |
