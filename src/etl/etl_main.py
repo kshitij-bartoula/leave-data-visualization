@@ -33,7 +33,7 @@ if not os.path.exists('logs'):
     os.makedirs('logs')
 
 # Load logging configuration from JSON file
-with open('logging_config.json', 'r') as f:
+with open('/app/etl/logging_config.json', 'r') as f:
     config = json.load(f)
     logging.config.dictConfig(config)
 
