@@ -27,12 +27,13 @@ import etl.scripts.api_import_requests as api_import_requests
 import etl.scripts.dw_tables as dw_tables
 import etl.scripts.kpi_views as kpi_views
 
+
 # Create logs directory if it doesn't exist
 if not os.path.exists('logs'):
     os.makedirs('logs')
 
 # Load logging configuration from JSON file
-with open('/etl/logging_config.json', 'r') as f:
+with open('logging_config.json', 'r') as f:
     config = json.load(f)
     logging.config.dictConfig(config)
 
