@@ -1,18 +1,63 @@
+# from utils.db_utils import connection, execute_sql_from_file
+# from pathlib import Path
+# from sqlalchemy.sql import text
+
+# def create_tables(db_engine):
+#     sql_file_path = Path("/app/db/create_tables.sql")
+#     print(sql_file_path)
+#     print(db_engine)
+#     execute_sql_from_file(sql_file_path, db_engine)
+
+# def insert_in_tables(db_engine):
+#     sql_file_path = Path("/app/db/insert.sql")
+#     print(sql_file_path)
+#     print(db_engine)
+#     execute_sql_from_file(sql_file_path, db_engine)
+
+# def main():
+#     db_engine = connection()
+
+#     with db_engine.connect() as conn:
+#         schema_existence_query = text(
+#             "SELECT EXISTS(SELECT 1 FROM information_schema.schemata WHERE schema_name = 'dw')"
+#         )
+#         schema_exists = conn.execute(schema_existence_query).scalar()
+#         print(schema_exists)
+
+#         if not schema_exists:
+#             print('Schema does not exist. Creating schema...')
+#             create_schema_query = text(
+#             "BEGIN; CREATE SCHEMA dw; COMMIT;"
+#             )
+#             create_schema = conn.execute(create_schema_query)
+#             print('dw schema created')
+#         else:
+#             print('Schema already exists')
+
+#     create_tables(db_engine)
+#     insert_in_tables(db_engine)
+
+# if __name__ == "__main__":
+#     main()
+
 from utils.db_utils import connection, execute_sql_from_file
 from pathlib import Path
 from sqlalchemy.sql import text
+import logging
+
+logger = logging.getLogger(__name__)
 
 def create_tables(db_engine):
     sql_file_path = Path("/app/db/create_tables.sql")
-    print(sql_file_path)
-    print(db_engine)
+    logger.info(f"SQL file path for creating tables: {sql_file_path}")
     execute_sql_from_file(sql_file_path, db_engine)
+    logger.info("Tables created successfully.")
 
 def insert_in_tables(db_engine):
     sql_file_path = Path("/app/db/insert.sql")
-    print(sql_file_path)
-    print(db_engine)
+    logger.info(f"SQL file path for inserting data: {sql_file_path}")
     execute_sql_from_file(sql_file_path, db_engine)
+    logger.info("Data inserted into tables successfully.")
 
 def main():
     db_engine = connection()
@@ -22,20 +67,21 @@ def main():
             "SELECT EXISTS(SELECT 1 FROM information_schema.schemata WHERE schema_name = 'dw')"
         )
         schema_exists = conn.execute(schema_existence_query).scalar()
-        print(schema_exists)
+        logger.info(f"Schema 'dw' existence check: {schema_exists}")
 
         if not schema_exists:
-            print('Schema does not exist. Creating schema...')
+            logger.info('Schema does not exist. Creating schema...')
             create_schema_query = text(
-            "BEGIN; CREATE SCHEMA dw; COMMIT;"
+                "BEGIN; CREATE SCHEMA dw; COMMIT;"
             )
             create_schema = conn.execute(create_schema_query)
-            print('dw schema created')
+            logger.info('Schema "dw" created successfully.')
         else:
-            print('Schema already exists')
+            logger.info('Schema "dw" already exists.')
 
     create_tables(db_engine)
     insert_in_tables(db_engine)
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
     main()
