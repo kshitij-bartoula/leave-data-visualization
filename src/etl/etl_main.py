@@ -19,7 +19,7 @@
 # if __name__ == "__main__":
 #     main()
 
-import logging.config
+from etl.logging.config
 import json
 import os
 
