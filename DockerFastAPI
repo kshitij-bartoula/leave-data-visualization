@@ -25,7 +25,7 @@ RUN apk add --no-cache \
 WORKDIR /app
 
 # Copy the requirements.txt file into the container at /app
-COPY src/requirement_fastAPI.txt .
+COPY src/app/requirement_fastAPI.txt .
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirement_fastAPI.txt
@@ -58,7 +58,7 @@ ENV PYTHONPATH=/app/
 EXPOSE 8000
 
 # Create a shell script to start both cron daemon and FastAPI server
-RUN echo -e '#!/bin/sh\ntail -f /var/log/cron.log &\ncrond -f -d 8 &\npython uvicorn_run.py' > /start_services.sh
+RUN echo -e '#!/bin/sh\ntail -f /var/log/cron.log &\ncrond -f -d 8 &\npython /app/uvicorn_run.py' > /start_services.sh
 
 # Make the shell script executable
 RUN chmod +x /start_services.sh
