@@ -9,7 +9,7 @@
     "handlers": {
         "file": {
             "class": "logging.FileHandler",
-            "filename": "logs/etl.log",
+            "filename": "/app/etl/etl.log",
             "formatter": "default"
         },
         "console": {

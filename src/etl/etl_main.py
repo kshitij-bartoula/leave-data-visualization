@@ -29,8 +29,8 @@ import etl.scripts.kpi_views as kpi_views
 
 
 # Create logs directory if it doesn't exist
-if not os.path.exists('logs'):
-    os.makedirs('logs')
+# if not os.path.exists('logs'):
+#     os.makedirs('logs')
 
 # Load logging configuration from JSON file
 with open('/app/etl/logging_config.json', 'r') as f:
