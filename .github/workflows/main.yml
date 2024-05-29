@@ -33,6 +33,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Export secrets as environment variables
+        run: |
+          echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> $GITHUB_ENV
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> $GITHUB_ENV
+          echo "DB_HOST=${{ secrets.DB_HOST }}" >> $GITHUB_ENV
+          echo "DB_NAME=${{ secrets.DB_NAME }}" >> $GITHUB_ENV
+          echo "BEARER_TOKEN=${{ secrets.BEARER_TOKEN }}" >> $GITHUB_ENV
+          echo "API_ENDPOINT=${{ secrets.API_ENDPOINT }}" >> $GITHUB_ENV
+
       - name: Set up Docker Compose
         run: |
           docker-compose down
@@ -45,6 +54,14 @@ jobs:
           DB_NAME: ${{ secrets.DB_NAME }}
           BEARER_TOKEN: ${{ secrets.BEARER_TOKEN }}
           API_ENDPOINT: ${{ secrets.API_ENDPOINT }}
+
+      - name: Check environment variables in FastAPI container
+        run: |
+          docker exec -it $(docker ps -q -f name=fastapi) env
+
+      - name: Check environment variables in Plotly container
+        run: |
+          docker exec -it $(docker ps -q -f name=plotly-dash) env
 
       - name: Wait for services to start
         run: |
