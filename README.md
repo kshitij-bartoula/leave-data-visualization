@@ -5,58 +5,7 @@ This repository contains an end-to-end ETL (Extract, Transform, Load) pipeline f
 
 FOLDER STRUCTURE
 
-LEAVE-DATA-VISUALIZATION
-├── .github
-│   └── workflows
-│       └── main.yml
-├── src
-│   ├── __pycache__
-│   ├── app
-│   │   ├── __pycache__
-│   │   ├── __init__.py
-│   │   ├── api.py
-│   │   ├── database.py
-│   │   └── schemas.py
-│   ├── db
-│   │   ├── create_tables.sql
-│   │   ├── insert.sql
-│   │   ├── kpi_views.sql
-│   │   └── refresh_kpi_views.sql
-│   ├── etl
-│   │   ├── scripts
-│   │   │   ├── __pycache__
-│   │   │   ├── __init__.py
-│   │   │   ├── api_import_requests.py
-│   │   │   ├── dw_tables.py
-│   │   │   └── kpi_views.py
-│   │   ├── __init__.py
-│   │   └── etl_main.py
-│   ├── utils
-│   │   ├── __pycache__
-│   │   ├── __init__.py
-│   │   ├── config_utils.py
-│   │   └── db_utils.py
-│   ├── visualization
-│   │   ├── assets
-│   │   │   └── style.css
-│   │   ├── app.py
-│   │   ├── callbacks.py
-│   │   ├── components.py
-│   │   ├── data_processing.py
-│   │   ├── endpoints.py
-│   │   └── requirement_plotly.txt
-│   ├── .env
-│   ├── main.py
-│   ├── requirement_fastAPI.txt
-│   └── unicorn_run.py
-├── .gitignore
-├── cronfile
-├── docker-compose.yml
-├── DockerFastAPI
-├── DockerPlotly
-├── ngrok-v3-stable-linux-amd64.tgz
-├── README.md
-└── start_up_file.sh
+![alt text](image-1.png)
 
 OVERVIEW :
 
@@ -101,7 +50,7 @@ The visualization code is maintained under src/visualization folder.
 
 5. app.py : This is the main entry point for the visualization application. It typically initializes the web server, sets up the routes, and starts the application. This file often integrates different components and functionalities provided by other modules.
 
-Dockerization: The entire pipeline is containerized using Docker, including services like Fast api, PostgreSQL, and Plotly Dash.
+DOCKERIZATION: The entire pipeline is containerized using Docker, including services like Fast api, PostgreSQL, and Plotly Dash.
 
 CI/CD : For ci/cd , github avctions workflow has been used which is self hosted and deploys the code to a local environment using Docker Compose whenever changes are pushed to the main branch.
 
