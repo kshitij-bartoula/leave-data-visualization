@@ -1,5 +1,5 @@
 # Use the official Locust image as the base image
-FROM locustio/locust:1.5.3
+FROM locustio/locust
 
 # Set the working directory in the container
 WORKDIR /app
@@ -11,7 +11,7 @@ COPY src/locust/requirement_locust.txt .
 RUN pip install --no-cache-dir -r requirement_locust.txt
 
 # Copy the Locust test scripts to the working directory
-COPY src/locust/locustfile.py .
+COPY src/locust/ .
 
 # Expose the Locust web interface port
 EXPOSE 8089
