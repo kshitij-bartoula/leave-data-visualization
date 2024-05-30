@@ -1,11 +1,12 @@
 from locust import HttpUser, task, between
+import requests
 
 class MyUser(HttpUser):
     wait_time = between(1, 5)  # Time between consecutive requests
 
     @task
     def load_main_page(self):
-        response = self.client.get("http://plotly-dash:8050")
+        response = requests.get("http://plotly-dash:8050")
         assert response.status_code == 200
 
 # from locust import HttpUser, task, between
