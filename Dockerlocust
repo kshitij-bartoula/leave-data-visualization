@@ -1,8 +1,5 @@
-# Python base image with Alpine Linux
-FROM python:3.10.4-alpine
-
-# Install necessary dependencies
-RUN apk add --no-cache gcc musl-dev linux-headers
+# Use the official Locust image as the base image
+FROM locustio/locust
 
 # Set the working directory in the container
 WORKDIR /app
