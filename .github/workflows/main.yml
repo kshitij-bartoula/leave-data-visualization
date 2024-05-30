@@ -39,9 +39,7 @@ jobs:
 
       - name: Set up Docker Compose
         run: |
-          docker-compose down
-          docker-compose build
-          docker-compose up -d
+          docker-compose up -d --build
 
       - name: Check environment variables in FastAPI container
         run: docker exec $(docker ps -q -f name=fastapi) env
