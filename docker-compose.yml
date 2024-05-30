@@ -47,23 +47,6 @@ services:
       BEARER_TOKEN: ${BEARER_TOKEN}
       API_ENDPOINT: ${API_ENDPOINT}
 
-  locust:
-    build:
-      context: ./
-      dockerfile: DockerLocust
-    restart: always
-    ports:
-      - "8089:8089"
-    depends_on:
-      - plotly-dash
-    environment:
-      DB_USERNAME: ${DB_USERNAME}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_HOST: ${DB_HOST}
-      DB_NAME: ${DB_NAME}
-      BEARER_TOKEN: ${BEARER_TOKEN}
-      API_ENDPOINT: ${API_ENDPOINT}
-
 volumes:
   pgdata:
 
