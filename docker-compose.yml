@@ -56,8 +56,7 @@ services:
       - plotly-dash
     ports:
       - "8089:8089"
-    volumes:
-      - ./src/locust:/app
+
 volumes:
   pgdata:
 
