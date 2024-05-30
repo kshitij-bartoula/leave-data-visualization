@@ -1,5 +1,5 @@
 # Use the official Locust image as the base image
-FROM locustio/locust
+FROM locustio/locust:1.5.3
 
 # Set the working directory in the container
 WORKDIR /app
@@ -11,9 +11,11 @@ COPY src/locust/requirement_locust.txt .
 RUN pip install --no-cache-dir -r requirement_locust.txt
 
 # Copy the Locust test scripts to the working directory
-COPY src/locust .
+COPY src/locust/locustfile.py .
 
+# Expose the Locust web interface port
 EXPOSE 8089
 
 # Specify the command to run Locust
 CMD ["locust", "-f", "locustfile.py", "--host=http://plotly-dash:8050"]
+
