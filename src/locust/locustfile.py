@@ -1,5 +1,9 @@
 from locust import HttpUser, task, between
 import requests
+from visualization import data_processing
+from visualization import callbacks
+from visualization.callbacks import register_callbacks
+from visualization import app
 
 class MyUser(HttpUser):
     wait_time = between(1, 5)  # Time between consecutive requests
