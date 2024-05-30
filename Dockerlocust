@@ -14,4 +14,4 @@ RUN pip install --no-cache-dir -r requirement_locust.txt
 COPY src/locust .
 
 # Specify the command to run Locust
-CMD ["locust", "-f", "locustfile.py", "--host=http://plotly:8050"]
+CMD ["locust", "-f", "locustfile.py", "--host=http://plotly-dash:8050"]
