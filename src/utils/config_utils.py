@@ -13,8 +13,6 @@ def get_db_config() -> dict:
         'DB_HOST': os.getenv('DB_HOST'),
         'DB_NAME': os.getenv('DB_NAME')
     }
-    print("this is our db config from github secrets")
-    print(db_config)
     return db_config
 
 

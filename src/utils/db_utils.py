@@ -31,7 +31,6 @@ def execute_sql_from_file(sql_file_path, db_engine):
 
 def get_result_from_query(query_statement):
     db_engine = connection()
-    print("Inside get query data")
     if hasattr(query_statement, "statement"):
         query_str = str(query_statement.statement.compile(dialect=postgresql.dialect()))
         print(query_str)
@@ -39,7 +38,6 @@ def get_result_from_query(query_statement):
         print(query)
     else:
         query = str(query_statement)
-    print(f"Running Query:\n{query}")
     with db_engine.connect() as con:
         result_set = con.execute(text(query))
         result = result_set.fetchall()
