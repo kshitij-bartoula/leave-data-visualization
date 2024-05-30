@@ -13,3 +13,5 @@ class PlotlyDashUser(HttpUser):
         self.client.get("/graphs/employee-leave")
         self.client.get("/graphs/leave-trend")
         self.client.get("/graphs/leave-distribution")
+
+#test
