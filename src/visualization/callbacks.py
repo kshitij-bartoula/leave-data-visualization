@@ -76,4 +76,3 @@ def register_callbacks(app):
 
 # Import at the end to avoid circular import
 from app import app
-register_callbacks(app)
