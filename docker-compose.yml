@@ -64,9 +64,9 @@ services:
       BEARER_TOKEN: ${BEARER_TOKEN}
       API_ENDPOINT: ${API_ENDPOINT}
 
-
 volumes:
   pgdata:
+
 
   # version: '3'
 
