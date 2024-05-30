@@ -19,7 +19,7 @@ from locust import HttpUser, task, between
 
 
 # Import the plotly Dash app
-from src.visualization import app
+from visualization import app
 
 
 class MyUser(HttpUser):
