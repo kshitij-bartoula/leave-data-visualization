@@ -74,5 +74,3 @@ def register_callbacks(app):
 
         return figure_employee_leave, employee_names
 
-# Import at the end to avoid circular import
-from app import app
