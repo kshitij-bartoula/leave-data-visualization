@@ -52,10 +52,10 @@ services:
       context: ./
       dockerfile: DockerLocust
     restart: always
-    depends_on:
-      - plotly-dash
     ports:
       - "8089:8089"
+    depends_on:
+      - plotly-dash
 
 volumes:
   pgdata:

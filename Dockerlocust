@@ -1,5 +1,8 @@
-# Use the official Locust image as the base image
-FROM locustio/locust
+# Python base image with Alpine Linux
+FROM python:3.10.4-alpine
+
+# Install necessary dependencies
+RUN apk add --no-cache gcc musl-dev linux-headers
 
 # Set the working directory in the container
 WORKDIR /app
@@ -12,6 +15,8 @@ RUN pip install --no-cache-dir -r requirement_locust.txt
 
 # Copy the Locust test scripts to the working directory
 COPY src/locust .
+
+EXPOSE 8089
 
 # Specify the command to run Locust
 CMD ["locust", "-f", "locustfile.py", "--host=http://plotly-dash:8050"]
