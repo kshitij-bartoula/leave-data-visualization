@@ -17,5 +17,5 @@ COPY src/locust/ .
 EXPOSE 8089
 
 # Specify the command to run Locust
-CMD ["locust", "-f", "locustfile.py", "--host=http://plotly-dash:8050"]
+CMD ["locust", "-f", "app/locust/locustfile.py", "--host=http://plotly-dash:8050"]
 
