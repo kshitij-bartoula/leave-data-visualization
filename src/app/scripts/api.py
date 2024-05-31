@@ -1,17 +1,3 @@
-"""
-This module defines FastAPI endpoints to retrieve various leave-related data from the database.
-
-Endpoints:
-- /employee_leave: Retrieve total leave days per employee.
-- /leave_trend: Retrieve leave trends by month.
-- /leave_distribution: Retrieve leave distribution by leave type.
-- /fiscal_year_leave_type_trend: Retrieve leave trends by fiscal year and leave type.
-- /department_leave_distribution: Retrieve leave request distribution by department and leave types.
-- /department_leave_status_count: Retrieve leave status count by department.
-- /most_frequent_leave_reason: Retrieve most frequent leave request reasons.
-
-"""
-
 from typing import List
 from fastapi import FastAPI, APIRouter, Depends, HTTPException
 from sqlalchemy import create_engine
@@ -34,7 +20,7 @@ from utils.db_utils import get_result_from_query
 
 router = APIRouter()
 
-# FastAPI endpoints
+# Define FastAPI endpoints
 @router.get("/employee_leave", response_model=List[EmployeeLeave])
 def get_employee_leave(db: Session = Depends(get_db)):
     try:
@@ -189,128 +175,4 @@ def get_most_frequent_leave_reason(db: Session = Depends(get_db)):
         return most_frequent_leave_reasons
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database error occurred{e}")
-
-# from fastapi import FastAPI, APIRouter, Depends, HTTPException, BackgroundTasks
-# from sqlalchemy.orm import Session
-# from typing import List
-# import asyncio
-# import time
-# from .database import get_db
-# from .schemas import (
-#     EmployeeLeave,
-#     LeaveBalance,
-#     LeaveTrend,
-#     LeaveDistribution,
-#     FiscalYearLeaveTypeTrend,
-#     DepartmentLeaveDistribution,
-#     MostFrequentLeaveReason,
-# )
-# from utils.db_utils import get_result_from_query
-
-
-# router = APIRouter()
-
-# # In-memory cache to store the results
-# cache = {
-#     "employee_leave": [],
-#     "leave_balance": [],
-#     "leave_trend": [],
-#     "leave_distribution": [],
-#     "fiscal_year_leave_type_trend": [],
-#     "department_leave_distribution": [],
-# }
-
-# # Function to refresh data every minute
-# async def refresh_data():
-#     while True:
-#         print("Refreshing data...")
-#         try:
-#             db: Session = next(get_db())
-
-#             # Update employee_leave
-#             query = "SELECT * FROM dw.total_leave_days_per_employee_mv"
-#             result = get_result_from_query(query)
-#             cache["employee_leave"] = [EmployeeLeave(
-#                 empId=empId,
-#                 firstName=firstName,
-#                 lastName=lastName,
-#                 total_leave_days=total_leave_days,
-#             ) for empId, firstName, lastName, total_leave_days in result]
-
-#             # Update leave_balance
-#             query = "SELECT * FROM dw.leave_balances_per_employee_mv"
-#             result = get_result_from_query(query)
-#             cache["leave_balance"] = [LeaveBalance(
-#                 empId=row.empId,
-#                 firstName=row.firstName,
-#                 lastName=row.lastName,
-#                 defaultDays=row.defaultDays,
-#                 transferabledays=row.transferabledays,
-#                 leaveDays=row.leaveDays,
-#                 leave_balance=row.leave_balance,
-#             ) for row in result]
-
-#             # Update leave_trend
-#             query = "SELECT * FROM dw.leave_trends_by_month_mv"
-#             result = get_result_from_query(query)
-#             cache["leave_trend"] = [LeaveTrend(
-#                 month=row.month,
-#                 year=row.year,
-#                 leave_count=row.leave_count,
-#             ) for row in result]
-
-#             # Update leave_distribution
-#             query = "SELECT * FROM dw.leave_distribution_by_leave_type_mv"
-#             result = get_result_from_query(query)
-#             cache["leave_distribution"] = [LeaveDistribution(
-#                 leavetypename=leave_type_name, leave_count=leave_count
-#             ) for leave_type_name, leave_count in result]
-
-#             # Update fiscal_year_leave_type_trend
-#             query = "SELECT * FROM dw.leave_trend_by_fiscal_year_per_leave_type_mv"
-#             result = get_result_from_query(query)
-#             cache["fiscal_year_leave_type_trend"] = [FiscalYearLeaveTypeTrend(
-#                 fiscal_id=fiscal_id,
-#                 fiscal_start_date=fiscal_start_date,
-#                 fiscal_end_date=fiscal_end_date,
-#                 leavetypename=leavetypename,
-#                 leave_count=leave_count,
-#             ) for fiscal_id, fiscal_start_date, fiscal_end_date, leavetypename, leave_count in result]
-
-#             # Update department_leave_distribution
-#             query = "SELECT * FROM dw.leave_distribution_by_department_mv"
-#             result = get_result_from_query(query)
-#             cache["department_leave_distribution"] = [DepartmentLeaveDistribution(
-#                 department_name=department_name,
-#                 leave_type=leave_type,
-#                 leave_count=leave_count,
-#             ) for department_name, leave_type, leave_count in result]
-
-#         except Exception as e:
-#             print(f"Failed to refresh data: {e}")
-
-#         await asyncio.sleep(60)  # Wait for 1 minute before next refresh
-
-# async def startup_event():
-#     # Start the background task to refresh data
-#     await refresh_data()
-
-# @router.get("/employee_leave", response_model=List[EmployeeLeave])
-# def get_employee_leave():
-#     return cache["employee_leave"]
-
-# @router.get("/leave_balance", response_model=List[LeaveBalance])
-# def get_leave_balance():
-#     return cache["leave_balance"]
-
-# @router.get("/leave_trend", response_model=List[LeaveTrend])
-# def get_leave_trend():
-#     return cache["leave_trend"]
-
-# @router.get("/leave_distribution", response_model=List[LeaveDistribution])
-# def get_leave_distribution():
-#     return cache["leave_distribution"]
-
-# @router.get("/most_frequent_leave_reason", response_model=List[MostFrequentLeaveReason])
-# def get_leave_distribution():
-#     return cache["most_frequent_leave_reason"]
+    
