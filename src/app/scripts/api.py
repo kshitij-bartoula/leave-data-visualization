@@ -291,10 +291,9 @@ async def refresh_data():
 
         await asyncio.sleep(60)  # Wait for 1 minute before next refresh
 
-@app.on_event("startup")
 async def startup_event():
     # Start the background task to refresh data
-    asyncio.create_task(refresh_data())
+    await refresh_data()
 
 @router.get("/employee_leave", response_model=List[EmployeeLeave])
 def get_employee_leave():

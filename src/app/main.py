@@ -10,7 +10,7 @@ Configures FastAPI application and includes API routes.
 
 from fastapi import FastAPI
 from app.scripts.api import router as api_router
-from app.scripts.api import refresh_data
+from app.scripts.api import router as api_router, startup_event
 import asyncio
 
 app = FastAPI()
@@ -18,9 +18,6 @@ app = FastAPI()
 # Include the API router
 app.include_router(api_router)
 
-# Define startup event handler
-@app.on_event("startup")
-async def startup_event():
-    # Start the background task to refresh data
-    asyncio.create_task(refresh_data())
+# Register the startup event handler
+app.add_event_handler("startup", startup_event)
 
