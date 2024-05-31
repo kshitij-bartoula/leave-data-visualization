@@ -1,3 +1,12 @@
+"""
+Defines a function to run the FastAPI server using Uvicorn.
+
+Imports uvicorn module.
+
+Function:
+- run_server(): Runs the FastAPI server using Uvicorn with specified host, port, and app instance.
+
+"""
 import uvicorn
 
 def run_server():

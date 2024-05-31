@@ -1,3 +1,17 @@
+"""
+This module defines FastAPI endpoints to retrieve various leave-related data from the database.
+
+Endpoints:
+- /employee_leave: Retrieve total leave days per employee.
+- /leave_trend: Retrieve leave trends by month.
+- /leave_distribution: Retrieve leave distribution by leave type.
+- /fiscal_year_leave_type_trend: Retrieve leave trends by fiscal year and leave type.
+- /department_leave_distribution: Retrieve leave request distribution by department and leave types.
+- /department_leave_status_count: Retrieve leave status count by department.
+- /most_frequent_leave_reason: Retrieve most frequent leave request reasons.
+
+"""
+
 from typing import List
 from fastapi import FastAPI, APIRouter, Depends, HTTPException
 from sqlalchemy import create_engine
@@ -20,7 +34,7 @@ from utils.db_utils import get_result_from_query
 
 router = APIRouter()
 
-# Define FastAPI endpoints
+# FastAPI endpoints
 @router.get("/employee_leave", response_model=List[EmployeeLeave])
 def get_employee_leave(db: Session = Depends(get_db)):
     try:

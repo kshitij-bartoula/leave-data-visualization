@@ -1,3 +1,10 @@
+"""
+Database initialization and utility module.
+
+Imports logging, SQLAlchemy's create_engine, Session, sessionmaker, declarative_base, and a connection function.
+Defines logger, engine, SessionLocal, get_db function, and Base class.
+"""
+
 import logging
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker

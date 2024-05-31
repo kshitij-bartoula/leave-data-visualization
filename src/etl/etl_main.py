@@ -1,23 +1,16 @@
-# import etl.scripts.api_import_requests as api_import_requests
-# import etl.scripts.dw_tables as dw_tables
-# import etl.scripts.kpi_views as kpi_views
+"""
+Runs the ETL (Extract, Transform, Load) process for importing data from APIs, processing data warehouse tables, and generating KPI views.
 
-# def main():
-#     print("Starting ETL process...")
+Imports logging configuration, JSON, and necessary ETL scripts.
 
-#     print("Running API import requests...")
-#     api_import_requests.main()
+Functionality:
+- Loads logging configuration from a JSON file.
+- Configures logging using the loaded configuration.
+- Defines a main function to orchestrate the ETL process.
+- Executes API import requests, data warehouse table processing, and KPI views processing sequentially.
+- Logs information and errors during the ETL process.
 
-#     print("Running data warehouse table processing...")
-#     dw_tables.main()
-
-#     print("Running KPI views processing...")
-#     kpi_views.main()
-
-#     print("ETL process completed successfully!")
-
-# if __name__ == "__main__":
-#     main()
+"""
 
 import logging.config
 import json
@@ -27,10 +20,6 @@ import etl.scripts.api_import_requests as api_import_requests
 import etl.scripts.dw_tables as dw_tables
 import etl.scripts.kpi_views as kpi_views
 
-
-# Create logs directory if it doesn't exist
-# if not os.path.exists('logs'):
-#     os.makedirs('logs')
 
 # Load logging configuration from JSON file
 with open('/app/etl/logging_config.json', 'r') as f:

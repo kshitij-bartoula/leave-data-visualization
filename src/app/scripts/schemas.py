@@ -1,3 +1,19 @@
+"""
+Defines Pydantic models for various leave-related data.
+
+Imports BaseModel from Pydantic and datetime, date from datetime module.
+
+Models:
+- EmployeeLeave: Model for employee leave data.
+- LeaveBalance: Model for leave balance data.
+- LeaveTrend: Model for leave trend data.
+- LeaveDistribution: Model for leave distribution data.
+- FiscalYearLeaveTypeTrend: Model for leave trends by fiscal year and leave type.
+- DepartmentLeaveDistribution: Model for leave request distribution by department and leave types.
+- DepartmentLeaveStatusCount: Model for leave status count by department.
+- MostFrequentLeaveReason: Model for most frequent leave request reasons.
+"""
+
 from pydantic import BaseModel
 from datetime import datetime, date
 
