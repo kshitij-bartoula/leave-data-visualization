@@ -5,7 +5,63 @@ This repository contains an end-to-end ETL (Extract, Transform, Load) pipeline f
 
 FOLDER STRUCTURE
 
-![alt text](image-1.png)
+LEAVE-DATA-VISUALIZATION/
+├── .github/
+│   └── workflows/
+│       └── main.yml
+├── src/
+│   ├── app/
+│   │   ├── __pycache__/
+│   │   ├── scripts/
+│   │   │   ├── __init__.py
+│   │   │   ├── api.py
+│   │   │   ├── database.py
+│   │   │   └── schemas.py
+│   │   ├── __init__.py
+│   │   ├── main.py
+│   │   ├── requirement_fastAPI.txt
+│   │   └── uvicorn_run.py
+│   ├── db/
+│   │   ├── create_tables.sql
+│   │   ├── insert.sql
+│   │   ├── kpi_views.sql
+│   │   └── refresh_kpi_views.sql
+│   ├── etl/
+│   │   ├── __pycache__/
+│   │   ├── scripts/
+│   │   │   ├── __init__.py
+│   │   │   ├── api_import_requests.py
+│   │   │   ├── dw_tables.py
+│   │   │   ├── kpi_views.py
+│   │   ├── __init__.py
+│   │   ├── etl_main.py
+│   │   └── logging.config.json
+│   ├── utils/
+│   │   ├── __pycache__/
+│   │   ├── __init__.py
+│   │   ├── config_utils.py
+│   │   └── db_utils.py
+│   └── visualization/
+│       ├── __pycache__/
+│       ├── assets/
+│       ├── __init__.py
+│       ├── app.py
+│       ├── callbacks.py
+│       ├── components.py
+│       ├── data_processing.py
+│       ├── endpoints.py
+│       ├── locustfile.py
+│       └── requirement_plotly.txt
+├── .gitignore
+├── .env
+├── cronfile
+├── docker-compose.yml
+├── DockerFastAPI
+├── DockerPlotly
+├── image-1.png
+├── image.png
+├── README.md
+└── start_up_file.sh
 
 OVERVIEW :
 
