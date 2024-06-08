@@ -1,4 +1,8 @@
 from locust import HttpUser, task, between
+import dash
+from dash import dcc
+from dash import html
+import dash_bootstrap_components as dbc
 import app
 
 class MyUser(HttpUser):
