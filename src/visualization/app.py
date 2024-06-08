@@ -34,7 +34,7 @@ app.layout = dbc.Container([
     # ]),
     dbc.Row([
         dbc.Col(generate_graph_card('leave-trend-graph', 'Leave Trend'), width=6),
-        dbc.Col(generate_graph_card('leave-trend-fiscal-year-graph', 'Leave Trend (Fiscal Year)'), width=6),
+        dbc.Col(generate_graph_card('leave-trend-fiscal-year-graph', 'Leave Count (Fiscal Year)'), width=6),
     ]),
     dbc.Row([
         dbc.Col(
