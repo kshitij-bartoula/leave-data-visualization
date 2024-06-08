@@ -68,10 +68,11 @@ def gen_leave_trend_fiscal_year(data, filter_value=None):
     unique_start_dates = sorted(list(set(start_dates)))
     unique_end_dates = sorted(list(set(end_dates)))
     unique_leave_types = sorted(list(set(leave_types)))
+    fiscal_years = [start.strftime('%Y-%m-%d') for start in unique_start_dates]
     data_traces = []
     for leave_type in unique_leave_types:
         leave_type_counts = [sum(leave_counts[i] for i in range(len(start_dates)) if leave_types[i] == leave_type and start_dates[i] == start and end_dates[i] == end) for start, end in zip(unique_start_dates, unique_end_dates)]
-        bar = go.Bar(x=start_dates, y=leave_type_counts, name=leave_type)  # Assign leave_type directly to the name property
+        bar = go.Bar(x=fiscal_years, y=leave_type_counts, name=leave_type)  # Assign leave_type directly to the name property
         data_traces.append(bar)
 
     layout = go.Layout(
