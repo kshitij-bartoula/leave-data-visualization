@@ -132,7 +132,7 @@ SELECT
     a."defaultDays"::int,
     a."transferableDays"::int,
     a."isConsecutive"::int,
-    a."fiscalId",
+    a."fiscalId"::int,
     a."fiscalIsCurrent",
     a."isConverted"::int,
     a."createdAt"::timestamp,
