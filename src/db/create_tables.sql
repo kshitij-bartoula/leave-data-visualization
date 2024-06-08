@@ -42,7 +42,6 @@ CREATE TABLE IF NOT EXISTS dw.fact_table (
     leaveDays INT,
     reason text,
     status varchar(255),
-    remarks text,
     leaveTypeId INT,
     defaultDays INT,
     transferableDays INT,

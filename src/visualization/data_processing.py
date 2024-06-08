@@ -41,7 +41,7 @@ def department_leave_distribution(endpoint_url):
     else:
         return []
 
-def leave_reason(endpoint_url):
+def project_allocations(endpoint_url):
     api_url = endpoint_url
     response = requests.get(api_url)
     if response.status_code == 200:

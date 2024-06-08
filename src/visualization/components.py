@@ -116,12 +116,12 @@ def gen_department_leave_distribution(data, filter_value=None):
 
     return go.Figure(data=data_traces, layout=layout)
 
-def gen_leave_reason(data, filter_value=None):
+def gen_project_allocations(data, filter_value=None):
     if filter_value:
-        data = [entry for entry in data if entry['reason'] == filter_value]
+        data = [entry for entry in data if entry['name'] == filter_value]
     sorted_data = sorted(data, key=lambda entry: entry['request_count'], reverse=True)
-    top_data = sorted_data[:5]
-    top_leave_reasons = [entry['reason'] for entry in top_data]
-    top_leave_request_counts = [entry['request_count'] for entry in top_data]
+    top_data = sorted_data[:10]
+    top_project_allocations = [entry['name'] for entry in top_data]
+    top_project_allocations_counts = [entry['request_count'] for entry in top_data]
 
-    return generate_pie_chart(top_leave_reasons, top_leave_request_counts, 'Top 5 Leave Reasons')
+    return generate_pie_chart(top_project_allocations, top_project_allocations_counts, 'Top 10 Project Allocations')

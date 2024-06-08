@@ -68,6 +68,6 @@ class DepartmentLeaveStatusCount(BaseModel):
     cancelled: int
 
 
-class MostFrequentLeaveReason(BaseModel):
-    reason: str
+class ProjectAllocations(BaseModel):
+    name: str
     request_count: int

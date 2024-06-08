@@ -14,7 +14,7 @@ from .schemas import (
     FiscalYearLeaveTypeTrend,
     DepartmentLeaveDistribution,
     DepartmentLeaveStatusCount,
-    MostFrequentLeaveReason,
+    ProjectAllocations,
 )
 from utils.db_utils import get_result_from_query
 
@@ -159,20 +159,19 @@ def get_department_leave_status_count(db: Session = Depends(get_db)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database error occurred{e}")
 
-@router.get("/most_frequent_leave_reason", response_model=List[MostFrequentLeaveReason])
-def get_most_frequent_leave_reason(db: Session = Depends(get_db)):
+@router.get("/top_10_project_allocations", response_model=List[ProjectAllocations])
+def get_top_10_project_allocations(db: Session = Depends(get_db)):
     try:
-        query = "SELECT * FROM dw.most_frequent_leave_request_reasons_mv"
+        query = "SELECT * FROM dw.top_10_project_allocations_mv"
         result = get_result_from_query(query)
 
-        most_frequent_leave_reasons = []
-        for reason, request_count in result:
-            most_frequent_leave_reason = MostFrequentLeaveReason(
-                reason=reason,
+        top_10_project_allocations = []
+        for name, request_count in result:
+            top_10_project_allocations = ProjectAllocations(
+                name=name,
                 request_count=request_count
             )
-            most_frequent_leave_reasons.append(most_frequent_leave_reason)
-        return most_frequent_leave_reasons
+            top_10_project_allocations.append(top_10_project_allocations)
+        return top_10_project_allocations
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database error occurred{e}")
-    

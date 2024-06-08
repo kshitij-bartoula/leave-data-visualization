@@ -72,7 +72,7 @@ app.layout = dbc.Container([
         dbc.Col(generate_graph_card('department-leave-distribution-graph', 'Department Leave Distribution'), width=12),
     ]),
     dbc.Row([
-        dbc.Col(generate_graph_card('leave-reason-graph', 'Leave Reasons'), width=6),
+        dbc.Col(generate_graph_card('project-allocations-graph', 'Project Allocations'), width=6),
         dbc.Col(generate_graph_card('leave-distribution-graph', 'Leave Distribution'), width=6),
     ]),
     dcc.Interval(

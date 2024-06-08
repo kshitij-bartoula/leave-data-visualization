@@ -110,17 +110,17 @@ JOIN
 GROUP BY
     ed.departmentDescription;
 
--- Most frequent leave request reasons
-CREATE MATERIALIZED VIEW IF NOT EXISTS dw.most_frequent_leave_request_reasons_mv AS
+-- TOP 10 project allocations
+CREATE MATERIALIZED VIEW IF NOT EXISTS dw.top_10_project_allocations_mv AS
 SELECT
-    reason,
+    name,
     COUNT(*) AS request_count
 FROM
-    dw.fact_table
+    dw.allocations
 GROUP BY
-    reason
+    name
 ORDER BY
     request_count DESC
-LIMIT 5;
+LIMIT 10;
 
 COMMIT;

@@ -2,16 +2,16 @@ from dash.dependencies import Output, Input
 import plotly.graph_objs as go
 from data_processing import (
     employee_leave, leave_trend, leave_distribution,
-    leave_trend_fiscal_year, department_leave_distribution, leave_reason
+    leave_trend_fiscal_year, department_leave_distribution, project_allocations
 )
 from components import (
     gen_employee_leave, gen_leave_trend, gen_leave_distribution,
-    gen_leave_trend_fiscal_year, gen_department_leave_distribution, gen_leave_reason
+    gen_leave_trend_fiscal_year, gen_department_leave_distribution, gen_project_allocations
 )
 from endpoints import (
     ENDPOINT_EMPLOYEE_LEAVE, ENDPOINT_LEAVE_TREND,
     ENDPOINT_LEAVE_DISTRIBUTION, ENDPOINT_LEAVE_TREND_FISCAL_YEAR,
-    ENDPOINT_DEPARTMENT_LEAVE_DISTRIBUTION, ENDPOINT_LEAVE_REASONS
+    ENDPOINT_DEPARTMENT_LEAVE_DISTRIBUTION, ENDPOINT_PROJECT_ALLOCATIONS
 )
 
 def register_callbacks(app):
@@ -20,7 +20,7 @@ def register_callbacks(app):
         Output('leave-distribution-graph', 'figure'),
         Output('leave-trend-fiscal-year-graph', 'figure'),
         Output('department-leave-distribution-graph', 'figure'),
-        Output('leave-reason-graph', 'figure'),
+        Output('project-allocations-graph', 'figure'),
         [Input('interval-component', 'n_intervals')]
     )
     def update_chart(n_intervals):
@@ -37,15 +37,15 @@ def register_callbacks(app):
         data_department_leave_distribution = department_leave_distribution(ENDPOINT_DEPARTMENT_LEAVE_DISTRIBUTION)
         figure_department_leave_distribution = gen_department_leave_distribution(data_department_leave_distribution)
 
-        data_leave_reason = leave_reason(ENDPOINT_LEAVE_REASONS)
-        figure_leave_reason = gen_leave_reason(data_leave_reason)
+        data_project_allocation = project_allocations(ENDPOINT_PROJECT_ALLOCATIONS)
+        figure_project_allocations = gen_project_allocations(data_project_allocation)
 
         return (
             figure_leave_trend,
             figure_leave_distribution,
             figure_leave_trend_fiscal_year,
             figure_department_leave_distribution,
-            figure_leave_reason
+            figure_project_allocations
         )
 
     @app.callback(

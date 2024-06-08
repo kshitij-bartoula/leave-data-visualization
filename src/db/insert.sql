@@ -81,18 +81,18 @@ WHERE NOT EXISTS (
 INSERT INTO dw.leave_type
 SELECT
     a."leaveTypeId"::int,
-    a."leaveTypeName"
+    a."leaveType"
 FROM (
     SELECT DISTINCT
         "leaveTypeId",
-        "leaveTypeName"
+        "leaveType"
     FROM raw.api_data
 ) a
 WHERE NOT EXISTS (
     SELECT 1
     FROM dw.leave_type lt
     WHERE lt.leave_type_id::int = a."leaveTypeId"::int
-    AND lt.leavetypename = a."leaveTypeName"
+    AND lt.leavetypename = a."leaveType"
 );
 
 --for fiscal_detail
@@ -128,7 +128,6 @@ SELECT
     a."leaveDays"::int,
     a."reason",
     a."status",
-    a."remarks",
     a."leaveTypeId",
     a."defaultDays"::int,
     a."transferableDays"::int,
@@ -151,7 +150,6 @@ FROM (
         "leaveDays",
         "reason",
         "status",
-        "remarks",
         "leaveTypeId",
         "defaultDays",
         "transferableDays",
