@@ -165,13 +165,13 @@ def get_top_10_project_allocations(db: Session = Depends(get_db)):
         query = "SELECT * FROM dw.top_10_project_allocations_mv"
         result = get_result_from_query(query)
 
-        top_10_project_allocations = []
+        top_project_allocations = []
         for name, request_count in result:
             top_10_project_allocations = ProjectAllocations(
                 name=name,
                 request_count=request_count
             )
-            top_10_project_allocations.append(top_10_project_allocations)
-        return top_10_project_allocations
+            top_project_allocations.append(top_10_project_allocations)
+        return top_project_allocations
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database error occurred{e}")
