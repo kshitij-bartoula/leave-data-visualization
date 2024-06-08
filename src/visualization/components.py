@@ -124,4 +124,17 @@ def gen_project_allocations(data, filter_value=None):
     top_project_allocations = [entry['name'] for entry in top_data]
     top_project_allocations_counts = [entry['request_count'] for entry in top_data]
 
-    return generate_pie_chart(top_project_allocations, top_project_allocations_counts, 'Top 10 Project Allocations')
+    title = 'Top 10 Project Allocations'
+    x_title = 'Project Name'
+    y_title = 'Request Count'
+
+    trace = go.Bar(x=top_project_allocations, y=top_project_allocations_counts)
+    layout = go.Layout(
+        title=title,
+        xaxis=dict(title=x_title),
+        yaxis=dict(title=y_title),
+        margin=dict(l=100, r=10, t=50, b=50)
+    )
+
+    return go.Figure(data=[trace], layout=layout)
+
