@@ -8,4 +8,3 @@ requests
 SQLAlchemy
 pandas
 psycopg2-binary
-locust
