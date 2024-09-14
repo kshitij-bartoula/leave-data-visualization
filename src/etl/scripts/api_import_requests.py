@@ -1,11 +1,11 @@
 
-import requests
-import json
-import pandas as pd
-from utils.db_utils import connection
-from sqlalchemy.sql import text
 import os
+import json
 import logging
+import requests
+import pandas as pd
+from sqlalchemy.sql import text
+from utils.db_utils import connection
 
 logger = logging.getLogger(__name__)
 
