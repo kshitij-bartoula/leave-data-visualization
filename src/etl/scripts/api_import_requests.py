@@ -61,7 +61,7 @@ def parse_json_and_insert(api_data, db_engine):
 
 def main():
     # Load environment variables
-    # load_dotenv()
+    #load_dotenv()
 
     BEARER_TOKEN = os.getenv('BEARER_TOKEN')
     API_ENDPOINT = os.getenv('API_ENDPOINT')

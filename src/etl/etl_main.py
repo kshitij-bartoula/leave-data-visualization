@@ -22,7 +22,7 @@ import etl.scripts.kpi_views as kpi_views
 
 
 # Load logging configuration from JSON file
-with open('/app/etl/logging_config.json', 'r') as f:
+with open('../etl/logging_config.json', 'r') as f:
     config = json.load(f)
     logging.config.dictConfig(config)
 

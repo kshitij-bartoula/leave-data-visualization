@@ -6,14 +6,14 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-def create_tables(db_engine):
-    sql_file_path = Path("/app/db/create_tables.sql")
-    logger.info(f"SQL file path for creating tables: {sql_file_path}")
-    execute_sql_from_file(sql_file_path, db_engine)
-    logger.info("Tables created successfully.")
+# def create_tables(db_engine):
+#     sql_file_path = Path("../db/create_tables.sql")
+#     logger.info(f"SQL file path for creating tables: {sql_file_path}")
+#     execute_sql_from_file(sql_file_path, db_engine)
+#     logger.info("Tables created successfully.")
 
 def insert_in_tables(db_engine):
-    sql_file_path = Path("/app/db/insert.sql")
+    sql_file_path = Path("../db/sql/insert.sql")
     logger.info(f"SQL file path for inserting data: {sql_file_path}")
     execute_sql_from_file(sql_file_path, db_engine)
     logger.info("Data inserted into tables successfully.")
@@ -38,7 +38,7 @@ def main():
         else:
             logger.info('Schema "dw" already exists.')
 
-    create_tables(db_engine)
+    #create_tables(db_engine)
     insert_in_tables(db_engine)
 
 if __name__ == "__main__":
