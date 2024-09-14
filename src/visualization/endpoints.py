@@ -1,5 +1,5 @@
-#HOST  = "localhost"
-HOST  = "fastapi"
+HOST  = "localhost"
+#HOST  = "fastapi"
 
 ENDPOINT_EMPLOYEE_LEAVE = f'http://{HOST}:8000/employee_leave'
 ENDPOINT_LEAVE_BALANCE = f'http://{HOST}:8000/leave_balance'
@@ -8,4 +8,3 @@ ENDPOINT_LEAVE_DISTRIBUTION = f'http://{HOST}:8000/leave_distribution'
 ENDPOINT_LEAVE_TREND_FISCAL_YEAR = f'http://{HOST}:8000/fiscal_year_leave_type_trend'
 ENDPOINT_DEPARTMENT_LEAVE_DISTRIBUTION = f'http://{HOST}:8000/department_leave_distribution'
 ENDPOINT_PROJECT_ALLOCATIONS = f'http://{HOST}:8000/top_10_project_allocations'
-#ee
