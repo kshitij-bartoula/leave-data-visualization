@@ -40,20 +40,22 @@ jobs:
       - name: Set PYTHONPATH to include src/
         run: echo "PYTHONPATH=$PYTHONPATH:$(pwd)/src" >> $GITHUB_ENV
 
+      - name: Test database connection (Optional - For Debugging)
+        run: pg_isready -h ${{ secrets.DB_HOST }} -U ${{ secrets.DB_USERNAME }} -d ${{ secrets.DB_NAME }}
+
       - name: Print Environment Variables
         run: echo "$DB_HOST"
 
-      - name: Print DB Host
+      - name: Print DB Host (Masked in logs)
         run: echo "${{ secrets.DB_HOST }}"
 
       - name: Run database migrations
         run: python src/db/db_migrate.py --up
-        # Uncomment below if you need to pass these env variables explicitly
-        # env:
-        #   DB_HOST: ${{ secrets.DB_HOST }}
-        #   DB_NAME: ${{ secrets.DB_NAME }}
-        #   DB_USERNAME: ${{ secrets.DB_USERNAME }}
-        #   DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        env:
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
       - name: Post-migration verification
         run: |
