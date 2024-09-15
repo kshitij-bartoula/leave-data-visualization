@@ -35,6 +35,12 @@ jobs:
     - name: Set PYTHONPATH to include src/
       run: echo "PYTHONPATH=$PYTHONPATH:$(pwd)/src" >> $GITHUB_ENV
 
+    - name: Print Environment Variables (Sanitized)
+      run: echo "DB_HOST: $DB_HOST"
+
+    - name: Print DB Host
+      run: echo "DB_HOST: ${{ secrets.DB_HOST }}"
+
     - name: Run database migrations
       run: python src/db/db_migrate.py --up
       env:
