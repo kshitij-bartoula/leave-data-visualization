@@ -76,7 +76,7 @@
 
 import os
 import logging
-from ..utils.db_utils import connection
+from utils.db_utils import connection
 from sqlalchemy.sql import text
 
 
