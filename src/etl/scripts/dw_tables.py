@@ -38,7 +38,6 @@ def main():
         else:
             logger.info('Schema "dw" already exists.')
 
-    create_tables(db_engine)
     insert_in_tables(db_engine)
 
 if __name__ == "__main__":
