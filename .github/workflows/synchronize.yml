@@ -40,8 +40,8 @@ jobs:
       - name: Set PYTHONPATH to include src/
         run: echo "PYTHONPATH=$PYTHONPATH:$(pwd)/src" >> $GITHUB_ENV
 
-      - name: Test database connection (Optional - For Debugging)
-        run: pg_isready -h ${{ secrets.DB_HOST }} -U ${{ secrets.DB_USERNAME }} -d ${{ secrets.DB_NAME }}
+      # - name: Test database connection (Optional - For Debugging)
+      #   run: pg_isready -h ${{ secrets.DB_HOST }} -U ${{ secrets.DB_USERNAME }} -d ${{ secrets.DB_NAME }}
 
       - name: Print Environment Variables
         run: echo "$DB_HOST"
