@@ -31,6 +31,9 @@ jobs:
     #     python -m pip install --upgrade pip
     #     pip install -r requirements.txt
 
+    - name: Set PYTHONPATH to include src/
+      run: echo "PYTHONPATH=$PYTHONPATH:$(pwd)/src" >> $GITHUB_ENV
+
     - name: Run database migrations
       run: python src/db/db_migrate.py --up
       env:
