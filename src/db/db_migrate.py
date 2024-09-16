@@ -22,7 +22,6 @@ def migration_up():
     db_engine = get_db_connection()
 
     with db_engine.connect() as conn:
-        with conn.begin():  # Ensure transaction
             directories = ["../db/migrations", "../db/sql"]
             for directory in directories:
                 if not os.path.exists(directory):
@@ -66,4 +65,4 @@ if __name__ == "__main__":
         migration_up()
     elif args.down:
         migration_down()
-
+## tt
