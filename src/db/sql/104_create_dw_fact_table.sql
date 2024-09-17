@@ -1,3 +1,5 @@
+BEGIN;
+
 CREATE TABLE IF NOT EXISTS dw.fact_table (
     id INT,
     userId INT,
@@ -23,3 +25,5 @@ CREATE TABLE IF NOT EXISTS dw.fact_table (
     CONSTRAINT fk_leave_type FOREIGN KEY (leaveTypeId) REFERENCES dw.leave_type(leave_type_id),
     CONSTRAINT fk_fiscall_detail FOREIGN KEY (fiscalId) REFERENCES dw.fiscal_detail (fiscal_id)
 );
+
+COMMIT;

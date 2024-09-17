@@ -1,3 +1,5 @@
+BEGIN;
+
 CREATE TABLE IF NOT EXISTS dw.employee_details (
     empId INT PRIMARY KEY,
     designationId INT,
@@ -8,3 +10,5 @@ CREATE TABLE IF NOT EXISTS dw.employee_details (
     email VARCHAR(255),
     departmentDescription VARCHAR(255)
 );
+
+COMMIT;
