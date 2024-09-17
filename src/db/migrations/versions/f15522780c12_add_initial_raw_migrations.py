@@ -80,7 +80,7 @@ def get_applied_migrations():
     conn = op.get_bind()  # Get the connection directly
     query = text(f"SELECT filename FROM {APPLIED_MIGRATIONS_TABLE}")
     result = conn.execute(query)
-    applied_files = {row[0] for row in result}
+    applied_files = {row['filename'] for row in result}
     return applied_files
 
 def mark_as_applied(file_name):
