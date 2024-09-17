@@ -76,9 +76,11 @@ def get_sql_files(directory):
     return files
 
 def get_applied_migrations():
-    conn = op.get_bind()
-    result = conn.execute("SELECT filename FROM migration_table")
-    applied_files = {row[0] for row in result}  # Assuming 'filename' is the first column
+    """Retrieve the list of already applied migrations."""
+    conn = op.get_bind()  # Get the connection directly
+    query = text(f"SELECT filename FROM {APPLIED_MIGRATIONS_TABLE}")
+    result = conn.execute(query)
+    applied_files = {row[0] for row in result}
     return applied_files
 
 def mark_as_applied(file_name):
