@@ -13,6 +13,19 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+  migrations:
+    build:
+      context: ./
+      dockerfile: DockerAlembic
+    depends_on:
+      - postgres
+    environment:
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOST: ${DB_HOST}
+      DB_NAME: ${DB_NAME}
+    command: ["alembic", "upgrade", "head"]
+
   pgadmin:
     image: dpage/pgadmin4
     restart: always
@@ -24,45 +37,45 @@ services:
     depends_on:
       - postgres
 
-  fastapi:
-    build:
-      context: ./
-      dockerfile: DockerFastAPI
-    restart: always
-    ports:
-      - "8000:8000"
-    depends_on:
-      - postgres
-    environment:
-      DB_USERNAME: ${DB_USERNAME}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_HOST: ${DB_HOST}
-      DB_NAME: ${DB_NAME}
-      BEARER_TOKEN: ${BEARER_TOKEN}
-      API_ENDPOINT: ${API_ENDPOINT}
+  # fastapi:
+  #   build:
+  #     context: ./
+  #     dockerfile: DockerFastAPI
+  #   restart: always
+  #   ports:
+  #     - "8000:8000"
+  #   depends_on:
+  #     - postgres
+  #   environment:
+  #     DB_USERNAME: ${DB_USERNAME}
+  #     DB_PASSWORD: ${DB_PASSWORD}
+  #     DB_HOST: ${DB_HOST}
+  #     DB_NAME: ${DB_NAME}
+  #     BEARER_TOKEN: ${BEARER_TOKEN}
+  #     API_ENDPOINT: ${API_ENDPOINT}
 
-  plotly-dash:
-    build:
-      context: ./
-      dockerfile: DockerPlotly
-    restart: always
-    ports:
-      - "8050:8050"
-    depends_on:
-      - fastapi
-    environment:
-      DB_USERNAME: ${DB_USERNAME}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_HOST: ${DB_HOST}
-      DB_NAME: ${DB_NAME}
-      BEARER_TOKEN: ${BEARER_TOKEN}
-      API_ENDPOINT: ${API_ENDPOINT}
+  # plotly-dash:
+  #   build:
+  #     context: ./
+  #     dockerfile: DockerPlotly
+  #   restart: always
+  #   ports:
+  #     - "8050:8050"
+  #   depends_on:
+  #     - fastapi
+  #   environment:
+  #     DB_USERNAME: ${DB_USERNAME}
+  #     DB_PASSWORD: ${DB_PASSWORD}
+  #     DB_HOST: ${DB_HOST}
+  #     DB_NAME: ${DB_NAME}
+  #     BEARER_TOKEN: ${BEARER_TOKEN}
+  #     API_ENDPOINT: ${API_ENDPOINT}
 
 volumes:
   pgdata:
 
 ########
-  # version: '3'
+# version: '3'
 
 # services:
 #   postgres:
@@ -77,17 +90,27 @@ volumes:
 #     volumes:
 #       - pgdata:/var/lib/postgresql/data
 
-#   fastapi:
+#   migrations:
 #     build:
 #       context: ./
-#       dockerfile: DockerFastAPI
-#     restart: always
-#     ports:
-#       - "8000:8000"
+#       dockerfile: DockerAlembic
 #     depends_on:
 #       - postgres
 #     environment:
-#       DATABASE_URL: postgresql://postgres:12345@postgres:5432/postgres
+#       SQLALCHEMY_DATABASE_URL: postgresql://postgres:12345@postgres:5432/postgres
+#     command: ["alembic", "upgrade", "head"]
+
+  # fastapi:
+  #   build:
+  #     context: ./
+  #     dockerfile: DockerFastAPI
+  #   restart: always
+  #   ports:
+  #     - "8000:8000"
+  #   depends_on:
+  #     - postgres
+  #   environment:
+  #     DATABASE_URL: postgresql://postgres:12345@postgres:5432/postgres
 
 #   plotly-dash:
 #     build:
