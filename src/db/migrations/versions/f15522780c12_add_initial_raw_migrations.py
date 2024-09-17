@@ -28,16 +28,17 @@ def execute_sql_file(file_path):
     """Execute a single SQL file."""
     with open(file_path, 'r') as file:
         sql = file.read()
-    print('sql file Pth:', file_path)
+    print('sql file path:', file_path)
     op.execute(sql)
 
 def upgrade():
     """Apply all SQL migrations."""
     sql_files = get_sql_files(SQL_MIGRATIONS_DIR)
-    print('SQL files:', sql_files)
+
     for sql_file in sql_files:
         file_path = os.path.join(SQL_MIGRATIONS_DIR, sql_file)
         execute_sql_file(file_path)
+        print('migrations has been successfully completed for: ', sql_file)
 
 def downgrade():
     """Handle downgrades by reversing SQL commands.
