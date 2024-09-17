@@ -57,6 +57,7 @@ Create Date: 2024-09-17 13:16:39.120221
 """
 from alembic import op
 import os
+from sqlalchemy import text
 
 # Define the revision identifiers, used by Alembic.
 revision = 'f15522780c12'
@@ -76,23 +77,28 @@ def get_sql_files(directory):
 
 def get_applied_migrations():
     """Retrieve the list of already applied migrations."""
-    # Create a list of applied migrations from the table
-    with op.get_bind() as conn:
-        result = conn.execute(f"SELECT filename FROM {APPLIED_MIGRATIONS_TABLE}")
-        applied_files = {row['filename'] for row in result}
+    conn = op.get_bind()  # Get the connection directly
+    query = text(f"SELECT filename FROM {APPLIED_MIGRATIONS_TABLE}")
+    result = conn.execute(query)
+    applied_files = {row['filename'] for row in result}
     return applied_files
 
 def mark_as_applied(file_name):
     """Mark a migration file as applied."""
-    with op.get_bind() as conn:
-        conn.execute(f"INSERT INTO {APPLIED_MIGRATIONS_TABLE} (filename) VALUES (%s)", (file_name,))
+    conn = op.get_bind()  # Get the connection directly
+    query = text(f"INSERT INTO {APPLIED_MIGRATIONS_TABLE} (filename) VALUES (:filename)")
+    conn.execute(query, {'filename': file_name})
 
 def execute_sql_file(file_path):
     """Execute a single SQL file."""
     with open(file_path, 'r') as file:
         sql = file.read()
-    op.execute(sql)
-    print(f'Executed SQL file: {file_path}')
+    try:
+        op.execute(text(sql))  # Ensure the SQL is wrapped in text() for execution
+        print(f'Executed SQL file: {file_path}')
+    except Exception as e:
+        print(f'Error executing SQL file {file_path}: {e}')
+        raise
 
 def upgrade():
     """Apply new SQL migrations."""
@@ -107,6 +113,7 @@ def upgrade():
             print(f'Migration successfully applied: {sql_file}')
         else:
             print(f'Skipping already applied migration: {sql_file}')
+
 
 def downgrade():
     """Handle downgrades by reversing SQL commands."""
