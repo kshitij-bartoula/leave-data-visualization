@@ -10,7 +10,7 @@ import os
 
 # Define the revision identifiers, used by Alembic.
 revision = 'f15522780c12'
-down_revision = None  # Change this if it's not the first migration
+#down_revision = None  # Change this if it's not the first migration
 branch_labels = None
 depends_on = None
 
