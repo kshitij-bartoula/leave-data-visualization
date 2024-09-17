@@ -6,13 +6,13 @@ import logging
 logger = logging.getLogger(__name__)
 
 def create_kpi_views(db_engine):
-    sql_file_path = Path("../db/sql/kpi_views.sql")
+    sql_file_path = Path("../db/etl_process/kpi_views.sql")
     logger.info(f"SQL file path for creating KPI views: {sql_file_path}")
     execute_sql_from_file(sql_file_path, db_engine)
     logger.info("KPI views created successfully.")
 
 def refresh_kpi_views(db_engine):
-    sql_file_path = Path("../db/sql/refresh_kpi_views.sql")
+    sql_file_path = Path("../db/etl_process/refresh_kpi_views.sql")
     logger.info(f"SQL file path for refreshing KPI views: {sql_file_path}")
     execute_sql_from_file(sql_file_path, db_engine)
     logger.info("KPI views refreshed successfully.")
