@@ -21,7 +21,7 @@ def get_sql_files(directory):
     """Retrieve SQL files from the directory sorted by filename."""
     files = [f for f in os.listdir(directory) if f.endswith('.sql')]
     files.sort()  # Ensure the files are applied in a sorted order
-    print('migration files:', files)
+    print('migration files:', files.sort())
     return files
 
 def execute_sql_file(file_path):
@@ -34,6 +34,7 @@ def execute_sql_file(file_path):
 def upgrade():
     """Apply all SQL migrations."""
     sql_files = get_sql_files(SQL_MIGRATIONS_DIR)
+    print('SQL files:', sql_files)
     for sql_file in sql_files:
         file_path = os.path.join(SQL_MIGRATIONS_DIR, sql_file)
         execute_sql_file(file_path)
