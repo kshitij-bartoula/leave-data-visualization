@@ -35,11 +35,11 @@ jobs:
         run: |
           docker-compose up -d --build
 
-      - name: Check environment variables in FastAPI container
-        run: docker exec $(docker ps -q -f name=fastapi) env
+      # - name: Check environment variables in FastAPI container
+      #   run: docker exec $(docker ps -q -f name=fastapi) env
 
-      - name: Check environment variables in Plotly container
-        run: docker exec $(docker ps -q -f name=plotly-dash) env
+      # - name: Check environment variables in Plotly container
+      #   run: docker exec $(docker ps -q -f name=plotly-dash) env
 
       - name: Run deployment commands
         run: |
