@@ -10,7 +10,7 @@ import os
 
 # Define the revision identifiers, used by Alembic.
 revision = 'f15522780c12'
-#down_revision = None  # Change this if it's not the first migration
+down_revision = None  # Change this if it's not the first migration
 branch_labels = None
 depends_on = None
 
@@ -21,12 +21,14 @@ def get_sql_files(directory):
     """Retrieve SQL files from the directory sorted by filename."""
     files = [f for f in os.listdir(directory) if f.endswith('.sql')]
     files.sort()  # Ensure the files are applied in a sorted order
+    print('migration files:', files)
     return files
 
 def execute_sql_file(file_path):
     """Execute a single SQL file."""
     with open(file_path, 'r') as file:
         sql = file.read()
+    print('sql file Pth:', file_path)
     op.execute(sql)
 
 def upgrade():
@@ -42,3 +44,5 @@ def downgrade():
     """
     # Example of downgrades – you should implement actual downgrade logic or SQL files
     pass
+
+upgrade()
