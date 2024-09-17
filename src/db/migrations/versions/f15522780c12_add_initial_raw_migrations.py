@@ -113,3 +113,4 @@ def downgrade():
     # Implement downgrade logic or provide SQL files as needed
     pass
 
+upgrade()
