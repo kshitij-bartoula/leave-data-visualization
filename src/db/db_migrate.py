@@ -1,16 +1,18 @@
 
 import os
 import logging
-from ..utils.db_utils import connection
-from sqlalchemy import text
+from sqlalchemy.pool import NullPool
+from sqlalchemy import create_engine,text
 from sqlalchemy.sql import text
 
 logger = logging.getLogger(__name__)
 
-SQL_FOLDER = 'sql'
+SQLALCHEMY_DATABASE_URL = os.getenv("SQLALCHEMY_DATABASE_URL")
+SQL_FOLDER = 'src/db/sql'
 
 def get_db_connection():
-    return connection()
+    """Create and return a database connection."""
+    return create_engine(SQLALCHEMY_DATABASE_URL, poolclass=NullPool)
 
 def migration_down():
     """Perform rollback migrations."""

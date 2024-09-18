@@ -1,15 +1,13 @@
-# Use a specific version of the Python image for consistency
 FROM python:3.9-slim
 
 # Set the working directory
 WORKDIR /app
 
-# Copy the requirements file and install dependencies
-COPY requirements.txt .
+# Copy everything (including SQL files and code) from the local context to the container
+COPY . .
+
+# Install dependencies from the requirements file
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the application code including SQL files
-COPY src/db ./
-
 # Set the entrypoint for migrations
-ENTRYPOINT ["python", "db_migrate.py"]
+ENTRYPOINT ["python", "src/db/db_migrate.py"]
