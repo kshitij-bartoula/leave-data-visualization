@@ -1,46 +1,70 @@
 import os
-from logging.config import fileConfig
 from alembic import context
+from sqlalchemy import create_engine, pool, text
+from logging.config import fileConfig
 
-# Configurations
 config = context.config
+fileConfig(config.config_file_name)
 
-# Interpret the config file for Python logging.
-if config.config_file_name is not None:
-    fileConfig(config.config_file_name)
+#'autogenerate' if needed.
+target_metadata = None
 
-# Set up the SQLAlchemy URL
-config.set_main_option('sqlalchemy.url', os.getenv('SQLALCHEMY_DATABASE_URL'))
+SQLALCHEMY_DATABASE_URL = os.getenv("SQLALCHEMY_DATABASE_URL")
+SQL_FOLDER = 'sql'
 
 def run_migrations_offline():
     """Run migrations in 'offline' mode."""
-    url = config.get_main_option("sqlalchemy.url")
-    context.configure(
-        url=url,
-        literal_binds=True,
-        dialect_opts={"paramstyle": "named"},
-    )
+    url = SQLALCHEMY_DATABASE_URL
+    context.configure(url=url, literal_binds=True)
 
     with context.begin_transaction():
         context.run_migrations()
+
 
 def run_migrations_online():
     """Run migrations in 'online' mode."""
-    from sqlalchemy import engine_from_config, pool
+    connectable = create_engine(SQLALCHEMY_DATABASE_URL, poolclass=pool.NullPool)
 
-    engine = engine_from_config(
-        config.get_section(config.config_ini_section),
-        prefix='sqlalchemy.',
-        poolclass=pool.NullPool,
-    )
+    with connectable.connect() as connection:
+        context.configure(connection=connection)
 
-    connection = engine.connect()
-    context.configure(
-        connection=connection,
-    )
+        connection.execute(text("""
+            CREATE TABLE IF NOT EXISTS migration_history (
+                id SERIAL PRIMARY KEY,
+                migration_name VARCHAR(255) UNIQUE NOT NULL,
+                applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        """))
 
-    with context.begin_transaction():
-        context.run_migrations()
+        #transaction
+        with context.begin_transaction():
+            sql_files = sorted([f for f in os.listdir(SQL_FOLDER) if f.endswith('.sql')])
+
+            for sql_file in sql_files:
+                result = connection.execute(
+                    text("SELECT migration_name FROM migration_history WHERE migration_name = :name"),
+                    {"name": sql_file}
+                ).fetchone()
+
+                if result:
+                    print(f"Skipping already applied migration: {sql_file}")
+                    continue
+
+                # Read and execute each SQL file
+                sql_path = os.path.join(SQL_FOLDER, sql_file)
+                with open(sql_path, 'r') as file:
+                    sql_command = file.read()
+                    print(f"Running new SQL migration: {sql_file}")
+                    connection.execute(text(sql_command))
+
+                # Record migration in the migration_history table
+                connection.execute(
+                    text("INSERT INTO migration_history (migration_name) VALUES (:name)"),
+                    {"name": sql_file}
+                )
+
+            context.run_migrations()
+
 
 if context.is_offline_mode():
     run_migrations_offline()

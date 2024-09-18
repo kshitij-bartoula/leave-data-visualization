@@ -3,7 +3,7 @@ name: Deploy Locally
 on:
   push:
     branches:
-      - main
+      - testing-auto-detect
 
 jobs:
 
