@@ -8,6 +8,8 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the application code including SQL files
-COPY src/db ./
+# # Copy the application code including SQL files
+# COPY src/db ./
 
+# # Set the entrypoint for migrations
+# ENTRYPOINT ["python", "db_migrate.py"]
