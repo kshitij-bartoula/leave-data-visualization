@@ -9,7 +9,6 @@ from alembic import op
 import os
 from sqlalchemy import text
 
-# Auto-detect migration script
 # This file is automatically created by Alembic and acts as a version control marker
 
 revision = 'f15522780c12'
