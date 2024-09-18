@@ -1,6 +1,6 @@
 import os
 from alembic import context
-from sqlalchemy import engine_from_config, pool
+from sqlalchemy import create_engine, pool
 from logging.config import fileConfig
 
 # Alembic Config object, which provides access to values within the .ini file
@@ -12,13 +12,16 @@ fileConfig(config.config_file_name)
 # MetaData object, you can set this to support 'autogenerate' if needed.
 target_metadata = None
 
+# Use the environment variable for SQLALCHEMY_DATABASE_URL
+SQLALCHEMY_DATABASE_URL = os.getenv("SQLALCHEMY_DATABASE_URL")
+
 # Path to the folder with the SQL migration scripts
 SQL_FOLDER = 'sql'
 
 
 def run_migrations_offline():
     """Run migrations in 'offline' mode."""
-    url = config.get_main_option("sqlalchemy.url")
+    url = SQLALCHEMY_DATABASE_URL  # Use the URL from the environment
     context.configure(url=url, literal_binds=True)
 
     with context.begin_transaction():
@@ -27,11 +30,8 @@ def run_migrations_offline():
 
 def run_migrations_online():
     """Run migrations in 'online' mode."""
-    connectable = engine_from_config(
-        config.get_section(config.config_ini_section),
-        prefix='sqlalchemy.',
-        poolclass=pool.NullPool,
-    )
+    # Create engine using SQLALCHEMY_DATABASE_URL from the environment
+    connectable = create_engine(SQLALCHEMY_DATABASE_URL, poolclass=pool.NullPool)
 
     with connectable.connect() as connection:
         context.configure(connection=connection)
