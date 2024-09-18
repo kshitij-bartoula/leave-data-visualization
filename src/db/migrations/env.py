@@ -1,6 +1,6 @@
 import os
 from alembic import context
-from sqlalchemy import create_engine, pool
+from sqlalchemy import create_engine, pool, text  # Import `text` for raw SQL execution
 from logging.config import fileConfig
 
 # Alembic Config object, which provides access to values within the .ini file
@@ -48,7 +48,9 @@ def run_migrations_online():
                 with open(sql_path, 'r') as file:
                     sql_command = file.read()
                     print(f"Running SQL migration: {sql_file}")
-                    connection.execute(sql_command)
+
+                    # Execute the SQL command using `text()`
+                    connection.execute(text(sql_command))
 
             # Run any additional Alembic-specific migrations (if needed)
             context.run_migrations()
