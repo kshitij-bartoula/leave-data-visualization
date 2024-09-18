@@ -3,7 +3,7 @@ name: Database Migration
 on:
   push:
     branches:
-      - testing_branch
+      - testing-auto-detect
   pull_request:
     branches:
       - testing_branch

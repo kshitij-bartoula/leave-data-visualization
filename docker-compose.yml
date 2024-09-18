@@ -13,20 +13,6 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
-  migrations:
-    build:
-      context: ./
-      dockerfile: DockerAlembic
-    depends_on:
-      - postgres
-    environment:
-      DB_USERNAME: ${DB_USERNAME}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_HOST: ${DB_HOST}
-      DB_NAME: ${DB_NAME}
-      SQLALCHEMY_DATABASE_URL: postgresql://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}/${DB_NAME}
-    command: ["alembic", "upgrade", "head"]
-
   pgadmin:
     image: dpage/pgadmin4
     restart: always
