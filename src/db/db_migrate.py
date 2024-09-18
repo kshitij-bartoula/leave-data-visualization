@@ -1,7 +1,7 @@
 
 import os
 import logging
-from ...utils.db_utils import connection
+from ..utils.db_utils import connection
 from sqlalchemy import text
 from sqlalchemy.sql import text
 
