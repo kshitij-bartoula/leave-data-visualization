@@ -1,11 +1,6 @@
-# config.py
+# config_utils.py
 import os
-#from dotenv import load_dotenv
 
-# Load environment variables from .env file
-#load_dotenv()
-
-# Database configuration
 def get_db_config() -> dict:
     db_config = {
         'DB_USERNAME': os.getenv('DB_USERNAME'),

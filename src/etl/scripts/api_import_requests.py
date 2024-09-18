@@ -40,17 +40,17 @@ def parse_json_and_insert(api_data, db_engine):
     main_data = []
     nested_data = []
     for entry in api_data:
-        main_entry = entry.copy()  # Create a copy of the entry for the main table
-        allocations = main_entry.pop('allocations', None)  # Remove allocations from the main entry
+        main_entry = entry.copy()
+        allocations = main_entry.pop('allocations', None)
         if allocations is not None and isinstance(allocations, list):
-            main_entry['allocations'] = json.dumps(allocations)  # Add allocations in JSON format to main entry
+            main_entry['allocations'] = json.dumps(allocations)
             for alloc_item in allocations:
-                nested_entry = {'empId': main_entry['empId']}  # Include parent_id for relationship
-                nested_entry.update(alloc_item)  # Add allocation data to nested entry
-                nested_data.append(nested_entry)  # Append nested entry to list
-        main_data.append(main_entry)  # Append main entry to list
-    df_main = pd.DataFrame(main_data)  # Create DataFrame for main data
-    df_nested = pd.DataFrame(nested_data)  # Create DataFrame for nested data
+                nested_entry = {'empId': main_entry['empId']}
+                nested_entry.update(alloc_item)
+                nested_data.append(nested_entry)
+        main_data.append(main_entry)
+    df_main = pd.DataFrame(main_data)
+    df_nested = pd.DataFrame(nested_data)
 
     # Insert main data into PostgreSQL table
     insert_data_to_db(df_main, db_engine, 'api_data', schema='raw')
@@ -60,8 +60,6 @@ def parse_json_and_insert(api_data, db_engine):
 
 
 def main():
-    # Load environment variables
-    # load_dotenv()
 
     BEARER_TOKEN = os.getenv('BEARER_TOKEN')
     API_ENDPOINT = os.getenv('API_ENDPOINT')
@@ -70,25 +68,7 @@ def main():
         'Authorization': f'Bearer {BEARER_TOKEN}'
     }
 
-    # Access configuration settings
     db_engine = connection()
-
-    with db_engine.connect() as conn:
-        schema_existence_query = text(
-            "SELECT EXISTS(SELECT 1 FROM information_schema.schemata WHERE schema_name = 'raw')"
-        )
-        schema_exists = conn.execute(schema_existence_query).scalar()
-        logger.info(f"Schema 'raw' existence check: {schema_exists}")
-
-        if not schema_exists:
-            logger.info('Schema does not exist. Creating schema...')
-            create_schema_query = text(
-                "BEGIN; CREATE SCHEMA raw; COMMIT;"
-            )
-            create_schema = conn.execute(create_schema_query)
-            logger.info('Schema "raw" created successfully.')
-        else:
-            logger.info('Schema "raw" already exists.')
 
     # Ingest data from API
     api_data = ingest_api_data(API_ENDPOINT, headers)

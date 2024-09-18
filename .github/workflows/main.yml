@@ -1,9 +1,9 @@
-name: Deploy Locally
+name: Deploy self-hosted locally
 
 on:
   push:
     branches:
-      - testing-auto-detect
+      - main
 
 jobs:
 
@@ -35,12 +35,6 @@ jobs:
         run: |
           docker-compose up -d --build
 
-      # - name: Check environment variables in FastAPI container
-      #   run: docker exec $(docker ps -q -f name=fastapi) env
-
-      # - name: Check environment variables in Plotly container
-      #   run: docker exec $(docker ps -q -f name=plotly-dash) env
-
-      - name: Run deployment commands
+      - name: Deployment completed
         run: |
           # Add any additional deployment commands here
