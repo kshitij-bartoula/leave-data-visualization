@@ -12,5 +12,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY src/db .
 
 # Command to run alembic migrations
-CMD ["alembic", "upgrade", "head"]
+CMD ["alembic", "upgrade", "head", "--log-level", "DEBUG"]
+
 

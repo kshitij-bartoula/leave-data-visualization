@@ -24,7 +24,6 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       DB_HOST: ${DB_HOST}
       DB_NAME: ${DB_NAME}
-      SQLALCHEMY_DATABASE_URL: postgresql://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}/${DB_NAME}
     command: ["alembic", "upgrade", "head"]
 
   pgadmin:
@@ -46,7 +45,7 @@ services:
   #   ports:
   #     - "8000:8000"
   #   depends_on:
-  #     - postgres
+  #     - migrations
   #   environment:
   #     DB_USERNAME: ${DB_USERNAME}
   #     DB_PASSWORD: ${DB_PASSWORD}
