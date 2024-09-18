@@ -9,9 +9,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the application code including SQL files
-COPY src/db .
+COPY src/db ./
 
-# Command to run alembic migrations
-CMD ["alembic", "upgrade", "head", "--log-level", "DEBUG"]
-
-
+# Set the entrypoint for migrations
+ENTRYPOINT ["python", "db_migrate.py"]

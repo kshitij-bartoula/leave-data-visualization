@@ -1,46 +1,46 @@
-name: Deploy Locally
+# name: Deploy Locally
 
-on:
-  push:
-    branches:
-      - testing-auto-detect
+# on:
+#   push:
+#     branches:
+#       - testing-auto-detect
 
-jobs:
+# jobs:
 
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+#   test:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v2
 
-  deploy:
-    runs-on: self-hosted
-    needs: test
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+#   deploy:
+#     runs-on: self-hosted
+#     needs: test
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v2
 
-      - name: Export secrets as environment variables
-        run: |
-          echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> $GITHUB_ENV
-          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> $GITHUB_ENV
-          echo "DB_HOST=${{ secrets.DB_HOST }}" >> $GITHUB_ENV
-          echo "DB_NAME=${{ secrets.DB_NAME }}" >> $GITHUB_ENV
-          echo "BEARER_TOKEN=${{ secrets.BEARER_TOKEN }}" >> $GITHUB_ENV
-          echo "API_ENDPOINT=${{ secrets.API_ENDPOINT }}" >> $GITHUB_ENV
-          echo "PGADMIN_DEFAULT_EMAIL=${{ secrets.PGADMIN_DEFAULT_EMAIL }}" >> $GITHUB_ENV
-          echo "PGADMIN_DEFAULT_PASSWORD=${{ secrets.PGADMIN_DEFAULT_PASSWORD }}" >> $GITHUB_ENV
+#       - name: Export secrets as environment variables
+#         run: |
+#           echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> $GITHUB_ENV
+#           echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> $GITHUB_ENV
+#           echo "DB_HOST=${{ secrets.DB_HOST }}" >> $GITHUB_ENV
+#           echo "DB_NAME=${{ secrets.DB_NAME }}" >> $GITHUB_ENV
+#           echo "BEARER_TOKEN=${{ secrets.BEARER_TOKEN }}" >> $GITHUB_ENV
+#           echo "API_ENDPOINT=${{ secrets.API_ENDPOINT }}" >> $GITHUB_ENV
+#           echo "PGADMIN_DEFAULT_EMAIL=${{ secrets.PGADMIN_DEFAULT_EMAIL }}" >> $GITHUB_ENV
+#           echo "PGADMIN_DEFAULT_PASSWORD=${{ secrets.PGADMIN_DEFAULT_PASSWORD }}" >> $GITHUB_ENV
 
-      - name: Set up Docker Compose
-        run: |
-          docker-compose up -d --build
+#       - name: Set up Docker Compose
+#         run: |
+#           docker-compose up -d --build
 
-      # - name: Check environment variables in FastAPI container
-      #   run: docker exec $(docker ps -q -f name=fastapi) env
+#       # - name: Check environment variables in FastAPI container
+#       #   run: docker exec $(docker ps -q -f name=fastapi) env
 
-      # - name: Check environment variables in Plotly container
-      #   run: docker exec $(docker ps -q -f name=plotly-dash) env
+#       # - name: Check environment variables in Plotly container
+#       #   run: docker exec $(docker ps -q -f name=plotly-dash) env
 
-      - name: Run deployment commands
-        run: |
-          # Add any additional deployment commands here
+#       - name: Run deployment commands
+#         run: |
+#           # Add any additional deployment commands here

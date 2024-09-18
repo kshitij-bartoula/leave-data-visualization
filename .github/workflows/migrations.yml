@@ -1,0 +1,77 @@
+name: Database Migration
+
+on:
+  push:
+    branches:
+      - testing_branch
+  pull_request:
+    branches:
+      - testing_branch
+  workflow_dispatch:
+    inputs:
+      migration_type:
+        description: 'Type of migration to run (up, down, rollback)'
+        required: true
+        default: 'up'
+        type: choice
+        options:
+          - up
+          - down
+          - rollback
+
+jobs:
+  migrate_database:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Export secrets as environment variables
+        run: |
+          echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> $GITHUB_ENV
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> $GITHUB_ENV
+          echo "DB_HOST=${{ secrets.DB_HOST }}" >> $GITHUB_ENV
+          echo "DB_NAME=${{ secrets.DB_NAME }}" >> $GITHUB_ENV
+          echo "PGADMIN_DEFAULT_EMAIL=${{ secrets.PGADMIN_DEFAULT_EMAIL }}" >> $GITHUB_ENV
+          echo "PGADMIN_DEFAULT_PASSWORD=${{ secrets.PGADMIN_DEFAULT_PASSWORD }}" >> $GITHUB_ENV
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Set PYTHONPATH to include src/db
+        run: echo "PYTHONPATH=$PYTHONPATH:$(pwd)/src/db" >> $GITHUB_ENV
+
+      - name: Set up Docker Compose
+        run: |
+          docker-compose -f docker-compose-migration.yml up -d --build
+
+      - name: Run Migration
+        run: |
+          case ${{ github.event.inputs.migration_type }} in
+            up)
+              docker-compose -f docker-compose-migration.yml run --rm migrations python db_migrate.py --up
+              ;;
+            down)
+              docker-compose -f docker-compose-migration.yml run --rm migrations python db_migrate.py --down
+              ;;
+            rollback)
+              docker-compose -f docker-compose-migration.yml run --rm migrations python db_migrate.py --rollback
+              ;;
+          esac
+
+      - name: Post-migration verification
+        run: |
+          echo "Verifying migration was successful..."
+          # Add any validation or check here
+        if: success()
+
+      - name: Shutdown Docker Compose
+        run: |
+          docker-compose -f docker-compose-migration.yml down
