@@ -45,24 +45,24 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Set PYTHONPATH to include src/db
-        run: echo "PYTHONPATH=$PYTHONPATH:$(pwd)/src/db" >> $GITHUB_ENV
-
       - name: Set up Docker Compose
         run: |
-          docker-compose -f docker-compose-migration.yml up -d --build
+          docker-compose -f docker-compose-migrations.yml up -d --build
+
+      - name: Set PYTHONPATH to include src/db
+        run: echo "PYTHONPATH=$PYTHONPATH:$(pwd)/src/db" >> $GITHUB_ENV
 
       - name: Run Migration
         run: |
           case ${{ github.event.inputs.migration_type }} in
             up)
-              docker-compose -f docker-compose-migration.yml run --rm migrations python db_migrate.py --up
+              docker-compose -f docker-compose-migrations.yml run --rm migrations python db_migrate.py --up
               ;;
             down)
-              docker-compose -f docker-compose-migration.yml run --rm migrations python db_migrate.py --down
+              docker-compose -f docker-compose-migrations.yml run --rm migrations python db_migrate.py --down
               ;;
             rollback)
-              docker-compose -f docker-compose-migration.yml run --rm migrations python db_migrate.py --rollback
+              docker-compose -f docker-compose-migrations.yml run --rm migrations python db_migrate.py --rollback
               ;;
           esac
 
@@ -74,4 +74,4 @@ jobs:
 
       - name: Shutdown Docker Compose
         run: |
-          docker-compose -f docker-compose-migration.yml down
+          docker-compose -f docker-compose-migrations.yml down
