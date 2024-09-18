@@ -25,7 +25,7 @@ services:
       DB_HOST: ${DB_HOST}
       DB_NAME: ${DB_NAME}
       SQLALCHEMY_DATABASE_URL: postgresql://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}/${DB_NAME}
-    command: ["python", "src/db/db_migrate.py"]
+    command: ["python", "db_migrate.py"]
 
 volumes:
   pgdata:
