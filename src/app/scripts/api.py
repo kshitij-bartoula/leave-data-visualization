@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func
 from .schemas import (
     EmployeeLeave,
+    EmployeeDetails,
     LeaveBalance,
     LeaveTrend,
     LeaveDistribution,
@@ -38,6 +39,29 @@ def get_employee_leave(db: Session = Depends(get_db)):
             ))
 
         return employee_leave
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error occurred{e}")
+
+@router.get("/employee_details", response_model=List[EmployeeDetails])
+def get_employee_details(db: Session = Depends(get_db)):
+    try:
+        query = "SELECT * FROM dw.employee_details_mv"
+        result = get_result_from_query(query)
+
+        # Transform the raw database result into EmployeeLeave objects
+        employee_details = []
+        for empId, firstName, lastName, fiscal_start_date, fiscal_end_date, designationName, project_allocation in result:
+            employee_details.append(EmployeeDetails(
+                empId=empId,
+                firstName=firstName,
+                lastName=lastName,
+                fiscal_start_date = fiscal_start_date,
+                fiscal_end_date = fiscal_end_date,
+                designationName = designationName,
+                project_allocation = project_allocation,
+            ))
+
+        return employee_details
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database error occurred{e}")
 

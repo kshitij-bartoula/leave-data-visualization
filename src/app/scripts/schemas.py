@@ -24,6 +24,14 @@ class EmployeeLeave(BaseModel):
     lastName: str
     total_leave_days: int
 
+class EmployeeDetails(BaseModel):
+    empId: int
+    firstName: str
+    lastName: str
+    fiscal_start_date: date
+    fiscal_end_date: date
+    designationName: str
+    project_allocation: str
 
 class LeaveBalance(BaseModel):
     empId: int

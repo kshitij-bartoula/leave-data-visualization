@@ -16,6 +16,27 @@ INNER JOIN
 GROUP BY
     ft.empId, ed.firstName, ed.lastName;
 
+
+CREATE MATERIALIZED VIEW IF NOT EXISTS dw.employee_details_mv AS
+SELECT
+    ft.empId,
+    ed.firstName,
+    ed.lastName,
+    cast(fd.fiscal_start_date as date),
+    cast(fd.fiscal_end_date as date),
+    ed.designationname,
+    al.name as project_name
+FROM
+    dw.fact_table ft
+INNER JOIN
+    dw.employee_details ed ON ed.empId = ft.empId
+INNER JOIN
+    dw.allocations al ON al.empid = ed.empid
+inner join
+    dw.fiscal_detail fd on fd.fiscal_id = ft.fiscalid
+GROUP BY
+    ft.empId, ed.firstName, ed.lastName,ed.designationname,al.name,fd.fiscal_start_date,fd.fiscal_end_date;
+
 -- Leave balances per employee (approved)
 -- CREATE MATERIALIZED VIEW IF NOT EXISTS leave_balances_per_employee_mv AS
 -- SELECT

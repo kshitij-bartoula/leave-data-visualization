@@ -1,15 +1,15 @@
 from dash.dependencies import Output, Input
 import plotly.graph_objs as go
 from data_processing import (
-    employee_leave, leave_trend, leave_distribution,
+    employee_leave, leave_trend, leave_distribution, employee_details,
     leave_trend_fiscal_year, department_leave_distribution, project_allocations
 )
 from components import (
-    gen_employee_leave, gen_leave_trend, gen_leave_distribution,
+    gen_employee_leave, gen_leave_trend, gen_leave_distribution,gen_employee_details,
     gen_leave_trend_fiscal_year, gen_department_leave_distribution, gen_project_allocations
 )
 from endpoints import (
-    ENDPOINT_EMPLOYEE_LEAVE, ENDPOINT_LEAVE_TREND,
+    ENDPOINT_EMPLOYEE_LEAVE, ENDPOINT_LEAVE_TREND, ENDPOINT_EMPLOYEE_DETAILS,
     ENDPOINT_LEAVE_DISTRIBUTION, ENDPOINT_LEAVE_TREND_FISCAL_YEAR,
     ENDPOINT_DEPARTMENT_LEAVE_DISTRIBUTION, ENDPOINT_PROJECT_ALLOCATIONS
 )
@@ -74,3 +74,16 @@ def register_callbacks(app):
 
         return figure_employee_leave, employee_names
 
+    @app.callback(
+            Output('employee-details-table', 'data'),  # Replace with your table ID
+            [Input('employee-dropdown', 'value'),  # Assuming employee dropdown is used for filtering
+            Input('employee-dropdown', 'search_value')]
+        )
+    def update_employee_details(selected_employee, search_value):
+            # Retrieve data for all employees
+        data_employee_details = employee_details(ENDPOINT_EMPLOYEE_DETAILS)
+
+            # Filter employee details based on selected employee
+        filtered_employee_details = gen_employee_details(data_employee_details, selected_employee)
+
+        return filtered_employee_details

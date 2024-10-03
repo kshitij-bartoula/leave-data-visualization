@@ -9,6 +9,15 @@ def employee_leave(endpoint_url):
         # Handle API request error
         return []
 
+def employee_details(endpoint_url):
+    api_url = endpoint_url
+    response = requests.get(api_url)
+    if response.status_code == 200:
+        return response.json()
+    else:
+        # Handle API request error
+        return []
+
 def leave_trend(endpoint_url):
     api_url = endpoint_url
     response = requests.get(api_url)

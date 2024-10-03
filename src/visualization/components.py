@@ -41,6 +41,13 @@ def gen_employee_leave(data, filter_value=None, default_count=10):
 
     return generate_bar_chart(x_values, y_values, 'Employee Leave Days', 'Total Leave Days', 'Employee')
 
+def gen_employee_details(data, filter_value=None, default_count=10):
+    if filter_value:
+        filtered_data = [entry for entry in data if filter_value.lower() in (entry['firstName'].lower() + ' ' + entry['lastName'].lower())]
+    else:
+        filtered_data = data[:default_count]  # # Show only the first `default_count` employees by default
+    return filtered_data
+
 def gen_leave_trend(data, filter_value=None):
     if filter_value:
         data = [entry for entry in data if entry['year'] == filter_value]
