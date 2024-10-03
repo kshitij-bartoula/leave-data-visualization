@@ -5,7 +5,7 @@ from data_processing import (
     leave_trend_fiscal_year, department_leave_distribution, project_allocations
 )
 from components import (
-    gen_employee_leave, gen_leave_trend, gen_leave_distribution,gen_employee_details,
+    gen_employee_leave, gen_leave_trend, gen_leave_distribution, gen_employee_details,
     gen_leave_trend_fiscal_year, gen_department_leave_distribution, gen_project_allocations
 )
 from endpoints import (
@@ -24,7 +24,6 @@ def register_callbacks(app):
         [Input('interval-component', 'n_intervals')]
     )
     def update_chart(n_intervals):
-
         data_leave_trend = leave_trend(ENDPOINT_LEAVE_TREND)
         figure_leave_trend = gen_leave_trend(data_leave_trend)
 
@@ -49,12 +48,29 @@ def register_callbacks(app):
         )
 
     @app.callback(
-        [Output('employee-leave-graph', 'figure'),
-        Output('employee-dropdown', 'options')],
-        [Input('employee-dropdown', 'value'),
-        Input('employee-dropdown', 'search_value')]
+        Output('project-dropdown', 'options'),
+        [Input('interval-component', 'n_intervals')]
     )
-    def update_employee_leave(selected_employee, search_value):
+    def update_project_dropdown(n_intervals):
+        data_projects = project_allocations(ENDPOINT_PROJECT_ALLOCATIONS)
+        options = [{'label': project['name'], 'value': project['name']} for project in data_projects]
+        return options
+
+    @app.callback(
+        Output('employee-leave-dropdown', 'options'),
+        Output('employee-details-dropdown', 'options'),  # Update employee details dropdown as well
+        [Input('interval-component', 'n_intervals')]
+    )
+    def update_employee_dropdown(n_intervals):
+        data_employee = employee_details(ENDPOINT_EMPLOYEE_DETAILS)
+        options = [{'label': f"{entry['firstName']} {entry['lastName']}", 'value': f"{entry['firstName']} {entry['lastName']}"} for entry in data_employee]
+        return options, options  # Return for both dropdowns
+
+    @app.callback(
+        Output('employee-leave-graph', 'figure'),
+        [Input('employee-leave-dropdown', 'value')]
+    )
+    def update_employee_leave(selected_employee):
         # Retrieve data for all employees
         data_employee_leave = employee_leave(ENDPOINT_EMPLOYEE_LEAVE)
 
@@ -65,25 +81,25 @@ def register_callbacks(app):
         # Generate figure based on filtered data
         figure_employee_leave = gen_employee_leave(data_employee_leave)
 
-        # Create dropdown options with employee full names
-        employee_names = [{'label': f"{entry['firstName']} {entry['lastName']}", 'value': f"{entry['firstName']} {entry['lastName']}"} for entry in data_employee_leave]
-
-        # Filter options based on user input if search_value is provided
-        if search_value:
-            employee_names = [employee for employee in employee_names if search_value.lower() in employee['label'].lower()]
-
-        return figure_employee_leave, employee_names
+        return figure_employee_leave
 
     @app.callback(
-            Output('employee-details-table', 'data'),  # Replace with your table ID
-            [Input('employee-dropdown', 'value'),  # Assuming employee dropdown is used for filtering
-            Input('employee-dropdown', 'search_value')]
-        )
-    def update_employee_details(selected_employee, search_value):
-            # Retrieve data for all employees
+        Output('employee-details-table', 'data'),
+        [Input('employee-details-dropdown', 'value'),  # Employee dropdown
+         Input('project-dropdown', 'value')]  # Project dropdown
+    )
+    def update_employee_details(selected_employee, selected_project):
+        # Retrieve data for all employees
         data_employee_details = employee_details(ENDPOINT_EMPLOYEE_DETAILS)
 
-            # Filter employee details based on selected employee
-        filtered_employee_details = gen_employee_details(data_employee_details, selected_employee)
+        # Filter employee details based on selected employee
+        if selected_employee:
+            data_employee_details = [entry for entry in data_employee_details if
+                                     f"{entry['firstName']} {entry['lastName']}" == selected_employee]
 
-        return filtered_employee_details
+        # Further filter by selected project if one is chosen
+        if selected_project:
+            data_employee_details = [entry for entry in data_employee_details if
+                                     entry['project_allocation'] == selected_project]
+
+        return data_employee_details

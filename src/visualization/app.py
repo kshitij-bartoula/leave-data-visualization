@@ -17,14 +17,23 @@ def generate_graph_card(graph_id, graph_title):
         className="mb-3"
     )
 
-def generate_employee_dropdown():
+def generate_employee_dropdown(id):
     employee_dropdown = dcc.Dropdown(
-        id='employee-dropdown',
+        id=id,
         options=[],  # Options will be populated dynamically
         placeholder='Select an employee...',
         multi=False  # Set to True if you want to allow selecting multiple employees
     )
     return employee_dropdown
+
+def generate_project_dropdown():
+    project_dropdown = dcc.Dropdown(
+        id='project-dropdown',
+        options=[],  # Options will be populated dynamically
+        placeholder='Select project...',
+        multi=False  # Set to True if you want to allow selecting multiple projects
+    )
+    return project_dropdown
 
 app.layout = dbc.Container([
     dbc.Row([
@@ -43,7 +52,7 @@ app.layout = dbc.Container([
                 dbc.CardHeader("Employee Leave Days"),
                 dbc.CardBody([
                     dbc.Row([
-                        dbc.Col(generate_employee_dropdown(), width=4)  # Employee dropdown
+                        dbc.Col(generate_employee_dropdown('employee-leave-dropdown'), width=4)  # Employee dropdown
                     ]),
                     dbc.Row([
                         dbc.Col(dcc.Graph(id='employee-leave-graph', className='graph-container'))  # Employee Leave Days graph
@@ -60,7 +69,8 @@ app.layout = dbc.Container([
                 dbc.CardHeader("Employee Details", className="card-header"),
                 dbc.CardBody([
                     dbc.Row([
-                        dbc.Col(generate_employee_dropdown(), width=4)  # Employee dropdown
+                        dbc.Col(generate_employee_dropdown('employee-details-dropdown'), width=4),  # Employee dropdown
+                        dbc.Col(generate_project_dropdown(), width=4)
                     ]),
                     dbc.Row([
                         DataTable(

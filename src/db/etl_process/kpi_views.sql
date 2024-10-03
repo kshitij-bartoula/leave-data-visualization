@@ -116,20 +116,20 @@ GROUP BY
     ed.departmentDescription,
     lt.leaveTypeName;
 
--- Leave status count by department
-CREATE MATERIALIZED VIEW IF NOT EXISTS dw.leave_status_count_by_department_mv AS
-SELECT
-    ed.departmentDescription,
-    COUNT(CASE WHEN ft.status = 'APPROVED' THEN 1 END) AS approved,
-    COUNT(CASE WHEN ft.status = 'REJECTED' THEN 1 END) AS rejected,
-    COUNT(CASE WHEN ft.status = 'REQUESTED' THEN 1 END) AS requested,
-    COUNT(CASE WHEN ft.status = 'CANCELLED' THEN 1 END) AS cancelled
-FROM
-    dw.fact_table ft
-JOIN
-    dw.employee_details ed ON ft.empId = ed.empId
-GROUP BY
-    ed.departmentDescription;
+-- -- Leave status count by department
+-- CREATE MATERIALIZED VIEW IF NOT EXISTS dw.leave_status_count_by_department_mv AS
+-- SELECT
+--     ed.departmentDescription,
+--     COUNT(CASE WHEN ft.status = 'APPROVED' THEN 1 END) AS approved,
+--     COUNT(CASE WHEN ft.status = 'REJECTED' THEN 1 END) AS rejected,
+--     COUNT(CASE WHEN ft.status = 'REQUESTED' THEN 1 END) AS requested,
+--     COUNT(CASE WHEN ft.status = 'CANCELLED' THEN 1 END) AS cancelled
+-- FROM
+--     dw.fact_table ft
+-- JOIN
+--     dw.employee_details ed ON ft.empId = ed.empId
+-- GROUP BY
+--     ed.departmentDescription;
 
 -- TOP 10 project allocations
 CREATE MATERIALIZED VIEW IF NOT EXISTS dw.top_10_project_allocations_mv AS
