@@ -49,16 +49,42 @@ app.layout = dbc.Container([
     dbc.Row([
         dbc.Col(
             dbc.Card([
-                dbc.CardHeader("Employee Leave Days"),
+                dbc.CardHeader("Employee Leave Details"),
                 dbc.CardBody([
                     dbc.Row([
                         dbc.Col(generate_employee_dropdown('employee-leave-dropdown'), width=4)  # Employee dropdown
                     ]),
                     dbc.Row([
-                        dbc.Col(dcc.Graph(id='employee-leave-graph', className='graph-container'))  # Employee Leave Days graph
+                        DataTable(
+                            id='employee-leave-table',
+                            columns=[
+                                {'name': 'Employee ID', 'id': 'empId'},
+                                {'name': 'First Name', 'id': 'firstName'},
+                                {'name': 'Last Name', 'id': 'lastName'},
+                                {'name': 'Fiscal Id', 'id': 'fiscalId'},
+                                {'name': 'Fiscal Start Date', 'id': 'fiscalStartDate'},
+                                {'name': 'Fiscal End Date', 'id': 'fiscalEndDate'},
+                                {'name': 'Default Days', 'id': 'defaultDays'},
+                                {'name': 'Transferable Days', 'id': 'transferableDays'},
+                                {'name': 'Total Leave Days', 'id': 'total_leave_days'},
+                            ],
+                            data=[],  # This will be filled by the callback
+                            style_table={'overflowX': 'auto'},
+                            page_size=10,  # Number of rows per page
+                            style_cell={
+                                'textAlign': 'left',
+                                'padding': '10px',
+                                'border': '1px solid #ddd',
+                                'backgroundColor': '#ffffff'  # White background for the table
+                            },
+                            style_header={
+                                'backgroundColor': '#f70202',  # Light grey for header
+                                'fontWeight': 'bold'
+                            }
+                        )
                     ])
                 ])
-            ]),
+            ],className="card-employee-leave"),
             width=12
         )
     ]),
@@ -66,7 +92,7 @@ app.layout = dbc.Container([
     dbc.Row([
         dbc.Col(
             dbc.Card([
-                dbc.CardHeader("Employee Details", className="card-header"),
+                dbc.CardHeader("Employee HR Details", className="card-header"),
                 dbc.CardBody([
                     dbc.Row([
                         dbc.Col(generate_employee_dropdown('employee-details-dropdown'), width=4),  # Employee dropdown

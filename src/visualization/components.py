@@ -35,11 +35,7 @@ def gen_employee_leave(data, filter_value=None, default_count=10):
         filtered_data = [entry for entry in data if filter_value in (entry['firstName'] + ' ' + entry['lastName'])]
     else:
         filtered_data = data[:default_count]  # Show only the first `default_count` employees by default
-
-    y_values = [entry['firstName'] + ' ' + entry['lastName'] for entry in filtered_data]
-    x_values = [entry['total_leave_days'] for entry in filtered_data]
-
-    return generate_bar_chart(x_values, y_values, 'Employee Leave Days', 'Total Leave Days', 'Employee')
+    return filtered_data
 
 def gen_employee_details(data, filter_value=None, default_count=10):
     if filter_value:
@@ -66,23 +62,35 @@ def gen_leave_distribution(data, filter_value=None):
     return generate_pie_chart(leave_types, leave_counts, 'Leave Types Distribution')
 
 def gen_leave_trend_fiscal_year(data, filter_value=None):
+    # Filter data by leave type if provided
     if filter_value:
         data = [entry for entry in data if entry['leavetypename'] == filter_value]
-    start_dates = [datetime.strptime(entry['fiscal_start_date'], '%Y-%m-%dT%H:%M:%S%z').date() for entry in data]
-    end_dates = [datetime.strptime(entry['fiscal_end_date'], '%Y-%m-%dT%H:%M:%S%z').date() for entry in data]
+
+    # Extract relevant data
+    start_dates = [
+        entry['fiscal_start_date'] if isinstance(entry['fiscal_start_date'], datetime) else datetime.strptime(entry['fiscal_start_date'], '%Y-%m-%d').date()
+        for entry in data
+    ]  # Ensure these are date objects
     leave_counts = [entry['leave_count'] for entry in data]
     leave_types = [entry['leavetypename'] for entry in data]
-    unique_start_dates = sorted(list(set(start_dates)))
-    unique_end_dates = sorted(list(set(end_dates)))
-    unique_leave_types = sorted(list(set(leave_types)))
-    fiscal_years = [start.strftime('%Y') for start in unique_start_dates]
 
+    # Get unique fiscal years and leave types
+    unique_start_dates = sorted(set(start_dates))
+    unique_leave_types = sorted(set(leave_types))
+    fiscal_years = sorted(set(start.year for start in unique_start_dates))
+
+    # Prepare data traces for each fiscal year
     data_traces = []
     for fiscal_year in fiscal_years:
-        leave_type_counts = [sum(leave_counts[i] for i in range(len(start_dates)) if start_dates[i].year == int(fiscal_year) and leave_types[i] == leave_type) for leave_type in unique_leave_types]
-        bar = go.Bar(x=unique_leave_types, y=leave_type_counts, name=fiscal_year)
+        leave_type_counts = [
+            sum(leave_counts[i] for i in range(len(start_dates))
+                if start_dates[i].year == fiscal_year and leave_types[i] == leave_type)
+            for leave_type in unique_leave_types
+        ]
+        bar = go.Bar(x=unique_leave_types, y=leave_type_counts, name=str(fiscal_year))
         data_traces.append(bar)
 
+    # Create the layout for the figure
     layout = go.Layout(
         title='Leave Counts by Fiscal Year and Type',
         xaxis=dict(title='Leave Type'),

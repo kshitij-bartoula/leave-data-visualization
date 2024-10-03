@@ -8,13 +8,20 @@ SELECT
     ft.empId,
     ed.firstName,
     ed.lastName,
+    fd.fiscal_id,
+    fd.fiscal_start_date,
+    fd.fiscal_end_date,
+    max(ft.defaultDays) AS default_days,
+    max(ft.transferableDays) as transferable_days,
     SUM(ft.leaveDays) AS total_leave_days
 FROM
     dw.fact_table ft
 INNER JOIN
     dw.employee_details ed ON ed.empId = ft.empId
+INNER JOIN
+    dw.fiscal_detail fd ON fd.fiscal_id = ft.fiscalid
 GROUP BY
-    ft.empId, ed.firstName, ed.lastName;
+    ft.empId, ed.firstName, ed.lastName, fd.fiscal_id;
 
 
 CREATE MATERIALIZED VIEW IF NOT EXISTS dw.employee_details_mv AS
@@ -22,8 +29,8 @@ SELECT
     ft.empId,
     ed.firstName,
     ed.lastName,
-    cast(fd.fiscal_start_date as date),
-    cast(fd.fiscal_end_date as date),
+    fd.fiscal_start_date,
+    fd.fiscal_end_date,
     ed.designationname,
     al.name as project_name
 FROM

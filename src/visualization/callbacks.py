@@ -9,7 +9,7 @@ from components import (
     gen_leave_trend_fiscal_year, gen_department_leave_distribution, gen_project_allocations
 )
 from endpoints import (
-    ENDPOINT_EMPLOYEE_LEAVE, ENDPOINT_LEAVE_TREND, ENDPOINT_EMPLOYEE_DETAILS,
+    ENDPOINT_EMPLOYEE_LEAVE_DETAILS, ENDPOINT_LEAVE_TREND, ENDPOINT_EMPLOYEE_HR_DETAILS,
     ENDPOINT_LEAVE_DISTRIBUTION, ENDPOINT_LEAVE_TREND_FISCAL_YEAR,
     ENDPOINT_DEPARTMENT_LEAVE_DISTRIBUTION, ENDPOINT_PROJECT_ALLOCATIONS
 )
@@ -62,26 +62,23 @@ def register_callbacks(app):
         [Input('interval-component', 'n_intervals')]
     )
     def update_employee_dropdown(n_intervals):
-        data_employee = employee_details(ENDPOINT_EMPLOYEE_DETAILS)
+        data_employee = employee_details(ENDPOINT_EMPLOYEE_HR_DETAILS)
         options = [{'label': f"{entry['firstName']} {entry['lastName']}", 'value': f"{entry['firstName']} {entry['lastName']}"} for entry in data_employee]
         return options, options  # Return for both dropdowns
 
     @app.callback(
-        Output('employee-leave-graph', 'figure'),
+        Output('employee-leave-table', 'data'),
         [Input('employee-leave-dropdown', 'value')]
     )
     def update_employee_leave(selected_employee):
         # Retrieve data for all employees
-        data_employee_leave = employee_leave(ENDPOINT_EMPLOYEE_LEAVE)
+        data_employee_leave = employee_leave(ENDPOINT_EMPLOYEE_LEAVE_DETAILS)
 
         # Filter data based on selected employee, if any
         if selected_employee:
             data_employee_leave = [entry for entry in data_employee_leave if selected_employee in (entry['firstName'] + ' ' + entry['lastName'])]
 
-        # Generate figure based on filtered data
-        figure_employee_leave = gen_employee_leave(data_employee_leave)
-
-        return figure_employee_leave
+        return data_employee_leave
 
     @app.callback(
         Output('employee-details-table', 'data'),
@@ -90,7 +87,7 @@ def register_callbacks(app):
     )
     def update_employee_details(selected_employee, selected_project):
         # Retrieve data for all employees
-        data_employee_details = employee_details(ENDPOINT_EMPLOYEE_DETAILS)
+        data_employee_details = employee_details(ENDPOINT_EMPLOYEE_HR_DETAILS)
 
         # Filter employee details based on selected employee
         if selected_employee:
