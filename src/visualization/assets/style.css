@@ -16,15 +16,7 @@ body {
 }
 
 .header h1 {
-    color: #c15226; /* Header color */
-}
-
-/* Graph Styles */
-.graph-container {
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    overflow: hidden;
-    background-color: #ffffff; /* White background */
+    color: #26c18d; /* Header color */
 }
 
 .graph-container .plotly-graph-div {
@@ -43,37 +35,21 @@ body {
     font-weight: bold;
 }
 
+.card-title {
+    font-weight: bold;
+}
+
 /* Specific Card Colors */
 .card-employee-leave {
-    background-color: #d1f0c4; /* Light green */
+    background-color: #b2e0f9; /* Light green */
+}
+
+.card-graph-card {
+    background-color: #b2e0f9; /* Light green */
 }
 
 .card-employee-details {
     background-color: #b2e0f9; /* Light blue */
-}
-
-.card-leave-balance {
-    background-color: #f8d29e; /* Light yellow */
-}
-
-.card-leave-trend {
-    background-color: #f70202; /* Light red */
-}
-
-.card-leave-distribution {
-    background-color: #c2e0f1; /* Light teal */
-}
-
-.card-leave-trend-fiscal-year {
-    background-color: #f1d2c2; /* Light peach */
-}
-
-.card-department-leave-distribution {
-    background-color: #d2c2f1; /* Light lavender */
-}
-
-.card-leave-reason {
-    background-color: #d4c2f1; /* Light violet */
 }
 
 /* Footer Styles */
@@ -84,11 +60,3 @@ body {
     border-top: 1px solid #ccc;
 }
 
-/* Link Styles */
-a {
-    color: #ffd000; /* Link color */
-}
-
-a:hover {
-    text-decoration: none;
-}

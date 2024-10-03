@@ -14,7 +14,7 @@ def generate_graph_card(graph_id, graph_title):
             html.H4(graph_title, className="card-title"),
             dcc.Graph(id=graph_id, className="graph-container")
         ]),
-        className="mb-3"
+        className="card-graph-card"
     )
 
 def generate_employee_dropdown(id):
@@ -37,7 +37,7 @@ def generate_project_dropdown():
 
 app.layout = dbc.Container([
     dbc.Row([
-        dbc.Col(html.H1("Leave Visualization Dashboard", className="text-center text-primary mb-4"), width=24)
+        dbc.Col(html.H1("Leave Visualization Dashboard", className="text-center"), width=24)
     ]),
     # dbc.Row([
     #     dbc.Col(generate_graph_card('employee-leave-graph', 'Employee Leave Days'), width=12),
@@ -78,7 +78,7 @@ app.layout = dbc.Container([
                                 'backgroundColor': '#ffffff'  # White background for the table
                             },
                             style_header={
-                                'backgroundColor': '#f70202',  # Light grey for header
+                                'backgroundColor': '#f70202',  # red grey for header
                                 'fontWeight': 'bold'
                             }
                         )
@@ -120,7 +120,7 @@ app.layout = dbc.Container([
                                 'backgroundColor': '#ffffff'  # White background for the table
                             },
                             style_header={
-                                'backgroundColor': '#c15226',  # Light grey for header
+                                'backgroundColor': '#f70202',  # red for header
                                 'fontWeight': 'bold'
                             }
                         )
