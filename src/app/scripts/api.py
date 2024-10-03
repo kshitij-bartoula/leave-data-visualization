@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func
 from .schemas import (
     EmployeeLeave,
+    EmployeeDetails,
     LeaveBalance,
     LeaveTrend,
     LeaveDistribution,
@@ -21,7 +22,7 @@ from utils.db_utils import get_result_from_query
 router = APIRouter()
 
 # Define FastAPI endpoints
-@router.get("/employee_leave", response_model=List[EmployeeLeave])
+@router.get("/employee_leave_details", response_model=List[EmployeeLeave])
 def get_employee_leave(db: Session = Depends(get_db)):
     try:
         query = "SELECT * FROM dw.total_leave_days_per_employee_mv"
@@ -29,15 +30,43 @@ def get_employee_leave(db: Session = Depends(get_db)):
 
         # Transform the raw database result into EmployeeLeave objects
         employee_leave = []
-        for empId, firstName, lastName, total_leave_days in result:
+        for empId, firstName, lastName,fiscalId, fiscalStartDate, fiscalEndDate, defaultDays, transferableDays, total_leave_days in result:
             employee_leave.append(EmployeeLeave(
                 empId=empId,
                 firstName=firstName,
                 lastName=lastName,
+                fiscalId=fiscalId,
+                fiscalStartDate=fiscalStartDate,
+                fiscalEndDate=fiscalEndDate,
+                defaultDays=defaultDays,
+                transferableDays=transferableDays,
                 total_leave_days=total_leave_days,
             ))
 
         return employee_leave
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error occurred{e}")
+
+@router.get("/employee_HR_details", response_model=List[EmployeeDetails])
+def get_employee_details(db: Session = Depends(get_db)):
+    try:
+        query = "SELECT * FROM dw.employee_details_mv"
+        result = get_result_from_query(query)
+
+        # Transform the raw database result into EmployeeLeave objects
+        employee_details = []
+        for empId, firstName, lastName, fiscal_start_date, fiscal_end_date, designationName, project_allocation in result:
+            employee_details.append(EmployeeDetails(
+                empId=empId,
+                firstName=firstName,
+                lastName=lastName,
+                fiscal_start_date = fiscal_start_date,
+                fiscal_end_date = fiscal_end_date,
+                designationName = designationName,
+                project_allocation = project_allocation,
+            ))
+
+        return employee_details
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database error occurred{e}")
 

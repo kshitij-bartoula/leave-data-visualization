@@ -8,13 +8,41 @@ SELECT
     ft.empId,
     ed.firstName,
     ed.lastName,
+    fd.fiscal_id,
+    fd.fiscal_start_date,
+    fd.fiscal_end_date,
+    max(ft.defaultDays) AS default_days,
+    max(ft.transferableDays) as transferable_days,
     SUM(ft.leaveDays) AS total_leave_days
 FROM
     dw.fact_table ft
 INNER JOIN
     dw.employee_details ed ON ed.empId = ft.empId
+INNER JOIN
+    dw.fiscal_detail fd ON fd.fiscal_id = ft.fiscalid
 GROUP BY
-    ft.empId, ed.firstName, ed.lastName;
+    ft.empId, ed.firstName, ed.lastName, fd.fiscal_id;
+
+
+CREATE MATERIALIZED VIEW IF NOT EXISTS dw.employee_details_mv AS
+SELECT
+    ft.empId,
+    ed.firstName,
+    ed.lastName,
+    fd.fiscal_start_date,
+    fd.fiscal_end_date,
+    ed.designationname,
+    al.name as project_name
+FROM
+    dw.fact_table ft
+INNER JOIN
+    dw.employee_details ed ON ed.empId = ft.empId
+INNER JOIN
+    dw.allocations al ON al.empid = ed.empid
+inner join
+    dw.fiscal_detail fd on fd.fiscal_id = ft.fiscalid
+GROUP BY
+    ft.empId, ed.firstName, ed.lastName,ed.designationname,al.name,fd.fiscal_start_date,fd.fiscal_end_date;
 
 -- Leave balances per employee (approved)
 -- CREATE MATERIALIZED VIEW IF NOT EXISTS leave_balances_per_employee_mv AS
@@ -95,20 +123,20 @@ GROUP BY
     ed.departmentDescription,
     lt.leaveTypeName;
 
--- Leave status count by department
-CREATE MATERIALIZED VIEW IF NOT EXISTS dw.leave_status_count_by_department_mv AS
-SELECT
-    ed.departmentDescription,
-    COUNT(CASE WHEN ft.status = 'APPROVED' THEN 1 END) AS approved,
-    COUNT(CASE WHEN ft.status = 'REJECTED' THEN 1 END) AS rejected,
-    COUNT(CASE WHEN ft.status = 'REQUESTED' THEN 1 END) AS requested,
-    COUNT(CASE WHEN ft.status = 'CANCELLED' THEN 1 END) AS cancelled
-FROM
-    dw.fact_table ft
-JOIN
-    dw.employee_details ed ON ft.empId = ed.empId
-GROUP BY
-    ed.departmentDescription;
+-- -- Leave status count by department
+-- CREATE MATERIALIZED VIEW IF NOT EXISTS dw.leave_status_count_by_department_mv AS
+-- SELECT
+--     ed.departmentDescription,
+--     COUNT(CASE WHEN ft.status = 'APPROVED' THEN 1 END) AS approved,
+--     COUNT(CASE WHEN ft.status = 'REJECTED' THEN 1 END) AS rejected,
+--     COUNT(CASE WHEN ft.status = 'REQUESTED' THEN 1 END) AS requested,
+--     COUNT(CASE WHEN ft.status = 'CANCELLED' THEN 1 END) AS cancelled
+-- FROM
+--     dw.fact_table ft
+-- JOIN
+--     dw.employee_details ed ON ft.empId = ed.empId
+-- GROUP BY
+--     ed.departmentDescription;
 
 -- TOP 10 project allocations
 CREATE MATERIALIZED VIEW IF NOT EXISTS dw.top_10_project_allocations_mv AS

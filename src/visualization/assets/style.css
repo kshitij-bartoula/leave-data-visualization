@@ -1,8 +1,7 @@
 /* Global Styles */
-
 body {
     font-family: Arial, sans-serif;
-    background-color: #ed6323; /* Light grey background */
+    background-color: #f4f4f4; /* Light grey background for better contrast */
 }
 
 .container {
@@ -11,23 +10,13 @@ body {
 }
 
 /* Header Styles */
-
 .header {
     text-align: center;
     margin-bottom: 20px;
 }
 
 .header h1 {
-    color: #c15226; /* Blue color */
-}
-
-/* Graph Styles */
-
-.graph-container {
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    overflow: hidden;
-    background-color: #1188f0; /* White background */
+    color: #26c18d; /* Header color */
 }
 
 .graph-container .plotly-graph-div {
@@ -35,51 +24,38 @@ body {
     height: 400px; /* Adjust height as needed */
 }
 
-/* Footer Styles */
+/* Card Styles */
+.card {
+    border-radius: 10px;
+    margin-bottom: 20px;
+    padding: 15px;
+}
 
+.card-header {
+    font-weight: bold;
+}
+
+.card-title {
+    font-weight: bold;
+}
+
+/* Specific Card Colors */
+.card-employee-leave {
+    background-color: #b2e0f9; /* Light green */
+}
+
+.card-graph-card {
+    background-color: #b2e0f9; /* Light green */
+}
+
+.card-employee-details {
+    background-color: #b2e0f9; /* Light blue */
+}
+
+/* Footer Styles */
 .footer {
     text-align: center;
     margin-top: 50px;
     padding-top: 20px;
     border-top: 1px solid #ccc;
-}
-
-/* Link Styles */
-
-a {
-    color: #007bff; /* Blue color */
-}
-
-a:hover {
-    text-decoration: none;
-}
-
-/* Card Styles */
-
-.card-employee-leave {
-    background-color: #d412ce; /* Light grey background */
-}
-
-.card-leave-balance {
-    background-color: #5fb9d7; /* Light yellow background */
-}
-
-.card-leave-trend {
-    background-color: #d412ce; /* Light green background */
-}
-
-.card-leave-distribution {
-    background-color: #d412ce; /* Light blue background */
-}
-
-.card-leave-trend-fiscal-year {
-    background-color: #d412ce; /* Light red background */
-}
-
-.card-department-leave-distribution {
-    background-color: #d412ce; /* Light pink background */
-}
-
-.card-leave-reason {
-    background-color: #d412ce; /* Light purple background */
 }

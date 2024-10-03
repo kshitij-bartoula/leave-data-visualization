@@ -22,8 +22,21 @@ class EmployeeLeave(BaseModel):
     empId: int
     firstName: str
     lastName: str
+    fiscalId: int
+    fiscalStartDate: date
+    fiscalEndDate: date
+    defaultDays: int
+    transferableDays: int
     total_leave_days: int
 
+class EmployeeDetails(BaseModel):
+    empId: int
+    firstName: str
+    lastName: str
+    fiscal_start_date: date
+    fiscal_end_date: date
+    designationName: str
+    project_allocation: str
 
 class LeaveBalance(BaseModel):
     empId: int
@@ -48,8 +61,8 @@ class LeaveDistribution(BaseModel):
 
 class FiscalYearLeaveTypeTrend(BaseModel):
     fiscal_id: int
-    fiscal_start_date: datetime
-    fiscal_end_date: datetime
+    fiscal_start_date: date
+    fiscal_end_date: date
     leavetypename: str
     leave_count: int
 

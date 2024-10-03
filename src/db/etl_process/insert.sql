@@ -96,16 +96,16 @@ WHERE NOT EXISTS (
 );
 
 --for fiscal_detail
-INSERT INTO dw.fiscal_detail
+INSERT INTO dw.fiscal_detail (fiscal_id, fiscal_start_date, fiscal_end_date)
 SELECT
     a."fiscalId"::int,
-    a."fiscalStartDate"::timestamp with time zone,
-    a."fiscalEndDate"::timestamp with time zone
+    a."fiscalStartDate"::date,  -- Ensure this is cast to date
+    a."fiscalEndDate"::date      -- Ensure this is cast to date
 FROM (
     SELECT DISTINCT
         "fiscalId",
-        "fiscalStartDate",
-        "fiscalEndDate"
+        "fiscalStartDate"::date,   -- Cast as date here as well
+        "fiscalEndDate"::date       -- Cast as date here as well
     FROM raw.api_data
 ) a
 WHERE NOT EXISTS (
