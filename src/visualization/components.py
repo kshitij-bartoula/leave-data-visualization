@@ -1,4 +1,3 @@
-# visualization/components.py
 import plotly.graph_objs as go
 from datetime import datetime
 
@@ -23,51 +22,42 @@ def generate_line_chart(x_labels, y_values, title, x_title, y_title):
     )
     return go.Figure(data=[trace], layout=layout)
 
-def generate_pie_chart(labels, values, title):
-    trace = go.Pie(labels=labels, values=values)
-    layout = go.Layout(
-        title=title,
-        margin=dict(l=40, r=10, t=50, b=40)
-    )
-    return go.Figure(data=[trace], layout=layout)
-
-##line chart for trend
+## Line chart for trend
 def gen_leave_trend(data, filter_value=None):
-    if filter_value:
-        data = [entry for entry in data if entry['year'] == filter_value]
-    sorted_data = sorted(data, key=lambda entry: (entry['year'], entry['month']))
+    filtered_data = [entry for entry in data if entry['year'] == filter_value] if filter_value else data
+    sorted_data = sorted(filtered_data, key=lambda entry: (entry['year'], entry['month']))
     x_labels = [f"{entry['year']}-{entry['month']}" for entry in sorted_data]
     y_values = [entry['leave_count'] for entry in sorted_data]
 
     return generate_line_chart(x_labels, y_values, 'Leave Trend', 'Year-Month', 'Leave Count')
 
-#bar chart to analyze leave count according to leave type and fiscal year
+# Bar chart to analyze leave count according to leave type and fiscal year
 def gen_leave_trend_fiscal_year(data, filter_value=None):
-    if filter_value:
-        data = [entry for entry in data if entry['leavetypename'] == filter_value]
+    filtered_data = [entry for entry in data if entry['leavetypename'] == filter_value] if filter_value else data
     start_dates = [
         entry['fiscal_start_date'] if isinstance(entry['fiscal_start_date'], datetime) else datetime.strptime(entry['fiscal_start_date'], '%Y-%m-%d').date()
-        for entry in data
+        for entry in filtered_data
     ]
-    leave_counts = [entry['leave_count'] for entry in data]
-    leave_types = [entry['leavetypename'] for entry in data]
+    leave_counts = [entry['leave_count'] for entry in filtered_data]
+    leave_types = [entry['leavetypename'] for entry in filtered_data]
+
     fiscal_years = sorted(set(start.year for start in start_dates))
     unique_leave_types = sorted(set(leave_types))
-    data_traces = []
-    for leave_type in unique_leave_types:
-        leave_type_counts = [
-            sum(leave_counts[i] for i in range(len(start_dates))
-                if start_dates[i].year == fiscal_year and leave_types[i] == leave_type)
-            for fiscal_year in fiscal_years
-        ]
-        bar = go.Bar(x=fiscal_years, y=leave_type_counts, name=leave_type)
-        data_traces.append(bar)
+
+    data_traces = [
+        go.Bar(
+            x=fiscal_years,
+            y=[sum(leave_counts[i] for i in range(len(start_dates)) if start_dates[i].year == year and leave_types[i] == leave_type) for year in fiscal_years],
+            name=leave_type
+        )
+        for leave_type in unique_leave_types
+    ]
 
     layout = go.Layout(
         title='Leave Counts by Leave Type and Fiscal Year',
         xaxis=dict(
             title='Fiscal Year',
-            tickvals=fiscal_years,  # Specify tick values
+            tickvals=fiscal_years,
             ticktext=[str(year) for year in fiscal_years]  # Use year as text without decimals
         ),
         yaxis=dict(title='Leave Count'),
@@ -77,44 +67,43 @@ def gen_leave_trend_fiscal_year(data, filter_value=None):
 
     return go.Figure(data=data_traces, layout=layout)
 
-
 ## Employee leave details plotted as dash table during visualization
 def gen_employee_leave(data, filter_value=None, default_count=10):
-    if filter_value:
-        filtered_data = [entry for entry in data if filter_value in (entry['firstName'] + ' ' + entry['lastName'])]
-    else:
-        filtered_data = data[:default_count]  # Show only the first `default_count` employees by default
+    filtered_data = [entry for entry in data if filter_value in (entry['firstName'] + ' ' + entry['lastName'])] if filter_value else data[:default_count]
     return filtered_data
 
-##Employee HR details plotted as dash table during visualization
+## Employee HR details plotted as dash table during visualization
 def gen_employee_details(data, filter_value=None, default_count=10):
-    if filter_value:
-        filtered_data = [entry for entry in data if filter_value.lower() in (entry['firstName'].lower() + ' ' + entry['lastName'].lower())]
-    else:
-        filtered_data = data[:default_count]  # # Show only the first `default_count` employees by default
+    filtered_data = [entry for entry in data if filter_value.lower() in (entry['firstName'].lower() + ' ' + entry['lastName'].lower())] if filter_value else data[:default_count]
     return filtered_data
 
-## department wise leave distribution plotted as bar chart
+## Department wise leave distribution plotted as bar chart
 def gen_department_leave_distribution(data, filter_value=None):
     department_leave_counts = {}
     leave_types = set()
+
     for entry in data:
         department = entry["departmentDescription"]
         leave_type = entry["leaveTypeName"]
         leave_count = entry["leave_count"]
         leave_types.add(leave_type)
-        if department in department_leave_counts:
-            department_leave_counts[department][leave_type] = leave_count
-        else:
-            department_leave_counts[department] = {leave_type: leave_count}
+
+        if department not in department_leave_counts:
+            department_leave_counts[department] = {}
+        department_leave_counts[department][leave_type] = leave_count
+
     departments = list(department_leave_counts.keys())
-    if filter_value:
-        leave_types = {filter_value}
-    data_traces = []
-    for leave_type in leave_types:
-        leave_counts = [department_leave_counts[department].get(leave_type, 0) for department in departments]
-        bar = go.Bar(name=leave_type, y=departments, x=leave_counts, orientation='h')
-        data_traces.append(bar)
+    leave_types = {filter_value} if filter_value else leave_types  # Filter if provided
+
+    data_traces = [
+        go.Bar(
+            name=leave_type,
+            y=departments,
+            x=[department_leave_counts[department].get(leave_type, 0) for department in departments],
+            orientation='h'
+        )
+        for leave_type in leave_types
+    ]
 
     layout = go.Layout(
         title='Leave Counts by Department and Type',
@@ -125,7 +114,7 @@ def gen_department_leave_distribution(data, filter_value=None):
 
     return go.Figure(data=data_traces, layout=layout)
 
-#top 10 project allocation plotted in bar graph
+# Top 10 project allocations plotted in bar graph
 def gen_project_allocations(data, filter_value=None):
     if filter_value:
         data = [entry for entry in data if entry['name'] == filter_value]
@@ -148,12 +137,14 @@ def gen_project_allocations(data, filter_value=None):
 
     return go.Figure(data=[trace], layout=layout)
 
-## percentage according to leave type plotted in pie chart
+## Percentage according to leave type plotted in line chart
 def gen_leave_distribution(data, filter_value=None):
-    if filter_value:
-        data = [entry for entry in data if entry['leavetypename'] == filter_value]
-    leave_types = [entry['leavetypename'] for entry in data]
-    leave_counts = [entry['leave_count'] for entry in data]
+    filtered_data = [entry for entry in data if entry['leavetypename'] == filter_value] if filter_value else data
 
-    return generate_pie_chart(leave_types, leave_counts, 'Leave Types Distribution')
+    leave_types = [entry['leavetypename'] for entry in filtered_data]
+    leave_counts = [entry['leave_count'] for entry in filtered_data]
 
+    unique_leave_types = sorted(set(leave_types))
+    leave_count_by_type = [sum(count for leave_type, count in zip(leave_types, leave_counts) if leave_type == lt) for lt in unique_leave_types]
+
+    return generate_line_chart(unique_leave_types, leave_count_by_type, 'Leave Types Distribution', 'Leave Type', 'Leave Count')
