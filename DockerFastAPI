@@ -89,5 +89,7 @@ ENV PYTHONPATH=/app/
 # Expose the port that FastAPI will run on
 EXPOSE 8000
 
+COPY src/app .
+
 # Start FastAPI server
 CMD ["python", "uvicorn_run.py"]
