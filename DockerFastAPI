@@ -80,9 +80,6 @@ COPY src/app/requirement_fastAPI.txt .
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirement_fastAPI.txt
 
-# Copy the rest of the application code into the container at /app
-COPY src/app .
-
 # Set PYTHONPATH environment variable
 ENV PYTHONPATH=/app/
 
