@@ -15,6 +15,8 @@ Functionality:
 import logging.config
 import json
 import os
+import smtplib
+from email.mime.text import MIMEText
 
 import etl.scripts.api_import_requests as api_import_requests
 import etl.scripts.dw_tables as dw_tables
@@ -28,6 +30,30 @@ with open('/app/etl/logging_config.json', 'r') as f:
 
 logger = logging.getLogger(__name__)
 
+def send_failure_email(error_message):
+    """Send email notification when ETL process fails."""
+    recipient_email = os.getenv('NOTIFICATION_EMAIL')
+    sender_email = os.getenv('SENDER_EMAIL')
+    sender_password = os.getenv('SENDER_PASSWORD')
+
+    msg = MIMEText(f"The ETL process failed with the following error:\n\n{error_message}")
+    msg['Subject'] = "ETL Process Failure Notification"
+    msg['From'] = sender_email
+    msg['To'] = recipient_email
+
+    try:
+        # Setup SMTP server connection
+        smtp_server = 'smtp.gmail.com'
+        smtp_port = 587
+
+        with smtplib.SMTP(smtp_server, smtp_port) as server:
+            server.starttls()
+            server.login(sender_email, sender_password)
+            server.sendmail(sender_email, recipient_email, msg.as_string())
+        logger.info("Failure notification email sent successfully.")
+    except Exception as e:
+        logger.error("Failed to send failure notification email", exc_info=True)
+
 def main():
     logger.info("Starting ETL process...")
 
@@ -36,14 +62,16 @@ def main():
         api_import_requests.main()
 
         logger.info("Running data warehouse table processing...")
-        dw_tables.main()
+        dw_tabless.main()
 
         logger.info("Running KPI views processing...")
         kpi_views.main()
 
         logger.info("ETL process completed successfully!")
     except Exception as e:
+        error_message = str(e)
         logger.error("An error occurred during the ETL process", exc_info=True)
+        send_failure_email(error_message)
 
 if __name__ == "__main__":
     main()
