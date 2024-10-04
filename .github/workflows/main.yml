@@ -30,6 +30,10 @@ jobs:
           echo "API_ENDPOINT=${{ secrets.API_ENDPOINT }}" >> $GITHUB_ENV
           echo "PGADMIN_DEFAULT_EMAIL=${{ secrets.PGADMIN_DEFAULT_EMAIL }}" >> $GITHUB_ENV
           echo "PGADMIN_DEFAULT_PASSWORD=${{ secrets.PGADMIN_DEFAULT_PASSWORD }}" >> $GITHUB_ENV
+          echo "SENDER_EMAIL=${{ secrets.SENDER_EMAIL }}" >> $GITHUB_ENV
+          echo "SENDER_DATA=${{ secrets.SENDER_DATA }}" >> $GITHUB_ENV
+          echo "RECIPIENT_EMAIL=${{ secrets.RECIPIENT_EMAIL }}" >> $GITHUB_ENV
+
 
       - name: Set up Docker Compose
         run: |
