@@ -32,9 +32,9 @@ logger = logging.getLogger(__name__)
 
 def send_failure_email(error_message):
     """Send email notification when ETL process fails."""
-    recipient_email = os.getenv('NOTIFICATION_EMAIL')
+    recipient_email = os.getenv('RECIPIENT_EMAIL')
     sender_email = os.getenv('SENDER_EMAIL')
-    sender_password = os.getenv('SENDER_PASSWORD')
+    sender_password = os.getenv('SENDER_DATA')
 
     print(f"Sender Email: {sender_email}")  # Debugging line
     print(f"Recipient Email: {recipient_email}")  # Debugging line
@@ -60,6 +60,14 @@ def send_failure_email(error_message):
 
 def main():
     logger.info("Starting ETL process...")
+    """Send email notification when ETL process fails."""
+    recipient_email = os.getenv('RECIPIENT_EMAIL')
+    sender_email = os.getenv('SENDER_EMAIL')
+    sender_password = os.getenv('SENDER_DATA')
+
+    print(f"Sender Email: {sender_email}")  # Debugging line
+    print(f"Recipient Email: {recipient_email}")  # Debugging line
+    print(f"sender_password: {sender_password}")
 
     try:
         logger.info("Running API import requests...")

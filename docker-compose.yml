@@ -67,10 +67,9 @@ services:
       DB_NAME: ${DB_NAME}
       BEARER_TOKEN: ${BEARER_TOKEN}
       API_ENDPOINT: ${API_ENDPOINT}
-      # Email settings
-      NOTIFICATION_EMAIL: ${RECIPIENT_EMAIL}  # Recipient email
+      RECIPIENT_EMAIL: ${RECIPIENT_EMAIL}  # Recipient email
       SENDER_EMAIL: ${SENDER_EMAIL}  # Sender email (SMTP)
-      SENDER_PASSWORD: ${SENDER_DATA}  # Sender email password (or app password)
+      SENDER_DATA: ${SENDER_DATA}  # Sender email password (or app password)
 
   # plotly-dash:
   #   build:
