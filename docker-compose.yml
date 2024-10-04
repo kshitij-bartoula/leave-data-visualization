@@ -86,8 +86,6 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       DB_HOST: ${DB_HOST}
       DB_NAME: ${DB_NAME}
-      BEARER_TOKEN: ${BEARER_TOKEN}
-      API_ENDPOINT: ${API_ENDPOINT}
 
 volumes:
   pgdata:
