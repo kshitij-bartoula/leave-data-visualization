@@ -13,45 +13,45 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
-  migrations:
-    build:
-      context: ./
-      dockerfile: DockerAlembic
-    depends_on:
-      - postgres
-    environment:
-      DB_USERNAME: ${DB_USERNAME}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_HOST: ${DB_HOST}
-      DB_NAME: ${DB_NAME}
-      SQLALCHEMY_DATABASE_URL: postgresql://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}/${DB_NAME}
-    command: ["alembic", "upgrade", "head"]
+  # migrations:
+  #   build:
+  #     context: ./
+  #     dockerfile: DockerAlembic
+  #   depends_on:
+  #     - postgres
+  #   environment:
+  #     DB_USERNAME: ${DB_USERNAME}
+  #     DB_PASSWORD: ${DB_PASSWORD}
+  #     DB_HOST: ${DB_HOST}
+  #     DB_NAME: ${DB_NAME}
+  #     SQLALCHEMY_DATABASE_URL: postgresql://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}/${DB_NAME}
+  #   command: ["alembic", "upgrade", "head"]
 
-  pgadmin:
-    image: dpage/pgadmin4
-    restart: always
-    ports:
-      - "5050:80"
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
-    depends_on:
-      - postgres
+  # pgadmin:
+  #   image: dpage/pgadmin4
+  #   restart: always
+  #   ports:
+  #     - "5050:80"
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+  #     PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+  #   depends_on:
+  #     - postgres
 
-  fastapi:
-    build:
-      context: ./
-      dockerfile: DockerFastAPI
-    restart: always
-    ports:
-      - "8000:8000"
-    depends_on:
-      - migrations
-    environment:
-      DB_USERNAME: ${DB_USERNAME}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_HOST: ${DB_HOST}
-      DB_NAME: ${DB_NAME}
+  # fastapi:
+  #   build:
+  #     context: ./
+  #     dockerfile: DockerFastAPI
+  #   restart: always
+  #   ports:
+  #     - "8000:8000"
+  #   depends_on:
+  #     - migrations
+  #   environment:
+  #     DB_USERNAME: ${DB_USERNAME}
+  #     DB_PASSWORD: ${DB_PASSWORD}
+  #     DB_HOST: ${DB_HOST}
+  #     DB_NAME: ${DB_NAME}
 
   etl:
     build:
@@ -72,20 +72,20 @@ services:
       SENDER_EMAIL: ${SENDER_EMAIL}  # Sender email (SMTP)
       SENDER_PASSWORD: ${SENDER_DATA}  # Sender email password (or app password)
 
-  plotly-dash:
-    build:
-      context: ./
-      dockerfile: DockerPlotly
-    restart: always
-    ports:
-      - "8050:8050"
-    depends_on:
-      - fastapi
-    environment:
-      DB_USERNAME: ${DB_USERNAME}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_HOST: ${DB_HOST}
-      DB_NAME: ${DB_NAME}
+  # plotly-dash:
+  #   build:
+  #     context: ./
+  #     dockerfile: DockerPlotly
+  #   restart: always
+  #   ports:
+  #     - "8050:8050"
+  #   depends_on:
+  #     - fastapi
+  #   environment:
+  #     DB_USERNAME: ${DB_USERNAME}
+  #     DB_PASSWORD: ${DB_PASSWORD}
+  #     DB_HOST: ${DB_HOST}
+  #     DB_NAME: ${DB_NAME}
 
 volumes:
   pgdata:
