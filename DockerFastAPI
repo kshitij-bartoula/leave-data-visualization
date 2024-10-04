@@ -1,7 +1,64 @@
+# FROM python:3.10.4-alpine
+
+# RUN apk update && apk upgrade
+
+# RUN apk add --no-cache \
+#     build-base \
+#     postgresql-dev \
+#     libpq \
+#     curl \
+#     libressl-dev \
+#     musl-dev \
+#     libffi-dev \
+#     openssl-dev \
+#     gcc \
+#     libc-dev \
+#     busybox-initscripts \
+#     openrc \
+#     logrotate \
+#     dcron
+
+# WORKDIR /app
+
+# COPY src/app/requirement_fastAPI.txt .
+
+# RUN pip install --no-cache-dir -r requirement_fastAPI.txt
+
+# COPY src .
+
+# # Copy the cron configuration file into the container
+# COPY cronfile /etc/cron.d/my-cron-job
+
+# RUN chmod 0644 /etc/cron.d/my-cron-job
+
+# # Copy the start_up_file.sh script into the container
+# COPY start_up_file.sh /start_up_file.sh
+
+# RUN chmod +x /start_up_file.sh
+
+# RUN echo -e "*/2 * * * * /start_up_file.sh >> /var/log/cron.log 2>&1" > /etc/cron.d/my-cron-job
+
+# RUN touch /var/log/cron.log
+
+# ENV PYTHONPATH=/app/
+
+# EXPOSE 8000
+
+# COPY src/app .
+
+# RUN echo -e '#!/bin/sh\ntail -f /var/log/cron.log &\ncrond -f -d 8 &\npython uvicorn_run.py' > /start_services.sh
+
+# RUN chmod +x /start_services.sh
+
+# ENTRYPOINT ["/start_services.sh"]
+
+# Python base image with Alpine Linux
 FROM python:3.10.4-alpine
 
+# Update package lists and upgrade existing packages
 RUN apk update && apk upgrade
 
+# Install system dependencies required for PostgreSQL and other packages
 RUN apk add --no-cache \
     build-base \
     postgresql-dev \
@@ -12,42 +69,25 @@ RUN apk add --no-cache \
     libffi-dev \
     openssl-dev \
     gcc \
-    libc-dev \
-    busybox-initscripts \
-    openrc \
-    logrotate \
-    dcron
+    libc-dev
 
+# Set the working directory in the container
 WORKDIR /app
 
+# Copy the requirements.txt file into the container at /app
 COPY src/app/requirement_fastAPI.txt .
 
+# Install Python dependencies
 RUN pip install --no-cache-dir -r requirement_fastAPI.txt
 
-COPY src .
-
-# Copy the cron configuration file into the container
-COPY cronfile /etc/cron.d/my-cron-job
-
-RUN chmod 0644 /etc/cron.d/my-cron-job
-
-# Copy the start_up_file.sh script into the container
-COPY start_up_file.sh /start_up_file.sh
-
-RUN chmod +x /start_up_file.sh
-
-RUN echo -e "*/2 * * * * /start_up_file.sh >> /var/log/cron.log 2>&1" > /etc/cron.d/my-cron-job
-
-RUN touch /var/log/cron.log
-
-ENV PYTHONPATH=/app/
-
-EXPOSE 8000
-
+# Copy the rest of the application code into the container at /app
 COPY src/app .
 
-RUN echo -e '#!/bin/sh\ntail -f /var/log/cron.log &\ncrond -f -d 8 &\npython uvicorn_run.py' > /start_services.sh
+# Set PYTHONPATH environment variable
+ENV PYTHONPATH=/app/
 
-RUN chmod +x /start_services.sh
+# Expose the port that FastAPI will run on
+EXPOSE 8000
 
-ENTRYPOINT ["/start_services.sh"]
+# Start FastAPI server
+CMD ["python", "uvicorn_run.py"]

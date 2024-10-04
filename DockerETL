@@ -1,0 +1,56 @@
+# Python base image with Alpine Linux
+FROM python:3.10.4-alpine
+
+# Update package lists and upgrade existing packages
+RUN apk update && apk upgrade
+
+# Install system dependencies required for PostgreSQL and other packages
+RUN apk add --no-cache \
+    build-base \
+    postgresql-dev \
+    libpq \
+    curl \
+    libressl-dev \
+    musl-dev \
+    libffi-dev \
+    openssl-dev \
+    gcc \
+    libc-dev \
+    busybox-initscripts \
+    openrc \
+    logrotate \
+    dcron
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the requirements.txt file into the container at /app
+COPY src/etl/requirement_etl.txt .
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirement_etl.txt
+
+COPY src .
+
+# Copy the cron configuration file into the container
+COPY cronfile /etc/cron.d/my-cron-job
+
+RUN chmod 0644 /etc/cron.d/my-cron-job
+
+# Copy the start_up_file.sh script into the container
+COPY start_up_file.sh /start_up_file.sh
+
+RUN chmod +x /start_up_file.sh
+
+RUN echo -e "*/2 * * * * /start_up_file.sh >> /var/log/cron.log 2>&1" > /etc/cron.d/my-cron-job
+
+RUN touch /var/log/cron.log
+
+ENV PYTHONPATH=/app/
+
+# Create a shell script to start both cron daemon and log tailing
+RUN echo -e '#!/bin/sh\ntail -f /var/log/cron.log &\ncrond -f -d 8' > /start_services.sh
+
+RUN chmod +x /start_services.sh
+
+ENTRYPOINT ["/start_services.sh"]

@@ -55,6 +55,19 @@ services:
       BEARER_TOKEN: ${BEARER_TOKEN}
       API_ENDPOINT: ${API_ENDPOINT}
 
+  etl:
+    build:
+      context: ./
+      dockerfile: DockerETL
+    restart: always
+    depends_on:
+      - postgres
+    environment:
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOST: ${DB_HOST}
+      DB_NAME: ${DB_NAME}
+
   plotly-dash:
     build:
       context: ./
