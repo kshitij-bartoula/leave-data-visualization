@@ -35,10 +35,12 @@ def send_failure_email(error_message):
     recipient_email = os.getenv('RECIPIENT_EMAIL')
     sender_email = os.getenv('SENDER_EMAIL')
     sender_password = os.getenv('SENDER_DATA')
+    db_username = os.getenv('DB_USERNAME')
 
     print(f"Sender Email: {sender_email}")  # Debugging line
     print(f"Recipient Email: {recipient_email}")  # Debugging line
     print(f"sender_password: {sender_password}")
+    print(f"db_username: {db_username}")
 
     msg = MIMEText(f"The ETL process failed with the following error:\n\n{error_message}")
     msg['Subject'] = "ETL Process Failure Notification"
