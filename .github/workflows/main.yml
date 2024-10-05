@@ -13,12 +13,14 @@ on:
 
 jobs:
 
+  # Job for running tests (optional)
   test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+  # Job for deployment
   deploy:
     runs-on: self-hosted
     needs: test
@@ -46,14 +48,34 @@ jobs:
 
       - name: Start services except migration
         run: |
-          docker-compose up -d postgres pgadmin
+          docker-compose up -d postgres pgadmin  # Only start postgres and pgadmin
 
-      # Conditionally run the migration service when triggered manually
-      - name: Run migration service
-        if: ${{ inputs.run_migration == 'true' }}
+      - name: Migration ready but not started
         run: |
-          docker-compose up migration  # Trigger migration service manually
+          echo "Migration service built but not started. Ready to be triggered manually."
 
-      - name: Deployment completed
+  # Separate job for running migration manually
+  run_migration:
+    runs-on: self-hosted
+    if: ${{ github.event.inputs.run_migration == 'true' }}  # Only run this if manually triggered
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Export secrets as environment variables
         run: |
-          echo "Deployment completed."
+          echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> $GITHUB_ENV
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> $GITHUB_ENV
+          echo "DB_HOST=${{ secrets.DB_HOST }}" >> $GITHUB_ENV
+          echo "DB_NAME=${{ secrets.DB_NAME }}" >> $GITHUB_ENV
+          echo "BEARER_TOKEN=${{ secrets.BEARER_TOKEN }}" >> $GITHUB_ENV
+          echo "API_ENDPOINT=${{ secrets.API_ENDPOINT }}" >> $GITHUB_ENV
+          echo "PGADMIN_DEFAULT_EMAIL=${{ secrets.PGADMIN_DEFAULT_EMAIL }}" >> $GITHUB_ENV
+          echo "PGADMIN_DEFAULT_PASSWORD=${{ secrets.PGADMIN_DEFAULT_PASSWORD }}" >> $GITHUB_ENV
+          echo "SENDER_EMAIL=${{ secrets.SENDER_EMAIL }}" >> $GITHUB_ENV
+          echo "SENDER_DATA=${{ secrets.SENDER_DATA }}" >> $GITHUB_ENV
+          echo "RECIPIENT_EMAIL=${{ secrets.RECIPIENT_EMAIL }}" >> $GITHUB_ENV
+
+      - name: Run migration service manually
+        run: |
+          docker-compose up migration  # Manually run the migration container when triggered
