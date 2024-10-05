@@ -3,7 +3,7 @@ name: Deploy self-hosted locally
 on:
   push:
     branches:
-      - main
+      - sync/main
 
 jobs:
 

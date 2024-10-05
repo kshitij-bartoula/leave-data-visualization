@@ -13,10 +13,24 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
-  migrations:
+  # migrations:
+  #   build:
+  #     context: ./
+  #     dockerfile: DockerAlembic
+  #   depends_on:
+  #     - postgres
+  #   environment:
+  #     DB_USERNAME: ${DB_USERNAME}
+  #     DB_PASSWORD: ${DB_PASSWORD}
+  #     DB_HOST: ${DB_HOST}
+  #     DB_NAME: ${DB_NAME}
+  #     SQLALCHEMY_DATABASE_URL: postgresql://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}/${DB_NAME}
+  #   command: ["alembic", "upgrade", "head"]
+
+  migration_new:
     build:
       context: ./
-      dockerfile: DockerAlembic
+      dockerfile: DockerMigration
     depends_on:
       - postgres
     environment:
@@ -25,66 +39,65 @@ services:
       DB_HOST: ${DB_HOST}
       DB_NAME: ${DB_NAME}
       SQLALCHEMY_DATABASE_URL: postgresql://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}/${DB_NAME}
-    command: ["alembic", "upgrade", "head"]
 
-  pgadmin:
-    image: dpage/pgadmin4
-    restart: always
-    ports:
-      - "5050:80"
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
-    depends_on:
-      - postgres
+  # pgadmin:
+  #   image: dpage/pgadmin4
+  #   restart: always
+  #   ports:
+  #     - "5050:80"
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+  #     PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+  #   depends_on:
+  #     - postgres
 
-  fastapi:
-    build:
-      context: ./
-      dockerfile: DockerFastAPI
-    restart: always
-    ports:
-      - "8000:8000"
-    depends_on:
-      - migrations
-    environment:
-      DB_USERNAME: ${DB_USERNAME}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_HOST: ${DB_HOST}
-      DB_NAME: ${DB_NAME}
+  # fastapi:
+  #   build:
+  #     context: ./
+  #     dockerfile: DockerFastAPI
+  #   restart: always
+  #   ports:
+  #     - "8000:8000"
+  #   depends_on:
+  #     - migrations
+  #   environment:
+  #     DB_USERNAME: ${DB_USERNAME}
+  #     DB_PASSWORD: ${DB_PASSWORD}
+  #     DB_HOST: ${DB_HOST}
+  #     DB_NAME: ${DB_NAME}
 
-  etl:
-    build:
-      context: ./
-      dockerfile: DockerETL
-    restart: always
-    depends_on:
-      - postgres
-    environment:
-      DB_USERNAME: ${DB_USERNAME}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_HOST: ${DB_HOST}
-      DB_NAME: ${DB_NAME}
-      BEARER_TOKEN: ${BEARER_TOKEN}
-      API_ENDPOINT: ${API_ENDPOINT}
-      RECIPIENT_EMAIL: ${RECIPIENT_EMAIL}
-      SENDER_EMAIL: ${SENDER_EMAIL}
-      SENDER_DATA: ${SENDER_DATA}
+  # etl:
+  #   build:
+  #     context: ./
+  #     dockerfile: DockerETL
+  #   restart: always
+  #   depends_on:
+  #     - postgres
+  #   environment:
+  #     DB_USERNAME: ${DB_USERNAME}
+  #     DB_PASSWORD: ${DB_PASSWORD}
+  #     DB_HOST: ${DB_HOST}
+  #     DB_NAME: ${DB_NAME}
+  #     BEARER_TOKEN: ${BEARER_TOKEN}
+  #     API_ENDPOINT: ${API_ENDPOINT}
+  #     RECIPIENT_EMAIL: ${RECIPIENT_EMAIL}
+  #     SENDER_EMAIL: ${SENDER_EMAIL}
+  #     SENDER_DATA: ${SENDER_DATA}
 
-  plotly-dash:
-    build:
-      context: ./
-      dockerfile: DockerPlotly
-    restart: always
-    ports:
-      - "8050:8050"
-    depends_on:
-      - fastapi
-    environment:
-      DB_USERNAME: ${DB_USERNAME}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_HOST: ${DB_HOST}
-      DB_NAME: ${DB_NAME}
+  # plotly-dash:
+  #   build:
+  #     context: ./
+  #     dockerfile: DockerPlotly
+  #   restart: always
+  #   ports:
+  #     - "8050:8050"
+  #   depends_on:
+  #     - fastapi
+  #   environment:
+  #     DB_USERNAME: ${DB_USERNAME}
+  #     DB_PASSWORD: ${DB_PASSWORD}
+  #     DB_HOST: ${DB_HOST}
+  #     DB_NAME: ${DB_NAME}
 
 volumes:
   pgdata:
