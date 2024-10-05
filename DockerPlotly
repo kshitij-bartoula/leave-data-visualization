@@ -21,8 +21,6 @@ COPY src/visualization/requirement_plotly.txt .
 RUN pip install --no-cache-dir -r requirement_plotly.txt
 
 COPY src/visualization .
-
-EXPOSE 8089
 EXPOSE 8050
 
 CMD ["python", "app.py"]

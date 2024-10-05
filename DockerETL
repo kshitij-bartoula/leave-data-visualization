@@ -1,7 +1,4 @@
-# Python base image with Alpine Linux
 FROM python:3.10.4-alpine
-
-# Update package lists and upgrade existing packages
 RUN apk update && apk upgrade
 
 # Install system dependencies required for PostgreSQL and other packages
@@ -21,13 +18,8 @@ RUN apk add --no-cache \
     logrotate \
     dcron
 
-# Set the working directory in the container
 WORKDIR /app
-
-# Copy the requirements.txt file into the container at /app
 COPY src/etl/requirement_etl.txt .
-
-# Install Python dependencies
 RUN pip install --no-cache-dir -r requirement_etl.txt
 
 COPY src .
