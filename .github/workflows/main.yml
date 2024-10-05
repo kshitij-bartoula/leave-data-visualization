@@ -42,11 +42,11 @@ jobs:
 
       - name: Set up Docker Compose and build services
         run: |
-          docker-compose build postgres pgadmin
+          docker-compose build postgres pgadmin migration
 
       - name: Start services except migration
         run: |
-          docker-compose up -d postgres 
+          docker-compose up -d postgres pgadmin
 
       # Conditionally run the migration service when triggered manually
       - name: Run migration service
