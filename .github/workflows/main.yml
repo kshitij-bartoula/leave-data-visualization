@@ -4,6 +4,12 @@ on:
   push:
     branches:
       - sync/main
+  workflow_dispatch:
+    inputs:
+      run_migration:
+        description: "Run database migration"
+        required: false
+        default: "false"
 
 jobs:
 
@@ -34,11 +40,16 @@ jobs:
           echo "SENDER_DATA=${{ secrets.SENDER_DATA }}" >> $GITHUB_ENV
           echo "RECIPIENT_EMAIL=${{ secrets.RECIPIENT_EMAIL }}" >> $GITHUB_ENV
 
-
       - name: Set up Docker Compose
         run: |
-          docker-compose up -d --build
+          docker-compose up -d --build postgres pgadmin fastapi etl plotly-dash  # Start all except migration
+
+      # Conditionally run the migration service when triggered manually
+      - name: Run migration service
+        if: ${{ inputs.run_migration == 'true' }}
+        run: |
+          docker-compose --profile manual_migration up migration  # Trigger migration service manually
 
       - name: Deployment completed
         run: |
-          # Add any additional deployment commands here
+          echo "Deployment completed."
