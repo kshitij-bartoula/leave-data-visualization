@@ -42,7 +42,7 @@ jobs:
 
       - name: Set up Docker Compose
         run: |
-          docker-compose up -d --build postgres pgadmin fastapi etl plotly-dash  # Start all except migration
+          docker-compose up -d --build postgres pgadmin 
 
       # Conditionally run the migration service when triggered manually
       - name: Run migration service
