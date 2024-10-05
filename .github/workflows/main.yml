@@ -40,15 +40,19 @@ jobs:
           echo "SENDER_DATA=${{ secrets.SENDER_DATA }}" >> $GITHUB_ENV
           echo "RECIPIENT_EMAIL=${{ secrets.RECIPIENT_EMAIL }}" >> $GITHUB_ENV
 
-      - name: Set up Docker Compose
+      - name: Set up Docker Compose and build services
         run: |
-          docker-compose up -d --build postgres pgadmin 
+          docker-compose build postgres pgadmin
+
+      - name: Start services except migration
+        run: |
+          docker-compose up -d postgres 
 
       # Conditionally run the migration service when triggered manually
       - name: Run migration service
         if: ${{ inputs.run_migration == 'true' }}
         run: |
-          docker-compose --profile manual_migration up migration  # Trigger migration service manually
+          docker-compose up migration  # Trigger migration service manually
 
       - name: Deployment completed
         run: |
