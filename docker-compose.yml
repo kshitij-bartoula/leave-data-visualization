@@ -45,7 +45,7 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - migrations
+      - migration
     environment:
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
