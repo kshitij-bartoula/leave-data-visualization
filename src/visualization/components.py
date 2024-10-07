@@ -22,6 +22,14 @@ def generate_line_chart(x_labels, y_values, title, x_title, y_title):
     )
     return go.Figure(data=[trace], layout=layout)
 
+def generate_pie_chart(labels, values, title):
+    trace = go.Pie(labels=labels, values=values)
+    layout = go.Layout(
+        title=title,
+        margin=dict(l=40, r=10, t=50, b=40)
+    )
+    return go.Figure(data=[trace], layout=layout)
+
 ## Line chart for trend
 def gen_leave_trend(data, filter_value=None):
     filtered_data = [entry for entry in data if entry['year'] == filter_value] if filter_value else data
