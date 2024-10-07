@@ -138,13 +138,9 @@ def gen_project_allocations(data, filter_value=None):
     return go.Figure(data=[trace], layout=layout)
 
 ## Percentage according to leave type plotted in line chart
-def gen_leave_distribution(data, filter_value=None):
-    filtered_data = [entry for entry in data if entry['leavetypename'] == filter_value] if filter_value else data
+def gen_leave_distribution(data):
+    leave_types = [entry['leavetypename'] for entry in data]
+    leave_counts = [entry['leave_count'] for entry in data]
 
-    leave_types = [entry['leavetypename'] for entry in filtered_data]
-    leave_counts = [entry['leave_count'] for entry in filtered_data]
+    return generate_pie_chart(leave_types, leave_counts, 'Leave Types Distribution')
 
-    unique_leave_types = sorted(set(leave_types))
-    leave_count_by_type = [sum(count for leave_type, count in zip(leave_types, leave_counts) if leave_type == lt) for lt in unique_leave_types]
-
-    return generate_line_chart(unique_leave_types, leave_count_by_type, 'Leave Types Distribution', 'Leave Type', 'Leave Count')

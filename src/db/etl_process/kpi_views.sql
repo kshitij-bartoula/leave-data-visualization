@@ -21,7 +21,9 @@ INNER JOIN
 INNER JOIN
     dw.fiscal_detail fd ON fd.fiscal_id = ft.fiscalid
 GROUP BY
-    ft.empId, ed.firstName, ed.lastName, fd.fiscal_id;
+    ft.empId, ed.firstName, ed.lastName, fd.fiscal_id
+ORDER BY SUM(ft.leaveDays) DESC
+LIMIT 10;
 
 
 CREATE MATERIALIZED VIEW IF NOT EXISTS dw.employee_details_mv AS
@@ -42,7 +44,7 @@ INNER JOIN
 inner join
     dw.fiscal_detail fd on fd.fiscal_id = ft.fiscalid
 GROUP BY
-    ft.empId, ed.firstName, ed.lastName,ed.designationname,al.name,fd.fiscal_start_date,fd.fiscal_end_date;
+    ft.empId, ed.firstName, ed.lastName,ed.designationname,al.name,fd.fiscal_start_date,fd.fiscal_end_date ;
 
 -- Leave balances per employee (approved)
 -- CREATE MATERIALIZED VIEW IF NOT EXISTS leave_balances_per_employee_mv AS
