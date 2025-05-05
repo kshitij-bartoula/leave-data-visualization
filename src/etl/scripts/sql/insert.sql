@@ -99,8 +99,8 @@ WHERE NOT EXISTS (
 INSERT INTO dw.fiscal_detail (fiscal_id, fiscal_start_date, fiscal_end_date)
 SELECT
     a."fiscalId"::int,
-    a."fiscalStartDate"::date,  -- Ensure this is cast to date
-    a."fiscalEndDate"::date      -- Ensure this is cast to date
+    a."fiscalStartDate"::date, 
+    a."fiscalEndDate"::date     
 FROM (
     SELECT DISTINCT
         "fiscalId",

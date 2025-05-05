@@ -3,4 +3,4 @@
 echo "my cronjob is working!"
 
 # Run etl
-python /app/etl/etl_main.py
+python /app/etl/main.py

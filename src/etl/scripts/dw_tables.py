@@ -7,7 +7,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 def insert_in_tables(db_engine):
-    sql_file_path = Path("/app/db/etl_process/insert.sql")
+    sql_file_path = Path("/app/etl/scripts/sql/insert.sql")
     logger.info(f"SQL file path for inserting data: {sql_file_path}")
     execute_sql_from_file(sql_file_path, db_engine)
     logger.info("Data inserted into tables successfully.")

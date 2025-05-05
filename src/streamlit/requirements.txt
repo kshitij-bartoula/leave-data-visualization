@@ -1,0 +1,13 @@
+streamlit==1.32.0
+streamlit-authenticator
+requests==2.31.0
+pandas==2.1.4  # Compatible version for Python 3.13.2
+numpy==1.26.4  # A stable version that should work with Python 3.13.2
+altair==5.5.0
+blinker==1.9.0
+cachetools==5.5.2
+click==8.1.8
+python-dotenv==1.1.0
+plotly==6.0.1
+SQLAlchemy==2.0.40
+psycopg2-binary==2.9.10

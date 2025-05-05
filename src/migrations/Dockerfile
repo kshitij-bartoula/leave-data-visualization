@@ -2,8 +2,11 @@
 FROM python:3.9-slim
 
 WORKDIR /app
-COPY src/migrations/requirement_migration.txt .
-RUN pip install --no-cache-dir -r requirement_migration.txt
+COPY src/migrations/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY src .
+ENV PYTHONPATH=/app/
 
 # Copy the application code including SQL files
 COPY src/migrations .

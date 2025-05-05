@@ -28,7 +28,7 @@ def ingest_api_data(API_ENDPOINT, headers):
     return all_data
 
 # Function to insert data into PostgreSQL database
-def insert_data_to_db(data, db_engine, table_name, schema='public'):
+def insert_data_to_db(data, db_engine, table_name, schema):
     try:
         data.to_sql(table_name, db_engine, schema=schema, if_exists='replace', index=False)
         logger.info(f"Data inserted into PostgreSQL table '{schema}.{table_name}' successfully.")

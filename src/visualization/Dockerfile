@@ -1,7 +1,7 @@
 FROM python:3.10.4-alpine
+
 RUN apk update && apk upgrade
 
-# Install system dependencies required for PostgreSQL and other packages
 RUN apk add --no-cache \
     build-base \
     postgresql-dev \
@@ -15,13 +15,12 @@ RUN apk add --no-cache \
     libc-dev
 
 WORKDIR /app
-COPY src/app/requirement_fastAPI.txt .
-RUN pip install --no-cache-dir -r requirement_fastAPI.txt
 
-COPY src .
-ENV PYTHONPATH=/app/
+COPY src/visualization/requirements.txt .
 
-EXPOSE 8000
+RUN pip install --no-cache-dir -r requirements.txt
 
-COPY src/app .
-CMD ["python", "uvicorn_run.py"]
+COPY src/visualization .
+EXPOSE 8050
+
+CMD ["python", "app.py"]

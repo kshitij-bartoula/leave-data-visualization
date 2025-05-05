@@ -1,7 +1,7 @@
 FROM python:3.10.4-alpine
-
 RUN apk update && apk upgrade
 
+# Install system dependencies required for PostgreSQL and other packages
 RUN apk add --no-cache \
     build-base \
     postgresql-dev \
@@ -15,12 +15,13 @@ RUN apk add --no-cache \
     libc-dev
 
 WORKDIR /app
+COPY src/backend/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-COPY src/visualization/requirement_plotly.txt .
+COPY src .
+ENV PYTHONPATH=/app/
 
-RUN pip install --no-cache-dir -r requirement_plotly.txt
+EXPOSE 8000
 
-COPY src/visualization .
-EXPOSE 8050
-
-CMD ["python", "app.py"]
+COPY src/backend .
+CMD ["python", "main.py"]

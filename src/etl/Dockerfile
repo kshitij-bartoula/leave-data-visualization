@@ -19,18 +19,18 @@ RUN apk add --no-cache \
     dcron
 
 WORKDIR /app
-COPY src/etl/requirement_etl.txt .
-RUN pip install --no-cache-dir -r requirement_etl.txt
+COPY src/etl/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
 COPY src .
 
 # Copy the cron configuration file into the container
-COPY cronfile /etc/cron.d/my-cron-job
+COPY src/etl/cronfile /etc/cron.d/my-cron-job
 
 RUN chmod 0644 /etc/cron.d/my-cron-job
 
 # Copy the start_up_file.sh script into the container
-COPY start_up_file.sh /start_up_file.sh
+COPY src/etl/start_up_file.sh /start_up_file.sh
 
 RUN chmod +x /start_up_file.sh
 

@@ -26,7 +26,7 @@ router = APIRouter()
 def get_employee_leave(db: Session = Depends(get_db)):
     try:
         query = "SELECT * FROM dw.total_leave_days_per_employee_mv"
-        result = get_result_from_query(query)
+        result = get_result_from_query(query, db)
 
         # Transform the raw database result into EmployeeLeave objects
         employee_leave = []
@@ -51,7 +51,7 @@ def get_employee_leave(db: Session = Depends(get_db)):
 def get_employee_details(db: Session = Depends(get_db)):
     try:
         query = "SELECT * FROM dw.employee_details_mv"
-        result = get_result_from_query(query)
+        result = get_result_from_query(query, db)
 
         # Transform the raw database result into EmployeeLeave objects
         employee_details = []
@@ -74,7 +74,7 @@ def get_employee_details(db: Session = Depends(get_db)):
 def get_leave_balance(db: Session = Depends(get_db)):
     try:
         query = "SELECT * FROM dw.leave_balances_per_employee_mv"
-        result = get_result_from_query(query)
+        result = get_result_from_query(query, db)
 
         # Transform the raw database result into LeaveBalance objects
         leave_balances = []
@@ -97,7 +97,7 @@ def get_leave_balance(db: Session = Depends(get_db)):
 def get_leave_trend(db: Session = Depends(get_db)):
     try:
         query = "SELECT * FROM dw.leave_trends_by_month_mv"
-        result = get_result_from_query(query)
+        result = get_result_from_query(query, db)
 
         # Transform the raw database result into LeaveTrend objects
         leave_trends = []
@@ -116,7 +116,7 @@ def get_leave_trend(db: Session = Depends(get_db)):
 def get_leave_distribution(db: Session = Depends(get_db)):
     try:
         query = "SELECT * FROM dw.leave_distribution_by_leave_type_mv"
-        result = get_result_from_query(query)
+        result = get_result_from_query(query, db)
 
         leave_distributions = []
         for leave_type_name, leave_count in result:
@@ -132,7 +132,7 @@ def get_leave_distribution(db: Session = Depends(get_db)):
 def get_fiscal_year_leave_type_trend(db: Session = Depends(get_db)):
     try:
         query = "SELECT * FROM dw.leave_trend_by_fiscal_year_per_leave_type_mv"
-        result = get_result_from_query(query)
+        result = get_result_from_query(query, db)
 
         fiscal_year_leave_type_trends = []
         for fiscal_id, fiscal_start_date, fiscal_end_date, leavetypename, leave_count in result:
@@ -153,7 +153,7 @@ def get_fiscal_year_leave_type_trend(db: Session = Depends(get_db)):
 def get_department_leave_distribution(db: Session = Depends(get_db)):
     try:
         query = "SELECT * FROM dw.leave_request_distribution_by_department_and_leave_types_mv"
-        result = get_result_from_query(query)
+        result = get_result_from_query(query, db)
 
         department_leave_distributions = []
         for departmentDescription, leavetypename, leave_count in result:
@@ -172,7 +172,7 @@ def get_department_leave_distribution(db: Session = Depends(get_db)):
 def get_department_leave_status_count(db: Session = Depends(get_db)):
     try:
         query = "SELECT * FROM dw.leave_status_count_by_department_mv"
-        result = get_result_from_query(query)
+        result = get_result_from_query(query, db)
 
         department_leave_status_counts = []
         for departmentDescription, approved, rejected, requested, cancelled in result:
@@ -192,7 +192,7 @@ def get_department_leave_status_count(db: Session = Depends(get_db)):
 def get_top_10_project_allocations(db: Session = Depends(get_db)):
     try:
         query = "SELECT * FROM dw.top_10_project_allocations_mv"
-        result = get_result_from_query(query)
+        result = get_result_from_query(query, db)
 
         top_project_allocations = []
         for name, request_count in result:

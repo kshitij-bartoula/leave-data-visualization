@@ -4,26 +4,42 @@ BEGIN;
 
 --1. Total leave days per employee (approved)
 CREATE MATERIALIZED VIEW IF NOT EXISTS dw.total_leave_days_per_employee_mv AS
+WITH ranked_leaves AS (
+    SELECT
+        ft.empId,
+        ed.firstName,
+        ed.lastName,
+        EXTRACT(YEAR FROM fd.fiscal_start_date) AS fiscal_year,
+        fd.fiscal_start_date,
+        fd.fiscal_end_date,
+        MAX(ft.defaultDays) AS default_days,
+        MAX(ft.transferableDays) AS transferable_days,
+        SUM(ft.leaveDays) AS total_leave_days,
+        ROW_NUMBER() OVER (PARTITION BY fd.fiscal_start_date ORDER BY SUM(ft.leaveDays) DESC) AS rn
+    FROM
+        dw.fact_table ft
+    INNER JOIN
+        dw.employee_details ed ON ed.empId = ft.empId
+    INNER JOIN
+        dw.fiscal_detail fd ON fd.fiscal_id = ft.fiscalid
+    GROUP BY
+        ft.empId, ed.firstName, ed.lastName, fd.fiscal_start_date, fd.fiscal_end_date
+)
 SELECT
-    ft.empId,
-    ed.firstName,
-    ed.lastName,
-    fd.fiscal_id,
-    fd.fiscal_start_date,
-    fd.fiscal_end_date,
-    max(ft.defaultDays) AS default_days,
-    max(ft.transferableDays) as transferable_days,
-    SUM(ft.leaveDays) AS total_leave_days
+    empId,
+    firstName,
+    lastName,
+    fiscal_year,
+    fiscal_start_date,
+    fiscal_end_date,
+    default_days,
+    transferable_days,
+    total_leave_days
 FROM
-    dw.fact_table ft
-INNER JOIN
-    dw.employee_details ed ON ed.empId = ft.empId
-INNER JOIN
-    dw.fiscal_detail fd ON fd.fiscal_id = ft.fiscalid
-GROUP BY
-    ft.empId, ed.firstName, ed.lastName, fd.fiscal_id
-ORDER BY SUM(ft.leaveDays) DESC
-LIMIT 10;
+    ranked_leaves
+WHERE
+    rn <= 10 and fiscal_year <> '2024';
+
 
 
 CREATE MATERIALIZED VIEW IF NOT EXISTS dw.employee_details_mv AS

@@ -1,20 +1,22 @@
 import os
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
+from utils.db_utils import connection
 
-SQLALCHEMY_DATABASE_URL = os.getenv("SQLALCHEMY_DATABASE_URL")
+# SQLALCHEMY_DATABASE_URL = os.getenv("SQLALCHEMY_DATABASE_URL")
 SQL_FOLDER = 'sql'
 
-# Create the database engine and session
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
-Session = sessionmaker(bind=engine)
+# Create the database db_engine and session
+db_engine = create_engine(f'postgresql://postgres:12345@postgres:5432/postgres')
+#db_engine = connection()
+Session = sessionmaker(bind=db_engine)
 
 def run_migrations():
     """Run migrations from the SQL folder."""
-    with engine.connect() as connection:
+    with db_engine.connect() as connection:
         # Ensure migration_history table exists
         connection.execute(text("""
-            CREATE TABLE IF NOT EXISTS migration_history_new (
+            CREATE TABLE IF NOT EXISTS migration_history (
                 id SERIAL PRIMARY KEY,
                 migration_name VARCHAR(255) UNIQUE NOT NULL,
                 applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
