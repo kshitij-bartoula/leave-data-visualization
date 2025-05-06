@@ -24,8 +24,8 @@ class OverviewPage:
         st.title("📊 Overview Dashboard")
 
         # Employee Leave Section
-        st.markdown("### 🧍 Employee Leave")
-        col1 = st.columns(1)[0]  # Fix: extract the single column from the list
+        st.markdown("### 🧍 Employee Leave") 
+        col1 = st.columns(1)[0]  
         with col1:
             st.subheader("Leave Distribution")
             fig1 = get_leave_distribution_chart(self.api)

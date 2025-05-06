@@ -4,18 +4,6 @@ RUN apk update && apk upgrade
 # Install system dependencies required for PostgreSQL and other packages
 RUN apk add --no-cache \
     build-base \
-    postgresql-dev \
-    libpq \
-    curl \
-    libressl-dev \
-    musl-dev \
-    libffi-dev \
-    openssl-dev \
-    gcc \
-    libc-dev \
-    busybox-initscripts \
-    openrc \
-    logrotate \
     dcron
 
 WORKDIR /app

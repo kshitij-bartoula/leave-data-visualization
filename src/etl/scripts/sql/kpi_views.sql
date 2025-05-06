@@ -40,8 +40,6 @@ FROM
 WHERE
     rn <= 10 and fiscal_year <> '2024';
 
-
-
 CREATE MATERIALIZED VIEW IF NOT EXISTS dw.employee_details_mv AS
 SELECT
     ft.empId,

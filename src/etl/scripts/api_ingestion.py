@@ -1,83 +1,71 @@
-
-import os
-import json
-import logging
-import requests
-import pandas as pd
+import os, json, requests, pandas as pd
 from sqlalchemy.sql import text
 from utils.db_utils import connection
+import logging
 
 logger = logging.getLogger(__name__)
 
-# Function to ingest data from API
 def ingest_api_data(API_ENDPOINT, headers):
-    all_data = []
-    page = 1
+    all_data, page = [], 1
     while True:
-        params = {'page': page}
-        response = requests.get(API_ENDPOINT, headers=headers, params=params)
-        if response.status_code == 200:
-            data = response.json()
-            all_data.extend(data['data'])  # Assuming the response contains a 'data' key with the actual data
-            if not data.get('next_page'):
-                break  # Exit the loop if there's no next page
-            page += 1
-        else:
-            logger.error(f"Failed to fetch data from page {page}. Status code: {response.status_code}")
-            break  # Exit the loop if there's an error fetching data
+        try:
+            response = requests.get(API_ENDPOINT, headers=headers, params={'page': page})
+            if response.status_code == 200:
+                data = response.json()
+                all_data.extend(data.get('data', []))
+                if not data.get('next_page'):
+                    break
+                page += 1
+            else:
+                raise ValueError(f"Failed on page {page}, status {response.status_code}")
+        except Exception as e:
+            logger.error("API ingestion failed", exc_info=True)
+            raise
     return all_data
 
-# Function to insert data into PostgreSQL database
-def insert_data_to_db(data, db_engine, table_name, schema):
+def insert_data_to_db(dataframe, db_engine, table_name, schema):
     try:
-        data.to_sql(table_name, db_engine, schema=schema, if_exists='replace', index=False)
-        logger.info(f"Data inserted into PostgreSQL table '{schema}.{table_name}' successfully.")
+        dataframe.to_sql(table_name, db_engine, schema=schema, if_exists='replace', index=False)
     except Exception as e:
-        logger.error(f"Error inserting data into PostgreSQL table '{schema}.{table_name}': {str(e)}")
+        logger.error(f"Inserting to {schema}.{table_name} failed", exc_info=True)
+        raise
 
-# Function to parse JSON data and separate nested JSON into a different table
 def parse_json_and_insert(api_data, db_engine):
-    main_data = []
-    nested_data = []
-    for entry in api_data:
-        main_entry = entry.copy()
-        allocations = main_entry.pop('allocations', None)
-        if allocations is not None and isinstance(allocations, list):
-            main_entry['allocations'] = json.dumps(allocations)
-            for alloc_item in allocations:
-                nested_entry = {'empId': main_entry['empId']}
-                nested_entry.update(alloc_item)
-                nested_data.append(nested_entry)
-        main_data.append(main_entry)
-    df_main = pd.DataFrame(main_data)
-    df_nested = pd.DataFrame(nested_data)
+    try:
+        main_data, nested_data = [], []
 
-    # Insert main data into PostgreSQL table
-    insert_data_to_db(df_main, db_engine, 'api_data', schema='raw')
+        for entry in api_data:
+            main_entry = entry.copy()
+            allocations = main_entry.pop('allocations', None)
+            if allocations:
+                main_entry['allocations'] = json.dumps(allocations)
+                for alloc in allocations:
+                    nested_data.append({'empId': main_entry['empId'], **alloc})
+            main_data.append(main_entry)
 
-    # Insert nested data into PostgreSQL table
-    insert_data_to_db(df_nested, db_engine, 'allocation_data', schema='raw')
+        df_main = pd.DataFrame(main_data)
+        df_nested = pd.DataFrame(nested_data)
 
+        insert_data_to_db(df_main, db_engine, 'api_data', 'raw')
+        insert_data_to_db(df_nested, db_engine, 'allocation_data', 'raw')
+
+    except Exception as e:
+        logger.error("Parsing or DB insertion failed", exc_info=True)
+        raise
 
 def main():
+    try:
+        BEARER_TOKEN = os.getenv('BEARER_TOKEN')
+        API_ENDPOINT = os.getenv('API_ENDPOINT')
+        if not BEARER_TOKEN or not API_ENDPOINT:
+            raise EnvironmentError("Missing BEARER_TOKEN or API_ENDPOINT")
 
-    BEARER_TOKEN = os.getenv('BEARER_TOKEN')
-    API_ENDPOINT = os.getenv('API_ENDPOINT')
+        headers = {'Authorization': f'Bearer {BEARER_TOKEN}'}
+        db_engine = connection()
+        api_data = ingest_api_data(API_ENDPOINT, headers)
 
-    headers = {
-        'Authorization': f'Bearer {BEARER_TOKEN}'
-    }
-
-    db_engine = connection()
-
-    # Ingest data from API
-    api_data = ingest_api_data(API_ENDPOINT, headers)
-
-    # Parse JSON data and insert into PostgreSQL tables
-    if api_data:
-        parse_json_and_insert(api_data, db_engine)
-    else:
-        logger.warning("No data fetched from API.")
-
-if __name__ == "__main__":
-    main()
+        if api_data:
+            parse_json_and_insert(api_data, db_engine)
+    except Exception as e:
+        logger.error("API ingestion main() failed", exc_info=True)
+        raise

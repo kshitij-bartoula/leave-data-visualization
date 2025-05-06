@@ -194,7 +194,7 @@ def get_leave_distribution_chart(api: APIClient, fiscal_year: int = None):
             df_top10,
             x=x_col,
             y=df_top10['total_leave_days'].round(0).astype(int).astype(str),
-            title=f"Top 5 Leave Days Distribution (Fiscal Year: {fiscal_year if fiscal_year else 'All'})",
+            title=f"Top 10 Leave Days Distribution (Fiscal Year: {fiscal_year if fiscal_year else 'All'})",
             labels={
                 x_col: "Employee" if x_col == "firstName" else x_col,
                 "total_leave_days": "Total Leave Days"

@@ -1,116 +1,97 @@
-"""
-Runs the ETL (Extract, Transform, Load) process for importing data from APIs, processing data warehouse tables, and generating KPI views.
-
-Imports logging configuration, JSON, and necessary ETL scripts.
-
-Functionality:
-- Loads logging configuration from a JSON file.
-- Configures logging using the loaded configuration.
-- Defines a main function to orchestrate the ETL process.
-- Executes API import requests, data warehouse table processing, and KPI views processing sequentially.
-- Logs information and errors during the ETL process.
-
-"""
-
-import logging.config
-import json
-import os
-import smtplib
+import logging.config, json, os, smtplib
 from email.mime.text import MIMEText
 from sqlalchemy import text
 
 import etl.scripts.api_ingestion as api_ingestion
 import etl.scripts.dw_tables as dw_tables
 import etl.scripts.kpi_views as kpi_views
-
 from utils.db_utils import connection
 
-# Load logging configuration
-with open('/app/etl/logging_config.json', 'r') as f:
-    config = json.load(f)
-    logging.config.dictConfig(config)
+# Load logging config
+try:
+    with open('/app/etl/logging_config.json', 'r') as f:
+        logging.config.dictConfig(json.load(f))
+except Exception:
+    raise RuntimeError("Logging config failed to load")
 
 logger = logging.getLogger(__name__)
 
 def send_failure_email(error_message):
-    """Send email notification when ETL process fails."""
-    recipient_email = os.getenv('RECIPIENT_EMAIL')
-    sender_email = os.getenv('SENDER_EMAIL')
-    sender_password = os.getenv('SENDER_DATA')
-
-    msg = MIMEText(f"The ETL process failed with the following error:\n\n{error_message}")
-    msg['Subject'] = "ETL Process Failure Notification"
-    msg['From'] = sender_email
-    msg['To'] = recipient_email
-
     try:
-        smtp_server = 'smtp.gmail.com'
-        smtp_port = 587
-        with smtplib.SMTP(smtp_server, smtp_port) as server:
+        to, sender, password = os.getenv('RECIPIENT_EMAIL'), os.getenv('SENDER_EMAIL'), os.getenv('SENDER_DATA')
+        if not all([to, sender, password]):
+            return
+
+        msg = MIMEText(f"The ETL process failed:\n\n{error_message}")
+        msg['Subject'], msg['From'], msg['To'] = "ETL Process Failure", sender, to
+
+        with smtplib.SMTP('smtp.gmail.com', 587) as server:
             server.starttls()
-            server.login(sender_email, sender_password)
-            server.sendmail(sender_email, recipient_email, msg.as_string())
-        logger.info("Failure notification email sent successfully.")
-    except Exception as e:
-        logger.error("Failed to send failure notification email", exc_info=True)
+            server.login(sender, password)
+            server.sendmail(sender, to, msg.as_string())
+        logger.info("Failure email sent successfully")
+    except smtplib.SMTPException as e:
+        logger.error(f"SMTP error occurred ,Failed to send failure email: {e}")
 
 def fetch_config_flags(db_engine):
-    """Fetch ingestion and transformation flags from config.import_config"""
-    query = text("SELECT is_ingestion_enabled, is_transformation_enabled FROM config.import_config WHERE api_name = 'vyaguta'")
+    query = text("""
+        SELECT is_ingestion_enabled, is_transformation_enabled
+        FROM config.import_config
+        WHERE api_name = :api_name
+    """)
     with db_engine.connect() as conn:
-        result = conn.execute(query).fetchone()
-        return dict(result._mapping) if result else None  # Use _mapping for SQLAlchemy Row
+        result = conn.execute(query, {"api_name": "vyaguta"}).fetchone()
+        return dict(result._mapping) if result else None
 
 def update_config_flag(db_engine, column, value):
-    """Update a single flag in config.import_config table"""
-    update_query = text(f"""
+    query = text(f"""
         UPDATE config.import_config
         SET {column} = :value
-        WHERE api_name = 'vyaguta'
+        WHERE api_name = :api_name
     """)
     with db_engine.begin() as conn:
-        conn.execute(update_query, {"value": value})
+        conn.execute(query, {"value": value, "api_name": "vyaguta"})
+    logger.info(f"{column} disabled due to failure.")
 
 def main():
-    logger.info("Starting ETL process...")
+    logger.info("ETL started.")
     db_engine = connection()
 
     try:
-        config_flags = fetch_config_flags(db_engine)
+        flags = fetch_config_flags(db_engine)
+        if not flags:
+            raise ValueError("Missing config flags for 'vyaguta'")
 
-        if not config_flags:
-            raise ValueError("No configuration found for 'vyaguta' in config.import_config")
-
-        # Run ingestion if enabled
-        if config_flags["is_ingestion_enabled"]:
+        if flags.get("is_ingestion_enabled"):
+            logger.info("Running ingestion.")
             try:
-                logger.info("Ingestion_enabled status true..Running API ingestion step...")
                 api_ingestion.main()
+                logger.info("ingestion completed.")
             except Exception as e:
-                logger.error("API ingestion failed", exc_info=True)
+                logger.info("Disabling ingestion due to failure.")
                 update_config_flag(db_engine, "is_ingestion_enabled", False)
-                #send_failure_email(f"API Ingestion failed: {str(e)}")
-                raise
+                send_failure_email(f"Ingestion failed:\n{e}")
+        else:
+            logger.info("Ingestion is disabled.")
 
-        # Run transformation if enabled
-        if config_flags["is_transformation_enabled"]:
+
+        if flags.get("is_transformation_enabled"):
+            logger.info("Running transformations.")
             try:
-                logger.info("Running data warehouse table processing...")
                 dw_tables.main()
-
-                logger.info("Running KPI views processing...")
                 kpi_views.main()
+                logger.info("transformations completed.")
             except Exception as e:
-                logger.error("Transformation step failed", exc_info=True)
+                logger.info("Disabling transformation due to failure.")
                 update_config_flag(db_engine, "is_transformation_enabled", False)
-                #send_failure_email(f"Transformation failed: {str(e)}")
-                raise
-
-        logger.info("ETL process completed successfully!")
+                send_failure_email(f"Transformation failed:\n{e}")
+        else:
+            logger.info("Transformation is disabled.") 
 
     except Exception as e:
-        logger.error("An error occurred during the ETL process", exc_info=True)
-        #send_failure_email(f"ETL Process failed:\n{str(e)}")
+        logger.error("ETL process failed", exc_info=True)
+        send_failure_email(str(e))
+        raise
 
 if __name__ == "__main__":
     main()

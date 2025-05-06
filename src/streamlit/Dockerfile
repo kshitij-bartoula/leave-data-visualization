@@ -1,16 +1,6 @@
 # Use Python 3.12 for better compatibility
 FROM python:3.12-slim
 
-# System dependencies
-RUN apt-get update && apt-get install -y \
-    gcc \
-    g++ \
-    libpq-dev \
-    python3-dev \
-    build-essential \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
 # Set working directory
 WORKDIR /app
 

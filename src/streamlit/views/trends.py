@@ -1,5 +1,6 @@
 import streamlit as st
 import plotly.express as px
+import pandas as pd
 from services.api_client import APIClient
 from services.data_processor import DataProcessor
 
@@ -22,21 +23,36 @@ def get_monthly_trend_chart(api):
 
 def get_fiscal_trend_chart(api):
     df = api.fetch_data("fiscal_trend")
-    if df is not None:
+
+    if df is not None and not df.empty:
+        # Extract and convert fiscal year to string
+        df['year'] = pd.to_datetime(df['fiscal_start_date'], errors='coerce').dt.year.astype(str)
+
+        # Drop rows with missing years
+        df = df.dropna(subset=['year'])
+
+        # Sort years if needed
+        df = df.sort_values('year')
+
         fig = px.line(
-                df,
-                x="year",
-                y=df['leave_count'].round(0).astype(int).astype(str),
-                color="leavetypename",
-                labels={
-                    'year': 'Fiscal Year',
-                    'y': 'Leave Count'  
-                },
-                title="Leave Trends by Fiscal Year and Leave Type",
-                line_shape="linear",  
-                markers=True  
+            df,
+            x="year",
+            y=df['leave_count'].round(0).astype(int).astype(str),
+            color="leavetypename",
+            labels={
+                'year': 'Fiscal Year',
+                'leave_count': 'Leave Count'
+            },
+            title="Leave Trends by Fiscal Year and Leave Type",
+            line_shape="linear",
+            markers=True
         )
+
+        # Force x-axis to be categorical (no intermediate values)
+        fig.update_layout(xaxis_type='category')
+
         return fig
+
     return None
 
 class TrendsPage:
@@ -81,18 +97,25 @@ class TrendsPage:
         st.subheader("Fiscal Year Trends")
         df = self.api.fetch_data("fiscal_trend")
         if df is not None:
+            df['year'] = pd.to_datetime(df['fiscal_start_date'], errors='coerce').dt.year.astype(str)
+
+            # Drop rows with missing years
+            df = df.dropna(subset=['year'])
+
+            # Sort years if needed
+            df = df.sort_values('year')
+
             fig = px.line(
                 df,
-                x="fiscal_id",
+                x="year",
                 y=df['leave_count'].round(0).astype(int).astype(str),
                 color="leavetypename",
                 labels={
-                    'fiscal_id': 'Fiscal Year',
-                    'y': 'Leave Count',  
-                    'leavetypename': 'Leave Type' 
+                    'year': 'Fiscal Year',
+                    'leave_count': 'Leave Count'
                 },
                 title="Leave Trends by Fiscal Year and Leave Type",
-                line_shape="linear",  
-                markers=True  
+                line_shape="linear",
+                markers=True
             )
             st.plotly_chart(fig, use_container_width=True)

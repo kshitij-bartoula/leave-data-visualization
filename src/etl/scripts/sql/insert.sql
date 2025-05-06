@@ -59,14 +59,14 @@ AND (
 
 INSERT INTO dw.allocations
 SELECT
-    a."empId"::int,
     a."id",
+    a."empId"::int,
     a."name",
     a."type"
 FROM (
     SELECT DISTINCT
-        "empId",
         "id",
+        "empId",
         "name",
         "type"
     FROM raw.allocation_data
