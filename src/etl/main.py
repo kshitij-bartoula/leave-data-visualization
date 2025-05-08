@@ -9,11 +9,12 @@ import etl.scripts.kpi_views as kpi_views
 from utils.db_utils import connection
 
 # Load logging config
-try:
-    with open('/app/etl/logging_config.json', 'r') as f:
-        logging.config.dictConfig(json.load(f))
-except Exception:
-    raise RuntimeError("Logging config failed to load")
+def setup_logging():
+    try:
+        with open('/app/etl/logging_config.json', 'r') as f:
+            logging.config.dictConfig(json.load(f))
+    except Exception:
+        raise RuntimeError("Logging config failed to load")
 
 logger = logging.getLogger(__name__)
 
@@ -55,6 +56,7 @@ def update_config_flag(db_engine, column, value):
     logger.info(f"{column} disabled due to failure.")
 
 def main():
+    setup_logging()
     logger.info("ETL started.")
     db_engine = connection()
 
