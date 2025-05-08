@@ -1,9 +1,38 @@
-# Environment variables
-*.env
-
+# Python cache and compiled files
 __pycache__/
-*.pyc
+*.py[cod]  # Covers .pyc, .pyo, .pyd
+*.egg-info/
+*.so
+*.pyd
 
-# Logs
+# Environment/config files
+.env
+.env.local
+.env*.local
+.venv/
+venv/
+
+# Logs and debug files
 logs/
 *.log
+*.sqlite
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build and distribution folders
+dist/
+build/
+*.egg
+*.wheel
+
+# Testing and coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# macOS (optional)
+.DS_Store
