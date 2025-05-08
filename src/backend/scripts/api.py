@@ -70,29 +70,6 @@ def get_employee_details(db: Session = Depends(get_db)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database error occurred{e}")
 
-@router.get("/leave_balance", response_model=List[LeaveBalance])
-def get_leave_balance(db: Session = Depends(get_db)):
-    try:
-        query = "SELECT * FROM dw.leave_balances_per_employee_mv"
-        result = get_result_from_query(query, db)
-
-        # Transform the raw database result into LeaveBalance objects
-        leave_balances = []
-        for row in result:
-            leave_balances.append(LeaveBalance(
-                empId=row.empId,
-                firstName=row.firstName,
-                lastName=row.lastName,
-                defaultDays=row.defaultDays,
-                transferabledays=row.transferabledays,
-                leaveDays=row.leaveDays,
-                leave_balance=row.leave_balance,
-            ))
-
-        return leave_balances
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Database error occurred{e}")
-
 @router.get("/leave_trend", response_model=List[LeaveTrend])
 def get_leave_trend(db: Session = Depends(get_db)):
     try:
@@ -109,22 +86,6 @@ def get_leave_trend(db: Session = Depends(get_db)):
             ))
 
         return leave_trends
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Database error occurred{e}")
-
-@router.get("/leave_distribution", response_model=List[LeaveDistribution])
-def get_leave_distribution(db: Session = Depends(get_db)):
-    try:
-        query = "SELECT * FROM dw.leave_distribution_by_leave_type_mv"
-        result = get_result_from_query(query, db)
-
-        leave_distributions = []
-        for leave_type_name, leave_count in result:
-            leave_distribution = LeaveDistribution(
-                leavetypename=leave_type_name, leave_count=leave_count
-            )
-            leave_distributions.append(leave_distribution)
-        return leave_distributions
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database error occurred{e}")
 
@@ -173,27 +134,6 @@ def get_department_leave_distribution(db: Session = Depends(get_db)):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database error occurred: {e}")
-
-
-@router.get("/department_leave_status_count", response_model=List[DepartmentLeaveStatusCount])
-def get_department_leave_status_count(db: Session = Depends(get_db)):
-    try:
-        query = "SELECT * FROM dw.leave_status_count_by_department_mv"
-        result = get_result_from_query(query, db)
-
-        department_leave_status_counts = []
-        for departmentDescription, approved, rejected, requested, cancelled in result:
-            department_leave_status_count = DepartmentLeaveStatusCount(
-                departmentDescription=departmentDescription,
-                approved=approved,
-                rejected=rejected,
-                requested=requested,
-                cancelled=cancelled,
-            )
-            department_leave_status_counts.append(department_leave_status_count)
-        return department_leave_status_counts
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Database error occurred{e}")
 
 @router.get("/top_10_project_allocations", response_model=List[ProjectAllocations])
 def get_top_10_project_allocations(db: Session = Depends(get_db)):

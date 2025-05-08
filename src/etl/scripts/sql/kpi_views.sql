@@ -2,7 +2,7 @@
 
 BEGIN;
 
--- 1. Total leave days per employee (approved)
+-- 1. Total leave days per employee [leave_details]
 CREATE MATERIALIZED VIEW IF NOT EXISTS dw.total_leave_days_per_employee_mv AS
 WITH ranked_leaves AS (
     SELECT
@@ -39,7 +39,7 @@ WHERE
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_total_leave_days_per_employee_mv ON dw.total_leave_days_per_employee_mv (empId, firstName, lastName, fiscal_start_date, fiscal_end_date);
 
--- 2. Employee details
+-- 2. Employee details [hr_details]
 CREATE MATERIALIZED VIEW IF NOT EXISTS dw.employee_details_mv AS
 SELECT
     ft.empId,
@@ -59,7 +59,7 @@ GROUP BY
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_employee_details_mv ON dw.employee_details_mv (empId, firstName, lastName, designationname, project_name, fiscal_start_date, fiscal_end_date);
 
--- 3. Leave trends by month (approved)
+-- 3. Leave trends by month [trends: Month]
 CREATE MATERIALIZED VIEW IF NOT EXISTS dw.leave_trends_by_month_mv AS
 SELECT
     EXTRACT(MONTH FROM startDate) AS month,
@@ -72,20 +72,26 @@ GROUP BY month, year;
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_leave_trends_by_month_mv ON dw.leave_trends_by_month_mv (year, month);
 
-
--- 4. Leave distribution by leave type
-CREATE MATERIALIZED VIEW IF NOT EXISTS dw.leave_distribution_by_leave_type_mv AS
+-- 4. Leave trend by fiscal year [trend : fiscal year]
+CREATE MATERIALIZED VIEW IF NOT EXISTS dw.leave_trend_by_fiscal_year_per_leave_type_mv AS
 SELECT
+    fd.fiscal_id,
+    fd.fiscal_start_date,
+    fd.fiscal_end_date,
     lt.leavetypename,
     COUNT(*) AS leave_count
 FROM
     dw.fact_table ft
-JOIN dw.leave_type lt ON ft.leaveTypeId = lt.leave_type_id
-GROUP BY lt.leavetypename;
+JOIN
+    dw.fiscal_detail fd ON ft.fiscalId = fd.fiscal_id
+JOIN
+    dw.leave_type lt ON lt.leave_type_id = ft.leavetypeid
+GROUP BY
+    fd.fiscal_id, fd.fiscal_start_date, fd.fiscal_end_date, lt.leavetypename
+ORDER BY
+    fd.fiscal_id;
 
-CREATE UNIQUE INDEX IF NOT EXISTS idx_leave_distribution_by_leave_type_mv ON dw.leave_distribution_by_leave_type_mv (leavetypename);
-
--- 5. Leave trend by fiscal year per leave type
+-- 5. Leave trend by fiscal year per department
 CREATE MATERIALIZED VIEW IF NOT EXISTS dw.leave_request_distribution_by_department_and_leave_types_mv AS
 SELECT
     fd.fiscal_start_date,
@@ -104,22 +110,7 @@ GROUP BY ed.departmentDescription, lt.leaveTypeName, fd.fiscal_start_date, fd.fi
 CREATE UNIQUE INDEX IF NOT EXISTS idx_leave_trend_by_fiscal_year_per_leave_type_mv
     ON dw.leave_trend_by_fiscal_year_per_leave_type_mv (fiscal_id, fiscal_start_date, fiscal_end_date, leavetypename);
 
--- 6. Leave request distribution as per department and leave types
-CREATE MATERIALIZED VIEW IF NOT EXISTS dw.leave_request_distribution_by_department_and_leave_types_mv AS
-SELECT
-    ed.departmentDescription,
-    lt.leaveTypeName,
-    COUNT(*) AS leave_count
-FROM
-    dw.fact_table ft
-JOIN dw.employee_details ed ON ft.empId = ed.empId
-JOIN dw.leave_type lt ON ft.leaveTypeId = lt.leave_type_id
-GROUP BY ed.departmentDescription, lt.leaveTypeName;
-
-CREATE UNIQUE INDEX IF NOT EXISTS idx_leave_request_distribution_by_department_and_leave_types_mv
-    ON dw.leave_request_distribution_by_department_and_leave_types_mv (departmentDescription, leaveTypeName);
-
--- 7. Top 10 project allocations
+-- 6. Top 10 project allocations
 CREATE MATERIALIZED VIEW IF NOT EXISTS dw.top_10_project_allocations_mv AS
 SELECT
     name,

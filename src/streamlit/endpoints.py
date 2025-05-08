@@ -33,9 +33,7 @@ HOST = "fastapi"  # container name in Docker network
 ENDPOINTS = {
     "employee_leave": f"http://{HOST}:8000/employee_leave_details",
     "hr_details": f"http://{HOST}:8000/employee_HR_details",
-    "leave_balance": f"http://{HOST}:8000/leave_balance",
     "leave_trend": f"http://{HOST}:8000/leave_trend",
-    "leave_distribution": f"http://{HOST}:8000/leave_distribution",
     "fiscal_trend": f"http://{HOST}:8000/fiscal_year_leave_type_trend",
     "dept_leave_distribution": f"http://{HOST}:8000/department_leave_distribution",
     "project_allocations": f"http://{HOST}:8000/top_10_project_allocations",
