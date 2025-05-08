@@ -4,3 +4,5 @@ SQLAlchemy
 pandas
 psycopg2-binary
 schedule
+pytest
+pytest-mock
