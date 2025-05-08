@@ -4,6 +4,7 @@ from sqlalchemy import text
 
 import etl.scripts.api_ingestion as api_ingestion
 import etl.scripts.dw_tables as dw_tables
+import etl.scripts.dbo_tables as dbo_tables
 import etl.scripts.kpi_views as kpi_views
 from utils.db_utils import connection
 
@@ -78,6 +79,8 @@ def main():
         if flags.get("is_transformation_enabled"):
             logger.info("Running transformations.")
             try:
+                dbo_tables.main()
+                logger.info("cleaned data moved to dbo tables completed.")
                 dw_tables.main()
                 kpi_views.main()
                 logger.info("transformations completed.")

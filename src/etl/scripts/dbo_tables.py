@@ -5,7 +5,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 def insert_in_tables(db_engine):
-    sql_file_path = Path("/app/etl/scripts/sql/dw_insert.sql")
+    sql_file_path = Path("/app/etl/scripts/sql/dbo_insert.sql")
     try:
         execute_sql_from_file(sql_file_path, db_engine)
     except Exception as e:

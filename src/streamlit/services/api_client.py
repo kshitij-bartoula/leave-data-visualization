@@ -1,29 +1,3 @@
-# import requests
-# import pandas as pd
-# from typing import Optional
-# from endpoints import get_endpoint
-
-# class APIClient:
-#     @staticmethod
-#     def fetch_data(endpoint_key: str) -> Optional[pd.DataFrame]:
-#         """Generic data fetcher for all endpoints"""
-#         url = get_endpoint(endpoint_key)
-
-#         # 🛡️ Check if URL exists
-#         if not url:
-#             print(f"[Warning] No URL found for endpoint key: '{endpoint_key}'")
-#             return None
-
-#         try:
-#             response = requests.get(url, timeout=10)
-#             response.raise_for_status()
-#             return pd.DataFrame(response.json())
-#         except Exception as e:
-#             print(f"[Error] API Error while fetching '{endpoint_key}': {str(e)}")
-#             return None
-
-# api_client.py
-
 import requests
 import pandas as pd
 import streamlit as st
