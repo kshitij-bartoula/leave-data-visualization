@@ -1,21 +1,17 @@
-import pytest
+import os
 from unittest import mock
 from etl.main import send_failure_email
 
-
-@pytest.fixture
-def mock_smtp():
-    # Mock the smtplib.SMTP class to avoid actual email sending
-    with mock.patch("smtplib.SMTP") as mock_smtp:
-        yield mock_smtp
-
-
+@mock.patch("smtplib.SMTP")
+@mock.patch.dict(os.environ, {
+    "RECIPIENT_EMAIL": "to@example.com",
+    "SENDER_EMAIL": "from@example.com",
+    "SENDER_DATA": "dummy_password"
+})
 def test_send_failure_email(mock_smtp):
-    # Mock the email sending
-    mock_smtp.return_value.__enter__.return_value.sendmail = mock.Mock()
+    smtp_instance = mock_smtp.return_value.__enter__.return_value
+    smtp_instance.sendmail = mock.Mock()
 
-    # Call the function to send an email
     send_failure_email("Test error message")
 
-    # Assert that the sendmail method was called once
-    mock_smtp.return_value.__enter__.return_value.sendmail.assert_called_once()
+    smtp_instance.sendmail.assert_called_once()
