@@ -72,20 +72,6 @@ GROUP BY month, year;
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_leave_trends_by_month_mv ON dw.leave_trends_by_month_mv (year, month);
 
--- -- Leave trends by month (approved)
--- CREATE MATERIALIZED VIEW IF NOT EXISTS dw.leave_trends_by_month_mv AS
--- SELECT
---     EXTRACT(MONTH FROM startDate) AS month,
---     EXTRACT(YEAR FROM startDate) AS year,
---     COUNT(*) AS leave_count
--- FROM
---     dw.fact_table ft
--- INNER JOIN
---     dw.leave_type lt ON ft.leaveTypeId = lt.leave_type_id
--- GROUP BY
---     month, year
--- ORDER BY
---     year ASC, month ASC;
 
 -- 4. Leave distribution by leave type
 CREATE MATERIALIZED VIEW IF NOT EXISTS dw.leave_distribution_by_leave_type_mv AS
@@ -100,18 +86,20 @@ GROUP BY lt.leavetypename;
 CREATE UNIQUE INDEX IF NOT EXISTS idx_leave_distribution_by_leave_type_mv ON dw.leave_distribution_by_leave_type_mv (leavetypename);
 
 -- 5. Leave trend by fiscal year per leave type
-CREATE MATERIALIZED VIEW IF NOT EXISTS dw.leave_trend_by_fiscal_year_per_leave_type_mv AS
+CREATE MATERIALIZED VIEW IF NOT EXISTS dw.leave_request_distribution_by_department_and_leave_types_mv AS
 SELECT
-    fd.fiscal_id,
     fd.fiscal_start_date,
     fd.fiscal_end_date,
-    lt.leavetypename,
+    ed.departmentDescription,
+    lt.leaveTypeName,
     COUNT(*) AS leave_count
 FROM
     dw.fact_table ft
 JOIN dw.fiscal_detail fd ON ft.fiscalId = fd.fiscal_id
-JOIN dw.leave_type lt ON lt.leave_type_id = ft.leavetypeid
-GROUP BY fd.fiscal_id, fd.fiscal_start_date, fd.fiscal_end_date, lt.leavetypename;
+JOIN dw.employee_details ed ON ft.empId = ed.empId
+JOIN dw.leave_type lt ON ft.leaveTypeId = lt.leave_type_id
+GROUP BY ed.departmentDescription, lt.leaveTypeName, fd.fiscal_start_date, fd.fiscal_end_date ;
+
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_leave_trend_by_fiscal_year_per_leave_type_mv
     ON dw.leave_trend_by_fiscal_year_per_leave_type_mv (fiscal_id, fiscal_start_date, fiscal_end_date, leavetypename);

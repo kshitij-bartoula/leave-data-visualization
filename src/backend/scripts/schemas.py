@@ -68,6 +68,8 @@ class FiscalYearLeaveTypeTrend(BaseModel):
 
 
 class DepartmentLeaveDistribution(BaseModel):
+    fiscal_start_date: date
+    fiscal_end_date: date
     departmentDescription: str
     leaveTypeName: str
     leave_count: int

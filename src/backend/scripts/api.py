@@ -152,20 +152,27 @@ def get_fiscal_year_leave_type_trend(db: Session = Depends(get_db)):
 @router.get("/department_leave_distribution", response_model=List[DepartmentLeaveDistribution])
 def get_department_leave_distribution(db: Session = Depends(get_db)):
     try:
-        query = "SELECT * FROM dw.leave_request_distribution_by_department_and_leave_types_mv"
+        query = """
+            SELECT fiscal_start_date, fiscal_end_date, departmentDescription, leaveTypeName, leave_count 
+            FROM dw.leave_request_distribution_by_department_and_leave_types_mv
+        """
         result = get_result_from_query(query, db)
 
         department_leave_distributions = []
-        for departmentDescription, leavetypename, leave_count in result:
+        for fiscal_start_date, fiscal_end_date, departmentDescription, leaveTypeName, leave_count in result:
             department_leave_distribution = DepartmentLeaveDistribution(
+                fiscal_start_date=fiscal_start_date,
+                fiscal_end_date=fiscal_end_date,
                 departmentDescription=departmentDescription,
-                leaveTypeName=leavetypename,
-                leave_count=leave_count,
+                leaveTypeName=leaveTypeName,
+                leave_count=leave_count
             )
             department_leave_distributions.append(department_leave_distribution)
+
         return department_leave_distributions
+
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Database error occurred{e}")
+        raise HTTPException(status_code=500, detail=f"Database error occurred: {e}")
 
 
 @router.get("/department_leave_status_count", response_model=List[DepartmentLeaveStatusCount])

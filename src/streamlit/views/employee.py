@@ -157,15 +157,28 @@ class EmployeePage:
             # Visualization
             if not df.empty and designation_col:
                 st.markdown("#### 🧮 Employees by Designation")
-                fig1 = px.pie(
-                    df,
-                    names=designation_col,
-                    title="Designation Distribution",
-                    hole=0.4
-                )
-                st.plotly_chart(fig1, use_container_width=True)
+
+                # Get unique fiscal years and allow user to select
+                fiscal_years = df['fiscal_year'].dropna().unique()
+                fiscal_years.sort()
+                selected_year = st.selectbox("Select Fiscal Year", fiscal_years)
+
+                # Filter the DataFrame based on selected fiscal year
+                filtered_df = df[df['fiscal_year'] == selected_year]
+
+                if not filtered_df.empty:
+                    fig1 = px.pie(
+                        filtered_df,
+                        names=designation_col,
+                        title=f"Designation Distribution - Fiscal Year {selected_year}",
+                        hole=0.4
+                    )
+                    st.plotly_chart(fig1, use_container_width=True)
+                else:
+                    st.warning("No data available for the selected fiscal year.")
         else:
             st.warning("No HR data available.")
+            
     def _find_column(self, df, possible_names):
         """Helper to find a column with alternative names"""
         for name in possible_names:
@@ -208,4 +221,3 @@ def get_leave_distribution_chart(api: APIClient, fiscal_year: int = None):
         return fig
 
     return None
-
