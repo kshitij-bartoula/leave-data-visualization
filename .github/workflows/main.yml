@@ -6,7 +6,6 @@ on:
       - main
 
 jobs:
-
   test:
     runs-on: ubuntu-latest
     steps:
@@ -29,11 +28,15 @@ jobs:
         run: |
           pytest src/etl/tests
 
-
   deploy:
     runs-on: self-hosted
     needs: test
     steps:
+      - name: Clean old repo to avoid permission issues
+        run: |
+          echo "Cleaning previous repo contents with sudo..."
+          sudo rm -rf /home/kshitij/actions-runner/_work/leave-data-visualization
+
       - name: Checkout repository
         uses: actions/checkout@v2
 
@@ -50,7 +53,6 @@ jobs:
           echo "SENDER_EMAIL=${{ secrets.SENDER_EMAIL }}" >> $GITHUB_ENV
           echo "SENDER_DATA=${{ secrets.SENDER_DATA }}" >> $GITHUB_ENV
           echo "RECIPIENT_EMAIL=${{ secrets.RECIPIENT_EMAIL }}" >> $GITHUB_ENV
-
 
       - name: Set up Docker Compose
         run: |
