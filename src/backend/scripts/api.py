@@ -9,12 +9,9 @@ from sqlalchemy import func
 from .schemas import (
     EmployeeLeave,
     EmployeeDetails,
-    LeaveBalance,
     LeaveTrend,
-    LeaveDistribution,
     FiscalYearLeaveTypeTrend,
     DepartmentLeaveDistribution,
-    DepartmentLeaveStatusCount,
     ProjectAllocations,
 )
 from utils.db_utils import get_result_from_query
