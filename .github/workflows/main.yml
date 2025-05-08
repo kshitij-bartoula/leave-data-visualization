@@ -11,6 +11,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Fetch full history to avoid unnecessary cleaning
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -34,6 +36,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Fetch full history to avoid unnecessary cleaning
 
       - name: Export secrets as environment variables
         run: |
