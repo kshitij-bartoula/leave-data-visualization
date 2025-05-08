@@ -90,6 +90,7 @@ def main():
                 logger.info("Disabling transformation due to failure.")
                 update_config_flag(db_engine, "is_transformation_enabled", False)
                 send_failure_email(f"Transformation failed:\n{e}")
+                raise
         else:
             logger.info("Transformation is disabled.") 
 
